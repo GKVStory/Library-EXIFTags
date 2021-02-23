@@ -7,6 +7,8 @@ file (GLOB SOURCES "lib/libExif/libexif/*.c" "lib/libExif/libexif/canon/*.c" "li
 
 add_definitions(-DGETTEXT_PACKAGE="libexif-12")
 
+configure_file("lib/config.h" "lib/libExif/config.h" COPYONLY)
+configure_file("lib/_stdint.h" "lib/libExif/libexif/_stdint.h" COPYONLY)
 include_directories("lib/libExif/")
 
-add_library(libexif SHARED ${HEADERS} ${SOURCES})
+add_library(libexif ${HEADERS} ${SOURCES})
