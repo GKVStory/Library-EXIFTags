@@ -5,30 +5,30 @@
 namespace tg {
 namespace tags {
 
-std::unique_ptr<Tag> Tag::tagFactory (const SupportedTags &  tag) {
-    switch (TAG_INFO[tag].data_type) {
-        case UINT32:
-            return std::make_unique<Tag_UINT32> (TAG_INFO[tag]);
-        case UINT16:
-            return std::make_unique<Tag_UINT16> (TAG_INFO[tag]);
-        case UINT8:
-            return std::make_unique<Tag_UINT8> (TAG_INFO[tag]);
-        case DOUBLE:
-            return std::make_unique<Tag_DOUBLE> (TAG_INFO[tag]);
-        case STRING:
-            return std::make_unique<Tag_STRING> (TAG_INFO[tag]);
-        case UINT16_ARRAY:
-            return std::make_unique<Tag_UINT16_ARRAY> (TAG_INFO[tag]);
-        case DOUBLE_ARRAY:
-            return std::make_unique<Tag_DOUBLE_ARRAY> (TAG_INFO[tag]);
+std::unique_ptr<Tag> Tag::tagFactory (const Constants::SupportedTags &  tag) {
+    switch (Constants::TAG_INFO[tag].data_type) {
+        case Constants::UINT32:
+            return std::make_unique<Tag_UINT32> (Constants::TAG_INFO[tag]);
+        case Constants::UINT16:
+            return std::make_unique<Tag_UINT16> (Constants::TAG_INFO[tag]);
+        case Constants::UINT8:
+            return std::make_unique<Tag_UINT8> (Constants::TAG_INFO[tag]);
+        case Constants::DOUBLE:
+            return std::make_unique<Tag_DOUBLE> (Constants::TAG_INFO[tag]);
+        case Constants::STRING:
+            return std::make_unique<Tag_STRING> (Constants::TAG_INFO[tag]);
+        case Constants::UINT16_ARRAY:
+            return std::make_unique<Tag_UINT16_ARRAY> (Constants::TAG_INFO[tag]);
+        case Constants::DOUBLE_ARRAY:
+            return std::make_unique<Tag_DOUBLE_ARRAY> (Constants::TAG_INFO[tag]);
         default:
             return nullptr;
     }
     
 }
 
-std::unique_ptr<Tag> Tag::loadFromHeader(const SupportedTags &  tag, const uint8_t * header, size_t header_len, std::string & error_message) {
-    TagInfo tag_info = TAG_INFO[tag];
+std::unique_ptr<Tag> Tag::loadFromHeader(const Constants::SupportedTags &  tag, const uint8_t * header, size_t header_len, std::string & error_message) {
+    Constants::TagInfo tag_info = Constants::TAG_INFO[tag];
     //TODO do the parsing. Different handling for 2g header versus standard exif.
     return nullptr;
 }

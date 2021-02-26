@@ -35,7 +35,7 @@ public:
      * @param tag supported tag type, defined in TagConstants.h
      * @return unique pointer to tag type.
      */
-    static std::unique_ptr<Tag> tagFactory (const SupportedTags &  tag);
+    static std::unique_ptr<Tag> tagFactory (const Constants::SupportedTags &  tag);
 
     /**
      * @brief Load data from a block of memory from the header.
@@ -44,7 +44,7 @@ public:
      * @param error message string returned by reference.
      * @return unique pointer to tags containing data that's in the header file. If null, there was a problem.
      */
-    static std::unique_ptr<Tag> loadFromHeader(const SupportedTags &  tag, const uint8_t * header, size_t header_len, std::string & error_message);
+    static std::unique_ptr<Tag> loadFromHeader(const Constants::SupportedTags &  tag, const uint8_t * header, size_t header_len, std::string & error_message);
 
 
     /** 
@@ -57,12 +57,12 @@ protected:
     //Tag constructor //stores a reference to the tag structure. This is a reference, 
     //and should only reference something with the same lifetime as the program, like the 
     //TAG_INFO vector in TagConstants.h
-    Tag( const TagInfo & tag_info ) : 
+    Tag( const Constants::TagInfo & tag_info ) : 
         m_tag_info(tag_info)
         {};
 
 private:
-    TagInfo m_tag_info;
+    Constants::TagInfo m_tag_info;
 
 };
 
@@ -87,7 +87,9 @@ public:
         m_data = data;
     };
 
-    Tag_UINT32( const TagInfo & tag_info ) : Tag(tag_info) {}
+    Tag_UINT32( const Constants::TagInfo & tag_info ) : 
+        Tag(tag_info),
+        m_data(0) {}
 
 private:
     
@@ -115,7 +117,9 @@ public:
         m_data = data;
     };
 
-    Tag_UINT16( const TagInfo & tag_info ) : Tag(tag_info) {}
+    Tag_UINT16( const Constants::TagInfo & tag_info ) : 
+        Tag(tag_info),
+        m_data(0) {}
 
 private:
 
@@ -143,7 +147,7 @@ public:
         m_data = data;
     };
 
-    Tag_UINT8( const TagInfo & tag_info ) : Tag(tag_info) {}
+    Tag_UINT8( const Constants::TagInfo & tag_info ) : Tag(tag_info) {}
 
 private:
 
@@ -171,7 +175,7 @@ public:
         m_data = data;
     };
 
-    Tag_DOUBLE( const TagInfo & tag_info ) : Tag(tag_info) {}
+    Tag_DOUBLE( const Constants::TagInfo & tag_info ) : Tag(tag_info) {}
 
 private:
 
@@ -199,7 +203,9 @@ public:
         m_data = data;
     };
 
-    Tag_STRING( const TagInfo & tag_info ) : Tag(tag_info) {}
+    Tag_STRING( const Constants::TagInfo & tag_info ) : 
+        Tag(tag_info),
+        m_data("") {}
 
 private:
 
@@ -227,7 +233,9 @@ public:
         m_data = data;
     };
 
-    Tag_UINT16_ARRAY( const TagInfo & tag_info ) : Tag(tag_info) {}
+    Tag_UINT16_ARRAY( const Constants::TagInfo & tag_info ) : 
+        Tag(tag_info),
+        m_data() {}
 
 private:
 
@@ -254,7 +262,9 @@ public:
         m_data = data;
     };
 
-    Tag_DOUBLE_ARRAY( const TagInfo & tag_info ) : Tag(tag_info) {}
+    Tag_DOUBLE_ARRAY( const Constants::TagInfo & tag_info ) : 
+        Tag(tag_info),
+        m_data() {}
 
 private:
 

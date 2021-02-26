@@ -12,6 +12,9 @@
 namespace tg {
 namespace tags {
 
+class Constants {
+public:
+
 enum DataType {
     UINT32,
     UINT16,
@@ -76,6 +79,7 @@ enum SupportedTags {
         GPS_ALTITUDE,
         GPS_TIMESTAMP,
         GPS_DATESTAMP,
+        LENGTH_SUPPORTED_TAGS
     };
 
 /**
@@ -98,6 +102,9 @@ public:
 };
 
 static const std::vector <TagInfo> TAG_INFO;
+static const std::string DEFAULT_MAKE;
+
+};
 
 } //tags
 } //tg

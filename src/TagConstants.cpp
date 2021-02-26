@@ -5,7 +5,7 @@
 using namespace tg;
 using namespace tags;
 
-const std::vector<TagInfo> TAG_INFO {
+const std::vector<Constants::TagInfo> Constants::TAG_INFO {
     TagInfo(EXIF_TAG_NEW_SUBFILE_TYPE, EXIF_IFD_1, sizeof(uint32_t), UINT32, false), //SUBFILE_TYPE,
     TagInfo(EXIF_TAG_IMAGE_WIDTH, EXIF_IFD_1, sizeof(uint32_t), UINT32, false), //IMAGE_WIDTH,
     TagInfo(EXIF_TAG_IMAGE_LENGTH, EXIF_IFD_1, sizeof(uint32_t), UINT32, false), //IMAGE_HEIGHT,
@@ -59,3 +59,5 @@ const std::vector<TagInfo> TAG_INFO {
     TagInfo(EXIF_TAG_GPS_TIME_STAMP, EXIF_IFD_GPS, sizeof(double) * 3, DOUBLE_ARRAY, false), //GPS_TIMESTAMP
     TagInfo(EXIF_TAG_GPS_DATE_STAMP, EXIF_IFD_GPS, 11, STRING, false), //GPS_DATESTAMP, YYYY:mm:dd
 };
+
+const std::string Constants::DEFAULT_MAKE = "2G Robotics";
