@@ -49,6 +49,9 @@ const std::vector<Constants::TagInfo> Constants::TAG_INFO {
     TagInfo(0x000c, EXIF_IFD_1, sizeof(double), DOUBLE, true), //FRAME_RATE,
     TagInfo(0x000d, EXIF_IFD_1, sizeof(double) * 4, DOUBLE_ARRAY, true), //CAMERA_MATRIX,
     TagInfo(0x000e, EXIF_IFD_1, sizeof(double) * 5, DOUBLE_ARRAY, true), //DISTORTION,
+    TagInfo(0x000f, EXIF_IFD_1, sizeof(double) * 3, DOUBLE_ARRAY, true), //POSE,
+    TagInfo(0x0010, EXIF_IFD_1, sizeof(double), DOUBLE, true), //TARGET_RANGE,
+    TagInfo(0x0011, EXIF_IFD_1, sizeof(double), DOUBLE, true), //VEHICLE_DEPTH,
     ////GPSTags
     TagInfo(EXIF_TAG_GPS_LATITUDE_REF, EXIF_IFD_GPS, 2, STRING, false), //GPS_LATITUDE_REF, N/S
     TagInfo(EXIF_TAG_GPS_LATITUDE, EXIF_IFD_GPS, sizeof(double) * 3, DOUBLE_ARRAY, false), //GPS_LATITUDE,
@@ -61,3 +64,5 @@ const std::vector<Constants::TagInfo> Constants::TAG_INFO {
 };
 
 const std::string Constants::DEFAULT_MAKE = "2G Robotics";
+const double Constants::DEFAULT_INDEX = 1.34;
+const double Constants::DEFAULT_VIEWPORT_INDEX = 1.7;

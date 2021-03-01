@@ -130,6 +130,192 @@ public:
     uint16_t samplesPerPixel () const;
     void samplesPerPixel (uint16_t samples);
 
+    enum PlanarConfigurationType {
+        PLANARCONFIG_CONTIG = 1,
+        PLANARCONFIG_SEPARATE = 2
+    };
+    PlanarConfigurationType planarConfiguration() const;
+
+    std::string software() const;
+    void software(const std::string & sw);
+
+    //units of ms
+    double exposureTime() const;
+    void exposureTime(double exp);
+
+    double fNumber() const;
+    void fNumber(double f);
+
+    //Date/time is expressed in microseconds from unix epoch
+    uint64_t dateTime () const;
+    void dateTime (uint64_t date_time_us_epoch);
+
+    //distance from camera to target in m
+    double subjectDistance() const;
+    void subjectDistance(double range);
+
+    enum LightSourceType {
+        LIGHTSOURCE_UNKNOWN = 0,
+        LIGHTSOURCE_DAYLIGHT = 1, //also flash off
+        LIGHTSOURCE_WHITELED = 200,
+        LIGHTSOURCE_BLUELED = 201
+    };
+    LightSourceType lightSource() const;
+    void lightSource (LightSourceType light_source);
+
+    enum FlashType {
+        FLASH_NO_FLASH = 0,
+        FLASH_FIRED = 1,
+        FLASH_DIDNOTFIRE = 8,
+    };
+    FlashType flash() const;
+    void flash(FlashType flash_type);
+
+    //units of mm
+    double focalLength() const;
+    void focalLength( double length );
+
+    enum ColourSpaceType {
+        COLOURSPACE_sRGB = 0x1,
+        COLOURSPACE_ADOBE_RGB = 0x2,
+        COLOURSPACE_WIDE_GAMUT_RGB = 0xfffd,
+        COLOURSPACE_ICC_PROFILE = 0xfffe,
+        COLOURSPACE_UNCALIBRATED = 0xffff
+    };
+    ColourSpaceType colourSpace() const;
+    void colourSpace(ColourSpaceType colour_space);
+
+    //flash energy as a percentage.
+    double flashEnergy () const;
+    void flashEnergy (double intensity);
+
+    std::string serialNumber() const;
+    void serialNumber( const std::string & serial_number );
+
+    std::string lensModel() const;
+    void lensModel( const std::string & lens_model );
+
+    double indexOfRefraction() const;
+    void indexOfRefraction( double ior );
+
+    double viewportIndex() const;
+    void viewportIndex( double vi );
+
+    //units of m
+    double viewportThickness () const;
+    void viewportThickness (double thickness );
+
+    //units of mm
+    double viewportDistance () const;
+    void viewportDistance (double distance);
+
+    bool vignetting () const;
+    void vignetting (bool is_vignetted);
+
+    enum ViewportType {
+        VIEWPORT_FLAT,
+        VIEWPORT_DOMED
+    };
+    ViewportType viewportType () const;
+    void viewportType (ViewportType viewport_type);
+
+    enum EnhancementType {
+         ENHANCEMENT_NONE,
+         ENHANCEMENT_ALGORITHMIC_MONO,
+         ENHANCEMENT_REALISTIC_MONO,
+         ENHANCEMENT_BASIC_COLOUR,
+         ENHANCEMENT_REALISTIC_COLOUR,
+         ENHANCEMENT_ENHANCED_COLOUR,
+    };
+    EnhancementType enhancement() const;
+    void enhancement ( EnhancementType enhance);
+
+    //units of nm
+    std::vector<uint16_t> pixelSize() const;
+    void pixelSize(const std::vector<uint16_t> & pixel_size);
+
+    //1x16 vector of doubles that can be turned into a 4x4 rotation matrix
+    //that can be used to transform points in the navigation frame into 
+    //the camera frame (units of m)
+    std::vector<double> matrixNavToCamera () const;
+    void matrixNavToCamera( const std::vector<double> & matrix);
+
+    uint32_t imageNumber() const;
+    void imageNumber( uint32_t count );
+
+    //depth to CRP in m
+    double waterDepth() const;
+    void waterDepth(double depth);
+
+    enum BayerPatternType {
+        GRAYSCALE,
+        BG2BGR,
+        GB2BGR,
+        RG2BGR,
+        GR2BGR
+    };
+    BayerPatternType bayerPattern() const;
+    void bayerPattern (BayerPatternType pattern);
+
+    //units of Hz
+    double frameRate() const;
+    void frameRate(double frame_rate);
+
+    //1x4 vector of doubles that contains the camera matrix (fx, fy, cx, cy) parameters
+    std::vector<double> cameraMatrix () const;
+    void cameraMatrix( const std::vector<double> & matrix);
+
+    //1x5 vector of doubles that contains the 5 point rad tan disotrtion 
+    // parameters (k1, k2, p1, p2, k3) parameters
+    std::vector<double> distortion () const;
+    void distortion( const std::vector<double> & matrix);
+
+    //1x3 vector of doubles that contains the pose of the vehicle 
+    // (roll, pitch, heading) in degrees following the PSONNAV convention (see EXIF format footnote)
+    std::vector<double> pose () const;
+    void pose( const std::vector<double> & matrix);
+
+    //units of m
+    double targetRange() const;
+    void targetRange(double range);
+
+    //units of m
+    double vehicleDepth() const;
+    void vehicleDepth(double depth);
+
+    enum LatitudeRefType {
+        LATITUDEREF_NORTH,
+        LATITUDEREF_SOUTH
+    };
+    LatitudeRefType latitudeRef() const;
+    void latitudeRef(LatitudeRefType lat_ref );
+
+    //longitude in decimal degrees
+    double latitude() const;
+    void latitude( double longitude );
+
+    enum LongitudeRefType {
+        LONGITUDEREF_EAST,
+        LONGITUDEREF_WEST
+    };
+    LongitudeRefType longitudeRef() const;
+    void longitudeRef(LongitudeRefType lat_ref );
+
+    //longitude in decimal degrees
+    double longitude() const;
+    void longitude(double longitude);
+
+    enum AltitudeRefType {
+        ALTITUDEREF_ABOVE_SEA_LEVEL,
+        ALTITUDEREF_BELOW_SEA_LEVEL
+    };
+    AltitudeRefType altitudeRef() const;
+    void altitudeRef(AltitudeRefType altitude_ref);
+
+    //altitude in m
+    double altitude() const;
+    void altitude(double alt);
+    
 private:
 
     //storage for the different tags supported by 2G.

@@ -36,7 +36,7 @@ enum SupportedTags {
         MODEL,
         ORIENTATION,
         SAMPLES_PER_PIXEL,
-        PLANAER_CONFIGURATION,
+        PLANAR_CONFIGURATION,
         SOFTWARE,
         EXPOSURE_TIME,
         F_NUMBER,
@@ -69,6 +69,9 @@ enum SupportedTags {
         FRAME_RATE,
         CAMERA_MATRIX,
         DISTORTION,
+        POSE,
+        TARGET_RANGE,
+        VEHICLE_DEPTH,
 
         //GPSTags
         GPS_LATITUDE_REF,
@@ -77,8 +80,6 @@ enum SupportedTags {
         GPS_LONGITUDE,
         GPS_ALTITUDE_REF,
         GPS_ALTITUDE,
-        GPS_TIMESTAMP,
-        GPS_DATESTAMP,
         LENGTH_SUPPORTED_TAGS
     };
 
@@ -103,6 +104,8 @@ public:
 
 static const std::vector <TagInfo> TAG_INFO;
 static const std::string DEFAULT_MAKE;
+static const double DEFAULT_INDEX;
+static const double DEFAULT_VIEWPORT_INDEX;
 
 };
 

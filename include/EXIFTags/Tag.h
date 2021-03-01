@@ -175,7 +175,9 @@ public:
         m_data = data;
     };
 
-    Tag_DOUBLE( const Constants::TagInfo & tag_info ) : Tag(tag_info) {}
+    Tag_DOUBLE( const Constants::TagInfo & tag_info ) : 
+        Tag(tag_info),
+        m_data(0.0) {}
 
 private:
 
