@@ -71,7 +71,6 @@ enum SupportedTags {
         DISTORTION,
         POSE,
         TARGET_RANGE,
-        VEHICLE_DEPTH,
 
         //GPSTags
         GPS_LATITUDE_REF,
@@ -102,10 +101,19 @@ public:
         custom (custom) {}; 
 };
 
-static const std::vector <TagInfo> TAG_INFO;
-static const std::string DEFAULT_MAKE;
-static const double DEFAULT_INDEX;
-static const double DEFAULT_VIEWPORT_INDEX;
+    //Helper methods for doing decimal to decimal degree conversions.
+    static double DMSToDeg (double degrees, double minutes, double seconds);
+    static void degToDMS (double & degrees, double & minutes, double & seconds, double decdeg);
+
+
+    static const std::vector <TagInfo> TAG_INFO;
+    static const std::string DEFAULT_MAKE;
+    static const double DEFAULT_INDEX;
+    static const double DEFAULT_VIEWPORT_INDEX;
+    static const std::vector <double> DEFAULT_TRANSFORM;
+    static const std::vector <double> DEFAULT_CAM_MATRIX;
+    static const std::vector <double> DEFAULT_DISTORTION;
+    static const std::vector <double> DEFAULT_POSE;
 
 };
 

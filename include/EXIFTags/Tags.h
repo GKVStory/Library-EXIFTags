@@ -248,11 +248,11 @@ public:
     void waterDepth(double depth);
 
     enum BayerPatternType {
-        GRAYSCALE,
-        BG2BGR,
-        GB2BGR,
-        RG2BGR,
-        GR2BGR
+        BAYER_GRAYSCALE,
+        BAYER_BG2BGR,
+        BAYER_GB2BGR,
+        BAYER_RG2BGR,
+        BAYER_GR2BGR
     };
     BayerPatternType bayerPattern() const;
     void bayerPattern (BayerPatternType pattern);
@@ -278,10 +278,6 @@ public:
     //units of m
     double targetRange() const;
     void targetRange(double range);
-
-    //units of m
-    double vehicleDepth() const;
-    void vehicleDepth(double depth);
 
     enum LatitudeRefType {
         LATITUDEREF_NORTH,

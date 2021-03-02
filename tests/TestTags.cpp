@@ -129,6 +129,75 @@ TEST ( TagsTest, GenerateEmptyTagsClass_CheckDefaultBehaviour) {
     tags.pixelSize(pixel_vec);
     ASSERT_EQ(tags.pixelSize(), pixel_vec);
 
+    ASSERT_TRUE(tags.matrixNavToCamera().size() == 16);
+    ASSERT_EQ(tags.matrixNavToCamera(), Constants::DEFAULT_TRANSFORM);
+    const std::vector<double> nav_vec = {1.0, 2.0, 3.0, 4.0, 5.0, 1.0, 6.0, 7.0, 8.0, 9.0, 1.0, 11.0, 12.0, 13.0, 14.0, 1.0};
+    tags.matrixNavToCamera(nav_vec);
+    ASSERT_EQ(tags.matrixNavToCamera(), nav_vec);
+
+    ASSERT_EQ(tags.imageNumber(), 0);
+    tags.imageNumber(3);
+    ASSERT_EQ(tags.imageNumber(), 3);
+
+    ASSERT_DOUBLE_EQ(tags.waterDepth(), 0);
+    tags.waterDepth(10.5);
+    ASSERT_DOUBLE_EQ(tags.waterDepth(), 10.5);
+
+    ASSERT_EQ(tags.bayerPattern(), Tags::BAYER_GRAYSCALE);
+    tags.bayerPattern(Tags::BAYER_BG2BGR);
+    ASSERT_EQ(tags.bayerPattern(), Tags::BAYER_BG2BGR);
+
+    ASSERT_DOUBLE_EQ(tags.frameRate(), 0.0);
+    tags.frameRate(45.0);
+    ASSERT_DOUBLE_EQ(tags.frameRate(), 45.0);
+
+    ASSERT_TRUE(tags.cameraMatrix().size() == 4);
+    ASSERT_EQ(tags.cameraMatrix(), Constants::DEFAULT_CAM_MATRIX);
+    const std::vector<double> cam_vec = {2000.0, 2001.0, 1036, 738.2};
+    tags.cameraMatrix(cam_vec);
+    ASSERT_EQ(tags.cameraMatrix(), cam_vec);
+
+    ASSERT_TRUE(tags.distortion().size() == 5);
+    ASSERT_EQ(tags.distortion(), Constants::DEFAULT_DISTORTION);
+    const std::vector<double> dist_vec = {-0.1, 0.2, -0.3, 0.5, -0.5};
+    tags.distortion(dist_vec);
+    ASSERT_EQ(tags.distortion(), dist_vec);
+
+    ASSERT_TRUE(tags.pose().size() == 3);
+    ASSERT_EQ(tags.pose(), Constants::DEFAULT_POSE);
+    const std::vector<double> pose_vec = {1.0, 2.3, 3.4};
+    tags.pose(pose_vec);
+    ASSERT_EQ(tags.pose(), pose_vec);
+
+    ASSERT_DOUBLE_EQ(tags.targetRange(), 0.0);
+    tags.targetRange(5.1);
+    ASSERT_DOUBLE_EQ(tags.targetRange(), 5.1);
+
+    ASSERT_EQ(tags.latitudeRef(), Tags::LATITUDEREF_NORTH);
+    tags.latitudeRef(Tags::LATITUDEREF_SOUTH);
+    ASSERT_EQ(tags.latitudeRef(), Tags::LATITUDEREF_SOUTH);
+
+    ASSERT_DOUBLE_EQ(tags.latitude(), 0.0);
+    tags.latitude(83.1245678);
+    ASSERT_DOUBLE_EQ(tags.latitude(), 83.1245678);
+
+    ASSERT_EQ(tags.longitudeRef(), Tags::LONGITUDEREF_EAST);
+    tags.longitudeRef(Tags::LONGITUDEREF_WEST);
+    ASSERT_EQ(tags.longitudeRef(), Tags::LONGITUDEREF_WEST);
+
+    ASSERT_DOUBLE_EQ(tags.longitude(), 0.0);
+    tags.longitude(43.67890);
+    ASSERT_DOUBLE_EQ(tags.longitude(), 43.67890);
+
+    ASSERT_EQ(tags.altitudeRef(), Tags::ALTITUDEREF_ABOVE_SEA_LEVEL);
+    tags.altitudeRef(Tags::ALTITUDEREF_BELOW_SEA_LEVEL);
+    ASSERT_EQ(tags.altitudeRef(), Tags::ALTITUDEREF_BELOW_SEA_LEVEL);
+
+    ASSERT_DOUBLE_EQ(tags.altitude(), 0.0);
+    tags.altitude(10.765);
+    ASSERT_DOUBLE_EQ(tags.altitude(), 10.765);
+
+
 } 
 
 }

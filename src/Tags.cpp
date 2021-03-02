@@ -24,6 +24,15 @@ Tags::Tags() {
     dynamic_cast<Tag_UINT16*>(m_tags[Constants::COLOR_SPACE].get())->setData(COLOURSPACE_sRGB);
     dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::INDEX_OF_REFRACTION].get())->setData(Constants::DEFAULT_INDEX);
     dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::VIEWPORT_INDEX].get())->setData(Constants::DEFAULT_VIEWPORT_INDEX);
+    dynamic_cast<Tag_DOUBLE_ARRAY*>(m_tags[Constants::MATRIX_NAV_TO_CAMERA].get())->setData(Constants::DEFAULT_TRANSFORM);
+    dynamic_cast<Tag_DOUBLE_ARRAY*>(m_tags[Constants::CAMERA_MATRIX].get())->setData(Constants::DEFAULT_CAM_MATRIX);
+    dynamic_cast<Tag_DOUBLE_ARRAY*>(m_tags[Constants::DISTORTION].get())->setData(Constants::DEFAULT_DISTORTION);
+    dynamic_cast<Tag_DOUBLE_ARRAY*>(m_tags[Constants::POSE].get())->setData(Constants::DEFAULT_POSE);
+    latitudeRef(LATITUDEREF_NORTH);
+    longitude (0.0);
+    longitudeRef(LONGITUDEREF_EAST);
+    latitude (0.0);
+    altitudeRef(ALTITUDEREF_ABOVE_SEA_LEVEL);
 }
 
 Tags::~Tags() {}
@@ -305,13 +314,6 @@ void Tags::targetRange(double range) {
     dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::TARGET_RANGE].get())->setData(range);
 }
 
-double Tags::vehicleDepth() const {
-    return dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::VEHICLE_DEPTH].get())->getData();
-}
-void Tags::vehicleDepth(double depth) {
-    dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::VEHICLE_DEPTH].get())->setData(depth);
-}
-
 Tags::LatitudeRefType Tags::latitudeRef() const {
     std::string ref = dynamic_cast<Tag_STRING*>(m_tags[Constants::GPS_LATITUDE_REF].get())->getData();
     if (ref == "N") {
@@ -329,11 +331,18 @@ void Tags::latitudeRef(Tags::LatitudeRefType lat_ref ) {
 }
 
 double Tags::latitude() const {
-    //TODO
-    return 0;
+    std::vector <double> degminsec = dynamic_cast<Tag_DOUBLE_ARRAY*>(m_tags[Constants::GPS_LATITUDE].get())->getData(); 
+    if (degminsec.size() != 3) {
+        //Should never happen
+        return 0.0;
+    }
+    return Constants::DMSToDeg(degminsec[0], degminsec[1], degminsec[2]);
 }
-void Tags::latitude( double longitude ) {
-    //TODO
+void Tags::latitude( double latitude ) {
+    std::vector <double> dms = {0.0, 0.0, 0.0};
+    Constants::degToDMS(dms[0], dms[1], dms[2], latitude);
+
+    dynamic_cast<Tag_DOUBLE_ARRAY*>(m_tags[Constants::GPS_LATITUDE].get())->setData(dms);
 }
 
 Tags::LongitudeRefType Tags::longitudeRef() const {
@@ -353,11 +362,17 @@ void Tags::longitudeRef(Tags::LongitudeRefType long_ref ) {
 }
 
 double Tags::longitude() const {
-    //TODO
-    return 0;
+    std::vector <double> degminsec = dynamic_cast<Tag_DOUBLE_ARRAY*>(m_tags[Constants::GPS_LONGITUDE].get())->getData(); 
+    if (degminsec.size() != 3) {
+        //Should never happen
+        return 0.0;
+    }
+    return Constants::DMSToDeg(degminsec[0], degminsec[1], degminsec[2]);
 }
 void Tags::longitude(double longitude) {
-    //TODO
+    std::vector <double> dms = {0.0, 0.0, 0.0};
+    Constants::degToDMS(dms[0], dms[1], dms[2], longitude);
+    dynamic_cast<Tag_DOUBLE_ARRAY*>(m_tags[Constants::GPS_LONGITUDE].get())->setData(dms);
 }
 
 Tags::AltitudeRefType Tags::altitudeRef() const {
@@ -373,3 +388,5 @@ double Tags::altitude() const {
 void Tags::altitude(double alt){
     dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::GPS_ALTITUDE].get())->setData(alt);
 }
+
+

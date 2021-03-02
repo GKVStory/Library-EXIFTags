@@ -51,7 +51,6 @@ const std::vector<Constants::TagInfo> Constants::TAG_INFO {
     TagInfo(0x000e, EXIF_IFD_1, sizeof(double) * 5, DOUBLE_ARRAY, true), //DISTORTION,
     TagInfo(0x000f, EXIF_IFD_1, sizeof(double) * 3, DOUBLE_ARRAY, true), //POSE,
     TagInfo(0x0010, EXIF_IFD_1, sizeof(double), DOUBLE, true), //TARGET_RANGE,
-    TagInfo(0x0011, EXIF_IFD_1, sizeof(double), DOUBLE, true), //VEHICLE_DEPTH,
     ////GPSTags
     TagInfo(EXIF_TAG_GPS_LATITUDE_REF, EXIF_IFD_GPS, 2, STRING, false), //GPS_LATITUDE_REF, N/S
     TagInfo(EXIF_TAG_GPS_LATITUDE, EXIF_IFD_GPS, sizeof(double) * 3, DOUBLE_ARRAY, false), //GPS_LATITUDE,
@@ -59,10 +58,22 @@ const std::vector<Constants::TagInfo> Constants::TAG_INFO {
     TagInfo(EXIF_TAG_GPS_LONGITUDE, EXIF_IFD_GPS,  sizeof(double) * 3, DOUBLE_ARRAY, false), //GPS_LONGITUDE,
     TagInfo(EXIF_TAG_GPS_ALTITUDE_REF, EXIF_IFD_GPS, sizeof(uint8_t), UINT8, false), //GPS_ALTITUDE_REF, 0 above, 1 below
     TagInfo(EXIF_TAG_GPS_ALTITUDE, EXIF_IFD_GPS, sizeof(double), DOUBLE, false), //GPS_ALTITUDE,
-    TagInfo(EXIF_TAG_GPS_TIME_STAMP, EXIF_IFD_GPS, sizeof(double) * 3, DOUBLE_ARRAY, false), //GPS_TIMESTAMP
-    TagInfo(EXIF_TAG_GPS_DATE_STAMP, EXIF_IFD_GPS, 11, STRING, false), //GPS_DATESTAMP, YYYY:mm:dd
 };
+
+double Constants::DMSToDeg (double degrees, double minutes, double seconds) {
+    return degrees + minutes / 60.0 + seconds / 3600.0;
+}
+
+void Constants::degToDMS (double & degrees, double & minutes, double & seconds, double decdeg) {
+    degrees = static_cast <double> ( static_cast<int>(decdeg) );
+    minutes = static_cast<double> ( static_cast <int>((decdeg - degrees) * 60.0) ); 
+    seconds = static_cast<double> ((decdeg - degrees - minutes / 60.0) * 3600.0);
+}
 
 const std::string Constants::DEFAULT_MAKE = "2G Robotics";
 const double Constants::DEFAULT_INDEX = 1.34;
 const double Constants::DEFAULT_VIEWPORT_INDEX = 1.7;
+const std::vector <double> Constants::DEFAULT_TRANSFORM = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0};;
+const std::vector <double> Constants::DEFAULT_CAM_MATRIX = {500.0, 500.0, 1024.0, 1024.0};
+const std::vector <double> Constants::DEFAULT_DISTORTION = {0.0, 0.0, 0.0, 0.0, 0.0};
+const std::vector <double> Constants::DEFAULT_POSE = {0.0, 0.0, 0.0};
