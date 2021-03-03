@@ -77,3 +77,4 @@ const std::vector <double> Constants::DEFAULT_TRANSFORM = {1.0, 0.0, 0.0, 0.0, 0
 const std::vector <double> Constants::DEFAULT_CAM_MATRIX = {500.0, 500.0, 1024.0, 1024.0};
 const std::vector <double> Constants::DEFAULT_DISTORTION = {0.0, 0.0, 0.0, 0.0, 0.0};
 const std::vector <double> Constants::DEFAULT_POSE = {0.0, 0.0, 0.0};
+const std::string Constants::DEFAULT_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%S";

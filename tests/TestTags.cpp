@@ -61,8 +61,8 @@ TEST ( TagsTest, GenerateEmptyTagsClass_CheckDefaultBehaviour) {
     ASSERT_DOUBLE_EQ(tags.fNumber(), 5.0);
 
     ASSERT_EQ(tags.dateTime(), 0);
-    tags.dateTime(1614632629000000);
-    //TODO ASSERT_EQ(tags.dateTime(), 1614632629000000);
+    tags.dateTime(1614632629005001);
+    ASSERT_EQ(tags.dateTime(), 1614632629005001);
 
     ASSERT_DOUBLE_EQ(tags.subjectDistance(), 0.0);
     tags.subjectDistance(6.0);

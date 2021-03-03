@@ -114,6 +114,7 @@ public:
     static const std::vector <double> DEFAULT_CAM_MATRIX;
     static const std::vector <double> DEFAULT_DISTORTION;
     static const std::vector <double> DEFAULT_POSE;
+    static const std::string DEFAULT_TIMESTAMP_FORMAT;
 
 };
 

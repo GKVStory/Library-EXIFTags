@@ -3,6 +3,10 @@
 
 #include "EXIFTags/Tags.h"
 
+#include <sstream>
+#include <iomanip>
+#include <ctime>
+
 using namespace tg;
 using namespace tags;
 
@@ -17,6 +21,7 @@ Tags::Tags() {
     dynamic_cast<Tag_UINT16*>(m_tags[Constants::COMPRESSION].get())->setData(COMPRESSION_NONE);
     dynamic_cast<Tag_UINT16*>(m_tags[Constants::PHOTOMETRIC_INTERPOLATION].get())->setData(PHOTOMETRIC_MINISBLACK);
     dynamic_cast<Tag_STRING*>(m_tags[Constants::MAKE].get())->setData(Constants::DEFAULT_MAKE);
+    dateTime(0);
     dynamic_cast<Tag_UINT16*>(m_tags[Constants::PHOTOMETRIC_INTERPOLATION].get())->setData(PHOTOMETRIC_MINISBLACK);
     dynamic_cast<Tag_UINT16*>(m_tags[Constants::ORIENTATION].get())->setData(ORIENTATION_TOPLEFT);
     dynamic_cast<Tag_UINT16*>(m_tags[Constants::SAMPLES_PER_PIXEL].get())->setData(1);
@@ -132,13 +137,46 @@ void Tags::fNumber(double f) {
 }
 
 uint64_t Tags::dateTime () const {
-    //TODO
-    return 0;
+    std::string datetime = dynamic_cast<Tag_STRING*>(m_tags[Constants::DATE_TIME_ORIGINAL].get())->getData();
+    std::string datetime_subsec = dynamic_cast<Tag_STRING*>(m_tags[Constants::SUB_SEC_ORIGINAL].get())->getData();
+
+    std::tm t{};
+    double subsec (0.0);
+    std::istringstream ss_dt(datetime);
+    std::istringstream ss_ss(datetime_subsec);
+
+    ss_dt >> std::get_time(&t, Constants::DEFAULT_TIMESTAMP_FORMAT.c_str());
+    if (ss_dt.fail()) {
+        return 0; //couldn't parse the time correctly
+    }
+    std::time_t dt = mktime(&t);
+    uint64_t epoch_time_us = static_cast <uint64_t> (dt) * 1000000;
+    
+    ss_ss >> subsec;
+    if (ss_ss.fail()) {
+        subsec = 0.0;
+    }
+    epoch_time_us += static_cast <uint64_t> (subsec * 1.0E6);
+
+    return epoch_time_us;
+}
+void Tags::dateTime (uint64_t date_time_us_epoch) {
+    std::ostringstream ss_dt;
+    std::ostringstream ss_ss;
+
+    uint64_t s_from_epoch (date_time_us_epoch / 1000000);
+    double subsec ( static_cast<double>(date_time_us_epoch - s_from_epoch*1.0E6) / 1.0E6);
+
+    std::time_t t = static_cast<time_t>(s_from_epoch);
+    std::tm tm = *std::localtime(&t);
+
+    ss_dt << std::put_time (&tm, Constants::DEFAULT_TIMESTAMP_FORMAT.c_str());
+    ss_ss << subsec;
+
+    dynamic_cast<Tag_STRING*>(m_tags[Constants::DATE_TIME_ORIGINAL].get())->setData(ss_dt.str());
+    dynamic_cast<Tag_STRING*>(m_tags[Constants::SUB_SEC_ORIGINAL].get())->setData(ss_ss.str());
 }
 
-void Tags::dateTime (uint64_t date_time_us_epoch) {
-    //TODO
-}
 double Tags::subjectDistance() const {
     return dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::SUBJECT_DISTANCE].get())->getData();
 }
