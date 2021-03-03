@@ -36,6 +36,14 @@ public:
     bool loadHeader(const std::vector <uint8_t> & image_header_data, std::string & error_message);
 
     /**
+     * @brief Given a file, load the included tags.
+     * @param image_header_data, vector of bytes containing at a minimum the image header data.
+     * @param error emssage returned by reference in case of a failure.
+     * @return bool was the load successful?
+     */
+    bool loadHeader(const std::string & filename, std::string & error_message);
+
+    /**
      * @brief Generate an EXIF header to be placed into an image based on the classes data.
      * @param vector of bytes, the image header data, returned by reference.
      * @param string an error message returned by reference when there is a failure.
@@ -275,10 +283,6 @@ public:
     std::vector<double> pose () const;
     void pose( const std::vector<double> & matrix);
 
-    //units of m
-    double targetRange() const;
-    void targetRange(double range);
-
     enum LatitudeRefType {
         LATITUDEREF_NORTH,
         LATITUDEREF_SOUTH
@@ -316,7 +320,12 @@ private:
 
     //storage for the different tags supported by 2G.
     std::vector <std::unique_ptr<Tag>> m_tags;
-
+    
+    /**
+     * @brief handle reading the exif data into the internal data structure.
+     * @param pointer to the exif data.
+     */
+    void parseExifData ( ExifData * exif );
 };
 
 } //tags

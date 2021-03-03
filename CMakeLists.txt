@@ -14,6 +14,11 @@ set(TEST_NAME                                   "${PROJECT_NAME}Test")
 OPTION(BUILD_TESTS                             "Build tests"                     OFF)
 OPTION(BUILD_MAIN                              "Build command line parser"       OFF)
 
+configure_file (
+    "${PROJECT_SOURCE_DIR}/tests/TestConstants.h.i" 
+    "${PROJECT_SOURCE_DIR}/tests/TestConstants.h"
+)
+
 if(WIN32)
   if(MSVC)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_CRT_SECURE_NO_WARNINGS")

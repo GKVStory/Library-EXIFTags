@@ -19,6 +19,7 @@ enum DataType {
     UINT32,
     UINT16,
     UINT8,
+    UDOUBLE
     DOUBLE,
     STRING,
     UINT16_ARRAY,
@@ -49,6 +50,8 @@ enum SupportedTags {
         FOCAL_LENGTH,
         MAKER_NOTE_2GR,
         COLOR_SPACE,
+        PIXEL_X_DIMENSION,
+        PIXEL_Y_DIMENSION,
         FLASH_ENERGY,
         SERIAL_NUMBER,
         LENS_MODEL,
@@ -70,7 +73,6 @@ enum SupportedTags {
         CAMERA_MATRIX,
         DISTORTION,
         POSE,
-        TARGET_RANGE,
 
         //GPSTags
         GPS_LATITUDE_REF,
@@ -116,6 +118,12 @@ public:
     static const std::vector <double> DEFAULT_POSE;
     static const std::string DEFAULT_TIMESTAMP_FORMAT;
 
+};
+
+class ErrorMessages {
+public:
+    static const std::string failed_header_load;
+    static const std::string failed_file_load;
 };
 
 } //tags

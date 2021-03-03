@@ -27,11 +27,11 @@ std::unique_ptr<Tag> Tag::tagFactory (const Constants::SupportedTags &  tag) {
     
 }
 
-std::unique_ptr<Tag> Tag::loadFromHeader(const Constants::SupportedTags &  tag, const uint8_t * header, size_t header_len, std::string & error_message) {
+/*std::unique_ptr<Tag> Tag::loadFromHeader(const Constants::SupportedTags &  tag, const uint8_t * header, size_t header_len, std::string & error_message) {
     Constants::TagInfo tag_info = Constants::TAG_INFO[tag];
     //TODO do the parsing. Different handling for 2g header versus standard exif.
     return nullptr;
-}
+}*/
 
 } //tags
 } //tg

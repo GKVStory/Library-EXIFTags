@@ -44,14 +44,28 @@ public:
      * @param error message string returned by reference.
      * @return unique pointer to tags containing data that's in the header file. If null, there was a problem.
      */
-    static std::unique_ptr<Tag> loadFromHeader(const Constants::SupportedTags &  tag, const uint8_t * header, size_t header_len, std::string & error_message);
-
+    //static std::unique_ptr<Tag> loadFromHeader(const Constants::SupportedTags &  tag, const uint8_t * header, size_t header_len, std::string & error_message);
 
     /** 
      * @brief Given an ExifData structure, add this tag to the structure Overridden in base class.
      * @param pointer to ExifData structure
      */
     virtual void setTag (ExifData *exif) const = 0;
+
+    /**
+     * Given loaded exif data, extract the tag into the data structure.
+     * @param pointer to exif data.
+     * @return was the load successful?
+     */
+    virtual bool getTag (ExifData *exif) = 0;
+
+    /**
+     * Check if the tag is a standard type.
+     * @return is the tag a standard exif one.
+     */
+    bool isStandardTag() const {
+        return !m_tag_info.custom;
+    };
 
 protected:
     //Tag constructor //stores a reference to the tag structure. This is a reference, 
@@ -61,7 +75,6 @@ protected:
         m_tag_info(tag_info)
         {};
 
-private:
     Constants::TagInfo m_tag_info;
 
 };
@@ -75,9 +88,14 @@ public:
 
     }
 
-    virtual bool getTag (ExifData * data) {
-
-        return false;
+    virtual bool getTag (ExifData * ed) override {
+        ExifEntry *entry = exif_content_get_entry(ed->ifd[m_tag_info.ifd], static_cast<ExifTag>(m_tag_info.tag)); //points to exif data, do not delete.
+        if (entry) {
+            m_data = *(reinterpret_cast<uint32_t *> (entry->data));
+        } else {
+            return false;
+        }
+        return true;
     }
 
     uint32_t getData () const {
@@ -102,12 +120,17 @@ private:
 class Tag_UINT16 : public Tag {
 public:
     virtual void setTag (ExifData *exif) const override {
-
+        
     }
 
-    virtual bool getTag (ExifData * data) {
-
-        return false;
+    virtual bool getTag (ExifData * ed) {
+        ExifEntry *entry = exif_content_get_entry(ed->ifd[m_tag_info.ifd], static_cast<ExifTag>(m_tag_info.tag)); //points to exif data, do not delete.
+        if (entry) {
+            m_data = *(reinterpret_cast<uint16_t *> (entry->data));
+        } else {
+            return false;
+        }
+        return true;
     }
 
     uint16_t getData () const {
@@ -131,13 +154,18 @@ private:
  */
 class Tag_UINT8 : public Tag {
 public:
-    virtual void setTag (ExifData *exif) const override {
+    virtual void setTag (ExifData *ed) const override {
 
     }
 
-    virtual bool getTag (ExifData * data) {
-
-        return false;
+    virtual bool getTag (ExifData * ed) {
+        ExifEntry *entry = exif_content_get_entry(ed->ifd[m_tag_info.ifd], static_cast<ExifTag>(m_tag_info.tag)); //points to exif data, do not delete.
+        if (entry) {
+            m_data = *(reinterpret_cast<uint8_t *> (entry->data));
+        } else {
+            return false;
+        }
+        return true;
     }
 
     uint8_t getData () const {
@@ -155,17 +183,61 @@ private:
 };
 
 /**
- * Tag for double types
+ * Tag for unsigned double types
  */
-class Tag_DOUBLE : public Tag {
+class Tag_UDOUBLE : public Tag {
 public:
-    virtual void setTag (ExifData *exif) const override {
+    virtual void setTag (ExifData *ed) const override {
 
     }
 
-    virtual bool getTag (ExifData * data) {
+    virtual bool getTag (ExifData * ed) {
+        ExifEntry *entry = exif_content_get_entry(ed->ifd[m_tag_info.ifd], static_cast<ExifTag>(m_tag_info.tag)); //points to exif data, do not delete.
+        if (entry) {
+            const ExifByteOrder o = exif_data_get_byte_order (entry->parent->parent);
+            ExifRational rat = exif_get_rational (entry->data, o);
+            m_data = static_cast<double>(rat.numerator)/static_cast<double>(rat.denominator);
+        } else {
+            return false;
+        }
+        return true;
+    }
 
-        return false;
+    double getData () const {
+        return m_data;
+    };
+    void setData(const double & data) {
+        m_data = data;
+    };
+
+    Tag_UDOUBLE( const Constants::TagInfo & tag_info ) : 
+        Tag(tag_info),
+        m_data(0.0) {}
+
+private:
+
+    double m_data;
+};
+
+/**
+ * Tag for signed double types
+ */
+class Tag_DOUBLE : public Tag {
+public:
+    virtual void setTag (ExifData *ed) const override {
+
+    }
+
+    virtual bool getTag (ExifData * ed) {
+        ExifEntry *entry = exif_content_get_entry(ed->ifd[m_tag_info.ifd], static_cast<ExifTag>(m_tag_info.tag)); //points to exif data, do not delete.
+        if (entry) {
+            const ExifByteOrder o = exif_data_get_byte_order (entry->parent->parent);
+            ExifSRational rat = exif_get_rational (entry->data, o);
+            m_data = static_cast<double>(rat.numerator)/static_cast<double>(rat.denominator);
+        } else {
+            return false;
+        }
+        return true;
     }
 
     double getData () const {
@@ -189,13 +261,18 @@ private:
  */
 class Tag_STRING : public Tag {
 public:
-    virtual void setTag (ExifData *exif) const override {
+    virtual void setTag (ExifData *ed) const override {
 
     }
 
-    virtual bool getTag (ExifData * data) {
-
-        return false;
+    virtual bool getTag (ExifData * ed) {
+        ExifEntry *entry = exif_content_get_entry(ed->ifd[m_tag_info.ifd], static_cast<ExifTag>(m_tag_info.tag)); //points to exif data, do not delete.
+        if (entry) {
+            m_data = std::string (reinterpret_cast<char *> (entry->data), entry->size);
+        } else {
+            return false;
+        }
+        return true;
     }
 
     std::string getData () const {
@@ -245,7 +322,7 @@ private:
 };
 
 /**
- * Tag for double array types
+ * Tag for double array types (always signed)
  */
 class Tag_DOUBLE_ARRAY : public Tag{
 public:

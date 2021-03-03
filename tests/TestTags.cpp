@@ -3,6 +3,7 @@
 
 #include <gtest/gtest.h>
 #include "EXIFTags/Tags.h"
+#include "TestConstants.h"
 #include <cstdint>
 #include <string>
 
@@ -169,10 +170,6 @@ TEST ( TagsTest, GenerateEmptyTagsClass_CheckDefaultBehaviour) {
     tags.pose(pose_vec);
     ASSERT_EQ(tags.pose(), pose_vec);
 
-    ASSERT_DOUBLE_EQ(tags.targetRange(), 0.0);
-    tags.targetRange(5.1);
-    ASSERT_DOUBLE_EQ(tags.targetRange(), 5.1);
-
     ASSERT_EQ(tags.latitudeRef(), Tags::LATITUDEREF_NORTH);
     tags.latitudeRef(Tags::LATITUDEREF_SOUTH);
     ASSERT_EQ(tags.latitudeRef(), Tags::LATITUDEREF_SOUTH);
@@ -196,9 +193,35 @@ TEST ( TagsTest, GenerateEmptyTagsClass_CheckDefaultBehaviour) {
     ASSERT_DOUBLE_EQ(tags.altitude(), 0.0);
     tags.altitude(10.765);
     ASSERT_DOUBLE_EQ(tags.altitude(), 10.765);
-
-
 } 
 
+TEST ( TagsTest, ParseHeader) {
+    Tags tags; 
+
+    std::vector <uint8_t> header = {0x0, 0x01, 0x02}; //garbage header to start.
+    std::string error_message;
+
+    //Loading from a crap header will always work because no data is stil a valid exif header.
+    //ASSERT_FALSE (tags.loadHeader(header, error_message));
+    //ASSERT_EQ (error_message, ErrorMessages::failed_header_load);
 }
+
+TEST ( TagsTest, ParseFile) {
+    Tags tags; 
+    std::string error_message;
+
+    ASSERT_FALSE (tags.loadHeader("DoesntExist.jpg", error_message));
+    ASSERT_EQ (error_message, ErrorMessages::failed_file_load + "DoesntExist.jpg");
+
+    ASSERT_TRUE (tags.loadHeader(TagsTestCommon::testJpgNon2g(), error_message));
+
+    ASSERT_EQ (tags.orientation(), Tags::ORIENTATION_TOPLEFT);
+    ASSERT_EQ (tags.imageWidth(), 640);
+    ASSERT_DOUBLE_EQ (tags.fNumber(), 4.7);
+    ASSERT_EQ (tags.make(), "NIKON");
+
+
 }
+
+} //tags
+} //tg

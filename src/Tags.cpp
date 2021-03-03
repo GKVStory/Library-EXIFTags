@@ -43,7 +43,27 @@ Tags::Tags() {
 Tags::~Tags() {}
 
 bool Tags::loadHeader(const std::vector <uint8_t> & image_header_data, std::string & error_message) {
-    return false;
+    
+    ExifData * ed = exif_data_new_from_data (reinterpret_cast<const unsigned char *>(image_header_data.data()), image_header_data.size());
+    if (!ed) {
+        error_message = ErrorMessages::failed_header_load;
+        return false;
+    }
+    parseExifData(ed);
+    exif_data_unref (ed);
+    return true;
+}
+
+bool Tags::loadHeader(const std::string & filename, std::string & error_message) {
+
+    ExifData * ed = exif_data_new_from_file (filename.c_str());
+    if (!ed) {
+        error_message = ErrorMessages::failed_file_load + filename;
+        return false;
+    }
+    parseExifData(ed);
+    exif_data_unref (ed);
+    return true;
 }
 
 bool Tags::generateHeader(std::vector <uint8_t> & image_header_data, std::string & error_message) {
@@ -55,17 +75,27 @@ Tags::SubfileTypes Tags::subfileType () const {
 }
 
 uint32_t Tags::imageWidth() const {
-    return dynamic_cast<Tag_UINT32*>(m_tags[Constants::IMAGE_HEIGHT].get())->getData();
+    uint32_t width =  dynamic_cast<Tag_UINT32*>(m_tags[Constants::IMAGE_HEIGHT].get())->getData();
+    if (width == 0) { //handles case of loading jpg without tiff headers
+        width =  dynamic_cast<Tag_UINT16*>(m_tags[Constants::PIXEL_X_DIMENSION].get())->getData();
+    }
+    return width;
 }
 void Tags::imageWidth(uint32_t width) {
     dynamic_cast<Tag_UINT32*>(m_tags[Constants::IMAGE_HEIGHT].get())->setData(width);
+    dynamic_cast<Tag_UINT16*>(m_tags[Constants::PIXEL_X_DIMENSION].get())->setData(width);
 }
 
 uint32_t Tags::imageHeight() const {
-    return dynamic_cast<Tag_UINT32*>(m_tags[Constants::IMAGE_WIDTH].get())->getData();
+    uint32_t height =  dynamic_cast<Tag_UINT32*>(m_tags[Constants::IMAGE_WIDTH].get())->getData();
+    if (height == 0) { //handles case of loading jpg without tiff headers
+        height =  dynamic_cast<Tag_UINT16*>(m_tags[Constants::PIXEL_Y_DIMENSION].get())->getData();
+    }
+    return height;
 }
 void Tags::imageHeight(uint32_t height) {
     dynamic_cast<Tag_UINT32*>(m_tags[Constants::IMAGE_WIDTH].get())->setData(height);
+    dynamic_cast<Tag_UINT16*>(m_tags[Constants::PIXEL_Y_DIMENSION].get())->setData(height);
 }
 
 Tags::CompressionType Tags::compression() const {
@@ -345,13 +375,6 @@ void Tags::pose( const std::vector<double> & matrix) {
     dynamic_cast<Tag_DOUBLE_ARRAY*>(m_tags[Constants::POSE].get())->setData(matrix);
 }
 
-double Tags::targetRange() const {
-    return dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::TARGET_RANGE].get())->getData();
-}
-void Tags::targetRange(double range) {
-    dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::TARGET_RANGE].get())->setData(range);
-}
-
 Tags::LatitudeRefType Tags::latitudeRef() const {
     std::string ref = dynamic_cast<Tag_STRING*>(m_tags[Constants::GPS_LATITUDE_REF].get())->getData();
     if (ref == "N") {
@@ -427,4 +450,14 @@ void Tags::altitude(double alt){
     dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::GPS_ALTITUDE].get())->setData(alt);
 }
 
+void Tags::parseExifData ( ExifData * ed ) {
+    //TODO: Try to load the custom 2G tags from the makernote first
 
+    for (auto & tag: m_tags) {
+        if (tag->isStandardTag()) {
+            tag->getTag(ed);
+        } else {
+            //TODO handle the custom 2G tags.
+        }
+    }
+}
