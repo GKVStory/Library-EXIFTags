@@ -283,6 +283,10 @@ public:
     std::vector<double> pose () const;
     void pose( const std::vector<double> & matrix);
 
+    //Altitude of vehicle above seabed in m.
+    double vehicleAltitude() const;
+    void vehicleAltitude(double altitude);
+
     enum LatitudeRefType {
         LATITUDEREF_NORTH,
         LATITUDEREF_SOUTH

@@ -52,13 +52,14 @@ const std::vector<Constants::TagInfo> Constants::TAG_INFO {
     TagInfo(0x000d, EXIF_IFD_0, sizeof(double) * 4, DOUBLE_ARRAY, true), //CAMERA_MATRIX,
     TagInfo(0x000e, EXIF_IFD_0, sizeof(double) * 5, DOUBLE_ARRAY, true), //DISTORTION,
     TagInfo(0x000f, EXIF_IFD_0, sizeof(double) * 3, DOUBLE_ARRAY, true), //POSE,
+    TagInfo(0x0010, EXIF_IFD_0, sizeof(double), UDOUBLE, true), //VEHICLE_ALTITUDE,
     ////GPSTags
     TagInfo(EXIF_TAG_GPS_LATITUDE_REF, EXIF_IFD_GPS, 2, STRING, false), //GPS_LATITUDE_REF, N/S
-    TagInfo(EXIF_TAG_GPS_LATITUDE, EXIF_IFD_GPS, sizeof(double) * 3, DOUBLE_ARRAY, false), //GPS_LATITUDE,
+    TagInfo(EXIF_TAG_GPS_LATITUDE, EXIF_IFD_GPS, sizeof(double) * 3, UDOUBLE_ARRAY, false), //GPS_LATITUDE,
     TagInfo(EXIF_TAG_GPS_LONGITUDE_REF, EXIF_IFD_GPS, 2, STRING, false), //GPS_LONGITUDE_REF, E/W
-    TagInfo(EXIF_TAG_GPS_LONGITUDE, EXIF_IFD_GPS,  sizeof(double) * 3, DOUBLE_ARRAY, false), //GPS_LONGITUDE,
+    TagInfo(EXIF_TAG_GPS_LONGITUDE, EXIF_IFD_GPS,  sizeof(double) * 3, UDOUBLE_ARRAY, false), //GPS_LONGITUDE,
     TagInfo(EXIF_TAG_GPS_ALTITUDE_REF, EXIF_IFD_GPS, sizeof(uint8_t), UINT8, false), //GPS_ALTITUDE_REF, 0 above, 1 below
-    TagInfo(EXIF_TAG_GPS_ALTITUDE, EXIF_IFD_GPS, sizeof(double), DOUBLE, false), //GPS_ALTITUDE,
+    TagInfo(EXIF_TAG_GPS_ALTITUDE, EXIF_IFD_GPS, sizeof(double), UDOUBLE, false), //GPS_ALTITUDE,
 };
 
 double Constants::DMSToDeg (double degrees, double minutes, double seconds) {

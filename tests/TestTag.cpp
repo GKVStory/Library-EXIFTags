@@ -45,7 +45,7 @@ TEST ( TagTest, UINT8) {
 } 
 
 TEST ( TagTest, DOUBLE) {
-    std::unique_ptr <Tag> tag = Tag::tagFactory(Constants::EXPOSURE_TIME);
+    std::unique_ptr <Tag> tag = Tag::tagFactory(Constants::WATER_DEPTH);
 
     GTEST_ASSERT_NE(tag, nullptr);
 
@@ -54,6 +54,17 @@ TEST ( TagTest, DOUBLE) {
 
     ASSERT_DOUBLE_EQ (dynamic_cast <Tag_DOUBLE*>(tag.get())->getData(), test_in);
 } 
+
+TEST ( TagTest, UDOUBLE) {
+    std::unique_ptr <Tag> tag = Tag::tagFactory(Constants::EXPOSURE_TIME);
+
+    GTEST_ASSERT_NE(tag, nullptr);
+
+    double test_in (18.23456);
+    dynamic_cast <Tag_UDOUBLE*>(tag.get())->setData(test_in);
+
+    ASSERT_DOUBLE_EQ (dynamic_cast <Tag_UDOUBLE*>(tag.get())->getData(), test_in);
+}
 
 TEST ( TagTest, UINT16_ARRAY) {
     std::unique_ptr <Tag> tag = Tag::tagFactory(Constants::PIXEL_SIZE);

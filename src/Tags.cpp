@@ -18,21 +18,20 @@ Tags::Tags() {
 
     //Set the default, non-user accessible tags
     dynamic_cast<Tag_UINT32*>(m_tags[Constants::SUBFILE_TYPE].get())->setData(FULL_RESOLUTION_IMAGE);
-    dynamic_cast<Tag_UINT16*>(m_tags[Constants::COMPRESSION].get())->setData(COMPRESSION_NONE);
-    dynamic_cast<Tag_UINT16*>(m_tags[Constants::PHOTOMETRIC_INTERPOLATION].get())->setData(PHOTOMETRIC_MINISBLACK);
+    compression(COMPRESSION_NONE);
+    photometricInterpolation(PHOTOMETRIC_MINISBLACK);
     dynamic_cast<Tag_STRING*>(m_tags[Constants::MAKE].get())->setData(Constants::DEFAULT_MAKE);
     dateTime(0);
-    dynamic_cast<Tag_UINT16*>(m_tags[Constants::PHOTOMETRIC_INTERPOLATION].get())->setData(PHOTOMETRIC_MINISBLACK);
     dynamic_cast<Tag_UINT16*>(m_tags[Constants::ORIENTATION].get())->setData(ORIENTATION_TOPLEFT);
-    dynamic_cast<Tag_UINT16*>(m_tags[Constants::SAMPLES_PER_PIXEL].get())->setData(1);
+    samplesPerPixel(1);
     dynamic_cast<Tag_UINT16*>(m_tags[Constants::PLANAR_CONFIGURATION].get())->setData(PLANARCONFIG_CONTIG);
-    dynamic_cast<Tag_UINT16*>(m_tags[Constants::COLOR_SPACE].get())->setData(COLOURSPACE_sRGB);
-    dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::INDEX_OF_REFRACTION].get())->setData(Constants::DEFAULT_INDEX);
-    dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::VIEWPORT_INDEX].get())->setData(Constants::DEFAULT_VIEWPORT_INDEX);
-    dynamic_cast<Tag_DOUBLE_ARRAY*>(m_tags[Constants::MATRIX_NAV_TO_CAMERA].get())->setData(Constants::DEFAULT_TRANSFORM);
-    dynamic_cast<Tag_DOUBLE_ARRAY*>(m_tags[Constants::CAMERA_MATRIX].get())->setData(Constants::DEFAULT_CAM_MATRIX);
-    dynamic_cast<Tag_DOUBLE_ARRAY*>(m_tags[Constants::DISTORTION].get())->setData(Constants::DEFAULT_DISTORTION);
-    dynamic_cast<Tag_DOUBLE_ARRAY*>(m_tags[Constants::POSE].get())->setData(Constants::DEFAULT_POSE);
+    colourSpace(COLOURSPACE_sRGB);
+    indexOfRefraction(Constants::DEFAULT_INDEX);
+    viewportIndex(Constants::DEFAULT_VIEWPORT_INDEX);
+    matrixNavToCamera(Constants::DEFAULT_TRANSFORM);
+    cameraMatrix(Constants::DEFAULT_CAM_MATRIX);
+    distortion(Constants::DEFAULT_DISTORTION);
+    pose(Constants::DEFAULT_POSE);
     latitudeRef(LATITUDEREF_NORTH);
     longitude (0.0);
     longitudeRef(LONGITUDEREF_EAST);
@@ -153,17 +152,17 @@ void Tags::software(const std::string & sw) {
 }
 
 double Tags::exposureTime() const {
-    return dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::EXPOSURE_TIME].get())->getData();
+    return dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::EXPOSURE_TIME].get())->getData();
 }
 void Tags::exposureTime(double exp) {
-    dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::EXPOSURE_TIME].get())->setData(exp);
+    dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::EXPOSURE_TIME].get())->setData(exp);
 }
 
 double Tags::fNumber() const {
-    return dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::F_NUMBER].get())->getData();
+    return dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::F_NUMBER].get())->getData();
 }
 void Tags::fNumber(double f) {
-    dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::F_NUMBER].get())->setData(f);
+    dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::F_NUMBER].get())->setData(f);
 }
 
 uint64_t Tags::dateTime () const {
@@ -208,10 +207,10 @@ void Tags::dateTime (uint64_t date_time_us_epoch) {
 }
 
 double Tags::subjectDistance() const {
-    return dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::SUBJECT_DISTANCE].get())->getData();
+    return dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::SUBJECT_DISTANCE].get())->getData();
 }
 void Tags::subjectDistance(double range) {
-    dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::SUBJECT_DISTANCE].get())->setData(range);
+    dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::SUBJECT_DISTANCE].get())->setData(range);
 }
 
 Tags::LightSourceType Tags::lightSource() const {
@@ -229,10 +228,10 @@ void Tags::flash(Tags::FlashType flash_type) {
 }
 
 double Tags::focalLength() const {
-    return dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::FOCAL_LENGTH].get())->getData();
+    return dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::FOCAL_LENGTH].get())->getData();
 }
 void Tags::focalLength( double length ) {
-    dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::FOCAL_LENGTH].get())->setData(length);
+    dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::FOCAL_LENGTH].get())->setData(length);
 }
 
 Tags::ColourSpaceType Tags::colourSpace() const {
@@ -243,10 +242,10 @@ void Tags::colourSpace(Tags::ColourSpaceType colour_space) {
 }
 
 double Tags::flashEnergy () const {
-    return (dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::FLASH_ENERGY].get())->getData());
+    return (dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::FLASH_ENERGY].get())->getData());
 }
 void Tags::flashEnergy (double intensity) {
-    dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::FLASH_ENERGY].get())->setData(intensity);
+    dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::FLASH_ENERGY].get())->setData(intensity);
 }
 
 std::string Tags::serialNumber() const {
@@ -264,31 +263,31 @@ void Tags::lensModel( const std::string & lens_model ) {
 }
 
 double Tags::indexOfRefraction() const {
-    return dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::INDEX_OF_REFRACTION].get())->getData();
+    return dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::INDEX_OF_REFRACTION].get())->getData();
 }
 void Tags::indexOfRefraction( double ior ) {
-    dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::INDEX_OF_REFRACTION].get())->setData(ior);
+    dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::INDEX_OF_REFRACTION].get())->setData(ior);
 }
 
 double Tags::viewportIndex() const {
-    return dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::VIEWPORT_INDEX].get())->getData();
+    return dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::VIEWPORT_INDEX].get())->getData();
 }
 void Tags::viewportIndex( double vi ) {
-    dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::VIEWPORT_INDEX].get())->setData(vi);
+    dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::VIEWPORT_INDEX].get())->setData(vi);
 }
 
 double Tags::viewportThickness () const {
-    return dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::VIEWPORT_THICKNESS].get())->getData();
+    return dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::VIEWPORT_THICKNESS].get())->getData();
 }
 void Tags::viewportThickness (double thickness ) {
-    dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::VIEWPORT_THICKNESS].get())->setData(thickness);
+    dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::VIEWPORT_THICKNESS].get())->setData(thickness);
 }
 
 double Tags::viewportDistance () const {
-    return dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::VIEWPORT_DISTANCE].get())->getData();
+    return dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::VIEWPORT_DISTANCE].get())->getData();
 }
 void Tags::viewportDistance (double distance) {
-    dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::VIEWPORT_DISTANCE].get())->setData(distance);
+    dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::VIEWPORT_DISTANCE].get())->setData(distance);
 }
 bool Tags::vignetting () const {
     return dynamic_cast<Tag_UINT16*>(m_tags[Constants::VIGNETTING].get())->getData() != 0;
@@ -348,10 +347,10 @@ void Tags::bayerPattern (Tags::BayerPatternType pattern)
 }
 
 double Tags::frameRate() const {
-    return dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::FRAME_RATE].get())->getData();
+    return dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::FRAME_RATE].get())->getData();
 }
 void Tags::frameRate(double frame_rate) {
-    dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::FRAME_RATE].get())->setData(frame_rate);
+    dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::FRAME_RATE].get())->setData(frame_rate);
 }
 
 std::vector<double> Tags::cameraMatrix () const {
@@ -375,6 +374,13 @@ void Tags::pose( const std::vector<double> & matrix) {
     dynamic_cast<Tag_DOUBLE_ARRAY*>(m_tags[Constants::POSE].get())->setData(matrix);
 }
 
+double Tags::vehicleAltitude() const {
+    return dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::VEHICLE_ALTITUDE].get())->getData();
+}
+void Tags::vehicleAltitude(double altitude) {
+    dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::VEHICLE_ALTITUDE].get())->setData(altitude);
+}
+
 Tags::LatitudeRefType Tags::latitudeRef() const {
     std::string ref = dynamic_cast<Tag_STRING*>(m_tags[Constants::GPS_LATITUDE_REF].get())->getData();
     if (ref == "N") {
@@ -392,7 +398,7 @@ void Tags::latitudeRef(Tags::LatitudeRefType lat_ref ) {
 }
 
 double Tags::latitude() const {
-    std::vector <double> degminsec = dynamic_cast<Tag_DOUBLE_ARRAY*>(m_tags[Constants::GPS_LATITUDE].get())->getData(); 
+    std::vector <double> degminsec = dynamic_cast<Tag_UDOUBLE_ARRAY*>(m_tags[Constants::GPS_LATITUDE].get())->getData(); 
     if (degminsec.size() != 3) {
         //Should never happen
         return 0.0;
@@ -403,7 +409,7 @@ void Tags::latitude( double latitude ) {
     std::vector <double> dms = {0.0, 0.0, 0.0};
     Constants::degToDMS(dms[0], dms[1], dms[2], latitude);
 
-    dynamic_cast<Tag_DOUBLE_ARRAY*>(m_tags[Constants::GPS_LATITUDE].get())->setData(dms);
+    dynamic_cast<Tag_UDOUBLE_ARRAY*>(m_tags[Constants::GPS_LATITUDE].get())->setData(dms);
 }
 
 Tags::LongitudeRefType Tags::longitudeRef() const {
@@ -423,7 +429,7 @@ void Tags::longitudeRef(Tags::LongitudeRefType long_ref ) {
 }
 
 double Tags::longitude() const {
-    std::vector <double> degminsec = dynamic_cast<Tag_DOUBLE_ARRAY*>(m_tags[Constants::GPS_LONGITUDE].get())->getData(); 
+    std::vector <double> degminsec = dynamic_cast<Tag_UDOUBLE_ARRAY*>(m_tags[Constants::GPS_LONGITUDE].get())->getData(); 
     if (degminsec.size() != 3) {
         //Should never happen
         return 0.0;
@@ -433,7 +439,7 @@ double Tags::longitude() const {
 void Tags::longitude(double longitude) {
     std::vector <double> dms = {0.0, 0.0, 0.0};
     Constants::degToDMS(dms[0], dms[1], dms[2], longitude);
-    dynamic_cast<Tag_DOUBLE_ARRAY*>(m_tags[Constants::GPS_LONGITUDE].get())->setData(dms);
+    dynamic_cast<Tag_UDOUBLE_ARRAY*>(m_tags[Constants::GPS_LONGITUDE].get())->setData(dms);
 }
 
 Tags::AltitudeRefType Tags::altitudeRef() const {
@@ -444,10 +450,10 @@ void Tags::altitudeRef(Tags::AltitudeRefType altitude_ref) {
 }
 
 double Tags::altitude() const {
-    return dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::GPS_ALTITUDE].get())->getData();
+    return dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::GPS_ALTITUDE].get())->getData();
 }
 void Tags::altitude(double alt){
-    dynamic_cast<Tag_DOUBLE*>(m_tags[Constants::GPS_ALTITUDE].get())->setData(alt);
+    dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::GPS_ALTITUDE].get())->setData(alt);
 }
 
 void Tags::parseExifData ( ExifData * ed ) {

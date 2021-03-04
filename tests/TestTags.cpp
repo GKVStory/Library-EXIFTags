@@ -170,6 +170,10 @@ TEST ( TagsTest, GenerateEmptyTagsClass_CheckDefaultBehaviour) {
     tags.pose(pose_vec);
     ASSERT_EQ(tags.pose(), pose_vec);
 
+    ASSERT_DOUBLE_EQ(tags.vehicleAltitude(), 0.0);
+    tags.vehicleAltitude(10.87);
+    ASSERT_DOUBLE_EQ(tags.vehicleAltitude(), 10.87);
+
     ASSERT_EQ(tags.latitudeRef(), Tags::LATITUDEREF_NORTH);
     tags.latitudeRef(Tags::LATITUDEREF_SOUTH);
     ASSERT_EQ(tags.latitudeRef(), Tags::LATITUDEREF_SOUTH);
@@ -219,8 +223,9 @@ TEST ( TagsTest, ParseFile) {
     ASSERT_EQ (tags.imageWidth(), 640);
     ASSERT_DOUBLE_EQ (tags.fNumber(), 4.7);
     ASSERT_EQ (tags.make(), "NIKON");
-
-
+    ASSERT_DOUBLE_EQ (tags.exposureTime(), 1/95.70000727320055);
+    ASSERT_EQ (tags.latitudeRef(), Tags::LATITUDEREF_NORTH);
+    ASSERT_DOUBLE_EQ (tags.latitude(), 43.467081666663894);
 }
 
 } //tags

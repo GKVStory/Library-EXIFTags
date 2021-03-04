@@ -19,10 +19,11 @@ enum DataType {
     UINT32,
     UINT16,
     UINT8,
-    UDOUBLE
+    UDOUBLE,
     DOUBLE,
     STRING,
     UINT16_ARRAY,
+    UDOUBLE_ARRAY,
     DOUBLE_ARRAY,
 };
 
@@ -73,6 +74,7 @@ enum SupportedTags {
         CAMERA_MATRIX,
         DISTORTION,
         POSE,
+        VEHICLE_ALTITUDE,
 
         //GPSTags
         GPS_LATITUDE_REF,

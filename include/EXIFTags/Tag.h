@@ -13,6 +13,7 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <cmath>
 
 #include "EXIFTags/TagConstants.h"
 
@@ -207,7 +208,7 @@ public:
         return m_data;
     };
     void setData(const double & data) {
-        m_data = data;
+        m_data = std::abs(data);
     };
 
     Tag_UDOUBLE( const Constants::TagInfo & tag_info ) : 
@@ -231,9 +232,7 @@ public:
     virtual bool getTag (ExifData * ed) {
         ExifEntry *entry = exif_content_get_entry(ed->ifd[m_tag_info.ifd], static_cast<ExifTag>(m_tag_info.tag)); //points to exif data, do not delete.
         if (entry) {
-            const ExifByteOrder o = exif_data_get_byte_order (entry->parent->parent);
-            ExifSRational rat = exif_get_rational (entry->data, o);
-            m_data = static_cast<double>(rat.numerator)/static_cast<double>(rat.denominator);
+            m_data = *(reinterpret_cast<double *> (entry->data));
         } else {
             return false;
         }
@@ -268,7 +267,11 @@ public:
     virtual bool getTag (ExifData * ed) {
         ExifEntry *entry = exif_content_get_entry(ed->ifd[m_tag_info.ifd], static_cast<ExifTag>(m_tag_info.tag)); //points to exif data, do not delete.
         if (entry) {
-            m_data = std::string (reinterpret_cast<char *> (entry->data), entry->size);
+            if (entry->size > 0) {
+                m_data = std::string (reinterpret_cast<char *> (entry->data), entry->size-1);
+            } else {
+                m_data = "";
+            }
         } else {
             return false;
         }
@@ -296,13 +299,18 @@ private:
  */
 class Tag_UINT16_ARRAY : public Tag {
 public:
-    virtual void setTag (ExifData *exif) const override {
-
+    virtual void setTag (ExifData *ed) const override {
+        
     }
 
-    virtual bool getTag (ExifData * data) {
-
-        return false;
+    virtual bool getTag (ExifData * ed) {
+        ExifEntry *entry = exif_content_get_entry(ed->ifd[m_tag_info.ifd], static_cast<ExifTag>(m_tag_info.tag)); //points to exif data, do not delete.
+        if (entry) {
+            m_data = std::vector<uint16_t> (reinterpret_cast<uint16_t *> (entry->data), reinterpret_cast<uint16_t *> (entry->data) + entry->size/sizeof(uint16_t));
+        } else {
+            return false;
+        }
+        return true;
     }
 
     std::vector <uint16_t> getData () const {
@@ -322,6 +330,46 @@ private:
 };
 
 /**
+ * Tag for unsigned double array types
+ */
+class Tag_UDOUBLE_ARRAY : public Tag{
+public:
+    virtual void setTag (ExifData *exif) const override {
+
+    }
+
+    virtual bool getTag (ExifData * ed) {
+        ExifEntry *entry = exif_content_get_entry(ed->ifd[m_tag_info.ifd], static_cast<ExifTag>(m_tag_info.tag)); //points to exif data, do not delete.
+        if (entry) {
+            int vec_size (entry->size/sizeof(ExifRational));
+            m_data.clear();
+            m_data.reserve(vec_size);
+            for (int i = 0; i < vec_size; ++i) {
+                ExifRational * rat = &(reinterpret_cast<ExifRational*> (entry->data)[i]);
+                m_data.push_back(static_cast<double>(rat->numerator)/static_cast<double>(rat->denominator));
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+    std::vector <double> getData () const {
+        return m_data;
+    };
+    void setData(const std::vector <double> & data) {
+        m_data = data;
+    };
+
+    Tag_UDOUBLE_ARRAY( const Constants::TagInfo & tag_info ) : 
+        Tag(tag_info),
+        m_data() {}
+
+private:
+
+    std::vector <double> m_data;
+};
+
+/**
  * Tag for double array types (always signed)
  */
 class Tag_DOUBLE_ARRAY : public Tag{
@@ -330,9 +378,14 @@ public:
 
     }
 
-    virtual bool getTag (ExifData * data) {
-
-        return false;
+    virtual bool getTag (ExifData * ed) {
+        ExifEntry *entry = exif_content_get_entry(ed->ifd[m_tag_info.ifd], static_cast<ExifTag>(m_tag_info.tag)); //points to exif data, do not delete.
+        if (entry) {
+            m_data = std::vector<double> (reinterpret_cast<double *> (entry->data), reinterpret_cast<double *> (entry->data) + entry->size / sizeof(double));
+        } else {
+            return false;
+        }
+        return true;
     }
     std::vector <double> getData () const {
         return m_data;
