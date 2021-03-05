@@ -126,6 +126,7 @@ class ErrorMessages {
 public:
     static const std::string failed_header_load;
     static const std::string failed_file_load;
+    static const std::string file_too_small;
 };
 
 } //tags

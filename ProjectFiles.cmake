@@ -6,6 +6,7 @@ set(SRC
   "${SRC_PATH}/Tags.cpp"
   "${SRC_PATH}/Tag.cpp"
   "${SRC_PATH}/TagConstants.cpp"
+  "${SRC_PATH}/ImageHandler.cpp"
 )
 
 # Set project test source files.

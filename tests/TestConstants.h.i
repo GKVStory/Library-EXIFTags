@@ -25,7 +25,7 @@ public:
     };
 
     static std::string testTifNon2g() {
-        return testDataDir() + "exif.jpg";
+        return testDataDir() + "exif.tif";
     };
 
 };

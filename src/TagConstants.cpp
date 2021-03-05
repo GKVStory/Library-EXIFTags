@@ -85,3 +85,4 @@ const std::string Constants::DEFAULT_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%S";
 //Error messages
 const std::string ErrorMessages::failed_header_load = "Failed to load header.";
 const std::string ErrorMessages::failed_file_load = "Failed to load file: ";
+const std::string ErrorMessages::file_too_small = "File is too small to be an image file: ";

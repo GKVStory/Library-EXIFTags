@@ -2,6 +2,7 @@
 //Copyright 2G Robotics Inc., 2021
 
 #include "EXIFTags/Tags.h"
+#include "EXIFTags/ImageHandler.h"
 
 #include <sstream>
 #include <iomanip>
@@ -55,14 +56,50 @@ bool Tags::loadHeader(const std::vector <uint8_t> & image_header_data, std::stri
 
 bool Tags::loadHeader(const std::string & filename, std::string & error_message) {
 
-    ExifData * ed = exif_data_new_from_file (filename.c_str());
+    std::vector<uint8_t> image_header_data;
+
+    if (!ImageHandler::loadHeader (filename, image_header_data, error_message)) {
+        return false; //Failed to lead header
+    }
+
+    if (!loadHeader(image_header_data, error_message)) {
+        return false; //failed to parse header
+    }
+
+    return true;
+    /*
+    std::vector <uint8_t> buffer;
+    buffer.reserve (MAX_READ_SIZE);
+
+    std::ifstream file(filename, std::ios::binary | std::ios::ate);
+    std:streamsize = file.tellg();
+    file.seekg(0, std::ios::beg);
+
+    if (!file.read(buffer.data(), size > MAX_READ_SIZE ? MAX_READ_SIZE : size )) {
+        error_message += "\n" + ErrorMessages::failed_file_load + filename;
+        return false;
+    }
+
+    if (loadHeader(buffer, error_message)) {
+        return false;
+    }
+
+    return true;
+    */
+
+    /*ExifData * ed = exif_data_new_from_file (filename.c_str());
     if (!ed) {
         error_message = ErrorMessages::failed_file_load + filename;
         return false;
-    }
+        //ed = TifHandler::loadHeader(filename, error_message);
+        //if (!ed) {
+           
+        //    return false;
+        //}
+    } 
     parseExifData(ed);
     exif_data_unref (ed);
-    return true;
+    return true; */
 }
 
 bool Tags::generateHeader(std::vector <uint8_t> & image_header_data, std::string & error_message) {
@@ -74,26 +111,26 @@ Tags::SubfileTypes Tags::subfileType () const {
 }
 
 uint32_t Tags::imageWidth() const {
-    uint32_t width =  dynamic_cast<Tag_UINT32*>(m_tags[Constants::IMAGE_HEIGHT].get())->getData();
+    uint32_t width =  dynamic_cast<Tag_UINT32*>(m_tags[Constants::IMAGE_WIDTH].get())->getData();
     if (width == 0) { //handles case of loading jpg without tiff headers
         width =  dynamic_cast<Tag_UINT16*>(m_tags[Constants::PIXEL_X_DIMENSION].get())->getData();
     }
     return width;
 }
 void Tags::imageWidth(uint32_t width) {
-    dynamic_cast<Tag_UINT32*>(m_tags[Constants::IMAGE_HEIGHT].get())->setData(width);
+    dynamic_cast<Tag_UINT32*>(m_tags[Constants::IMAGE_WIDTH].get())->setData(width);
     dynamic_cast<Tag_UINT16*>(m_tags[Constants::PIXEL_X_DIMENSION].get())->setData(width);
 }
 
 uint32_t Tags::imageHeight() const {
-    uint32_t height =  dynamic_cast<Tag_UINT32*>(m_tags[Constants::IMAGE_WIDTH].get())->getData();
+    uint32_t height =  dynamic_cast<Tag_UINT32*>(m_tags[Constants::IMAGE_HEIGHT].get())->getData();
     if (height == 0) { //handles case of loading jpg without tiff headers
         height =  dynamic_cast<Tag_UINT16*>(m_tags[Constants::PIXEL_Y_DIMENSION].get())->getData();
     }
     return height;
 }
 void Tags::imageHeight(uint32_t height) {
-    dynamic_cast<Tag_UINT32*>(m_tags[Constants::IMAGE_WIDTH].get())->setData(height);
+    dynamic_cast<Tag_UINT32*>(m_tags[Constants::IMAGE_HEIGHT].get())->setData(height);
     dynamic_cast<Tag_UINT16*>(m_tags[Constants::PIXEL_Y_DIMENSION].get())->setData(height);
 }
 

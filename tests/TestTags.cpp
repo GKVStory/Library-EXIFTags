@@ -210,22 +210,35 @@ TEST ( TagsTest, ParseHeader) {
     //ASSERT_EQ (error_message, ErrorMessages::failed_header_load);
 }
 
-TEST ( TagsTest, ParseFile) {
+TEST ( TagsTest, ParseJpegFile) {
     Tags tags; 
     std::string error_message;
 
     ASSERT_FALSE (tags.loadHeader("DoesntExist.jpg", error_message));
-    ASSERT_EQ (error_message, ErrorMessages::failed_file_load + "DoesntExist.jpg");
+    //ASSERT_EQ (error_message, ErrorMessages::failed_file_load + "DoesntExist.jpg");
 
     ASSERT_TRUE (tags.loadHeader(TagsTestCommon::testJpgNon2g(), error_message));
 
     ASSERT_EQ (tags.orientation(), Tags::ORIENTATION_TOPLEFT);
     ASSERT_EQ (tags.imageWidth(), 640);
+    ASSERT_EQ (tags.imageHeight(), 480);
     ASSERT_DOUBLE_EQ (tags.fNumber(), 4.7);
     ASSERT_EQ (tags.make(), "NIKON");
     ASSERT_DOUBLE_EQ (tags.exposureTime(), 1/95.70000727320055);
     ASSERT_EQ (tags.latitudeRef(), Tags::LATITUDEREF_NORTH);
     ASSERT_DOUBLE_EQ (tags.latitude(), 43.467081666663894);
+}
+
+TEST ( TagsTest, ParseTifFile) {
+    Tags tags; 
+    std::string error_message;
+
+    ASSERT_TRUE (tags.loadHeader(TagsTestCommon::testTifNon2g(), error_message));
+
+    ASSERT_EQ (tags.orientation(), Tags::ORIENTATION_TOPLEFT);
+    ASSERT_EQ (tags.imageWidth(), 15);
+    ASSERT_EQ (tags.imageHeight(), 7);
+    ASSERT_EQ (tags.imageDescription(), "Test image");
 }
 
 } //tags
