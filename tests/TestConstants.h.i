@@ -28,6 +28,10 @@ public:
         return testDataDir() + "exif.tif";
     };
 
+    static std::string testTifOld2g() {
+        return testDataDir() + "old2gdata.tif";
+    };
+
 };
 
 } //tags

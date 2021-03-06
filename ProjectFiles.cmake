@@ -9,6 +9,10 @@ set(SRC
   "${SRC_PATH}/ImageHandler.cpp"
 )
 
+set(MAIN_SRC 
+  "${SRC_PATH}/main.cpp"
+)
+
 # Set project test source files.
 set(TEST_SRC
   "${TEST_SRC_PATH}/TestTags.cpp"

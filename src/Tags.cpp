@@ -493,6 +493,19 @@ void Tags::altitude(double alt){
     dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::GPS_ALTITUDE].get())->setData(alt);
 }
 
+uint64_t Tags::ppsTime() const {
+    uint64_t upper = dynamic_cast<Tag_UINT32*>(m_tags[Constants::TIFFTAG_2G_PPS_TIME_UPPER].get())->getData();
+    uint64_t lower = dynamic_cast<Tag_UINT32*>(m_tags[Constants::TIFFTAG_2G_PPS_TIME_LOWER].get())->getData();
+    return lower + (upper << 32);
+}
+void Tags::ppsTime(uint64_t pps){
+    uint32_t lower = pps & 0xFFFFFFFF;
+    uint32_t upper = pps >> 32;
+
+    dynamic_cast<Tag_UINT32*>(m_tags[Constants::TIFFTAG_2G_PPS_TIME_LOWER].get())->setData(lower);
+    dynamic_cast<Tag_UINT32*>(m_tags[Constants::TIFFTAG_2G_PPS_TIME_UPPER].get())->setData(upper);
+}
+
 void Tags::parseExifData ( ExifData * ed ) {
     //TODO: Try to load the custom 2G tags from the makernote first
 

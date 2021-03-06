@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 
 project (EXIFTags)
 set (PROJECT_NAME EXIFTags)
+set (BIN_NAME exif2Gtool)
  
 set(CMAKE_CXX_STANDARD 14)
 
@@ -99,3 +100,8 @@ if(BUILD_TESTS)
     setup_target_for_coverage(coverage "${TEST_NAME}" coverage)
   endif(BUILD_COVERAGE_ANALYSIS)
 endif(BUILD_TESTS)
+
+if (BUILD_MAIN)
+  add_executable (${BIN_NAME} "${MAIN_SRC}")
+  target_link_libraries (${BIN_NAME} ${LIB_NAME})
+endif (BUILD_MAIN)

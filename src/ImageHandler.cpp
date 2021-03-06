@@ -43,17 +43,41 @@ bool ImageHandler::loadHeader(const std::string & filename, std::vector <uint8_t
             return false;
         }
     } else { //header is tiff (or something else), prepend jpeg delimiter required by exiflib to find tag structure.
-        std::streamsize read_size = size > MAX_READ_SIZE ? MAX_READ_SIZE : size;
-        image_header_data.resize(static_cast<unsigned int>(read_size+6));
-        for (int i = 0; i < 6; ++i) {
-            image_header_data[i] = static_cast<uint8_t>(ExifHeader[i]);
-        }
-        if (!file.read(reinterpret_cast<char *>(image_header_data.data()+6), read_size)) {
-            error_message = ErrorMessages::failed_file_load + filename;
+        //The tiff header can be located at the back of the file, need to follow the original file offset to find it and then replace the offset in the data copied out of the file.
+        
+        if (processTiff (filename, error_message)) {
+            error_message = failed_file_load + filename
             return false;
         }
+        
     }
     
     return true;
 }
 
+bool ImageHandler::processTiff (std::vector<uint8_t> & data, std::string & error_message) {
+    std::streamsize read_size = size > MAX_READ_SIZE ? MAX_READ_SIZE : size;
+    std::streamsize offset = 0;
+    image_header_data.resize(static_cast<unsigned int>(read_size+6));
+    for (offset = 0; offset < 6; ++offset) {
+        image_header_data[i] = static_cast<uint8_t>(ExifHeader[i]);
+    }
+
+    //Read in the tiff header and offset in bytes from the head of the file to the data header.
+    if (!file.read(reinterpret_cast<char *>(image_header_data.data()+offset), 8)) {
+        error_message = ErrorMessages::failed_file_load + filename;
+        return false;
+    }
+    offset += 8
+
+    bool is_le = true;
+    if (memcmp (image_header_data.data()+6, TIFFHeaderMotorola, 4) == 0) {
+        //headers match, 
+        is_le = false;
+    }
+
+    //Pull out the offset to the memory address of the data. 
+    uint32_t file_offset = 0;
+ 
+       
+}

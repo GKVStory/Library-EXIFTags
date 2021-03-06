@@ -83,6 +83,10 @@ enum SupportedTags {
         GPS_LONGITUDE,
         GPS_ALTITUDE_REF,
         GPS_ALTITUDE,
+
+        //Old 2G tags for backwards compatibility
+        TIFFTAG_2G_PPS_TIME_UPPER,
+        TIFFTAG_2G_PPS_TIME_LOWER,
         LENGTH_SUPPORTED_TAGS
     };
 

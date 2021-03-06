@@ -197,6 +197,10 @@ TEST ( TagsTest, GenerateEmptyTagsClass_CheckDefaultBehaviour) {
     ASSERT_DOUBLE_EQ(tags.altitude(), 0.0);
     tags.altitude(10.765);
     ASSERT_DOUBLE_EQ(tags.altitude(), 10.765);
+
+    ASSERT_EQ(tags.ppsTime(), 0);
+    tags.ppsTime(1614632629005011);
+    ASSERT_EQ(tags.ppsTime(), 1614632629005011);
 } 
 
 TEST ( TagsTest, ParseHeader) {
@@ -229,7 +233,7 @@ TEST ( TagsTest, ParseJpegFile) {
     ASSERT_DOUBLE_EQ (tags.latitude(), 43.467081666663894);
 }
 
-TEST ( TagsTest, ParseTifFile) {
+TEST ( TagsTest, ParseNon2GTifFile) {
     Tags tags; 
     std::string error_message;
 
@@ -239,6 +243,18 @@ TEST ( TagsTest, ParseTifFile) {
     ASSERT_EQ (tags.imageWidth(), 15);
     ASSERT_EQ (tags.imageHeight(), 7);
     ASSERT_EQ (tags.imageDescription(), "Test image");
+}
+
+TEST ( TagsTest, ParseOld2GTifFile) {
+    Tags tags; 
+    std::string error_message;
+
+    ASSERT_TRUE (tags.loadHeader(TagsTestCommon::testTifOld2g(), error_message));
+
+    ASSERT_EQ (tags.orientation(), Tags::ORIENTATION_TOPLEFT);
+    ASSERT_EQ (tags.imageWidth(), 2464);
+    ASSERT_EQ (tags.imageHeight(), 2056);
+    ASSERT_EQ (tags.ppsTime(), 711698604);
 }
 
 } //tags

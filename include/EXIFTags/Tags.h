@@ -320,6 +320,9 @@ public:
     double altitude() const;
     void altitude(double alt);
     
+    //time in us from epoch
+    uint64_t ppsTime() const;
+    void ppsTime( uint64_t pps );
 private:
 
     //storage for the different tags supported by 2G.
