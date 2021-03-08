@@ -26,7 +26,6 @@ public:
 
 private:
 
-    static bool processTiff (std::vector <uint8_t> & data, std::string & error_message);
     /*! Magic number for TIFF files */
     static const unsigned char ExifHeader[6];
     static const unsigned char TIFFHeaderMotorola[4];
