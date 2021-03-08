@@ -67,39 +67,6 @@ bool Tags::loadHeader(const std::string & filename, std::string & error_message)
     }
 
     return true;
-    /*
-    std::vector <uint8_t> buffer;
-    buffer.reserve (MAX_READ_SIZE);
-
-    std::ifstream file(filename, std::ios::binary | std::ios::ate);
-    std:streamsize = file.tellg();
-    file.seekg(0, std::ios::beg);
-
-    if (!file.read(buffer.data(), size > MAX_READ_SIZE ? MAX_READ_SIZE : size )) {
-        error_message += "\n" + ErrorMessages::failed_file_load + filename;
-        return false;
-    }
-
-    if (loadHeader(buffer, error_message)) {
-        return false;
-    }
-
-    return true;
-    */
-
-    /*ExifData * ed = exif_data_new_from_file (filename.c_str());
-    if (!ed) {
-        error_message = ErrorMessages::failed_file_load + filename;
-        return false;
-        //ed = TifHandler::loadHeader(filename, error_message);
-        //if (!ed) {
-           
-        //    return false;
-        //}
-    } 
-    parseExifData(ed);
-    exif_data_unref (ed);
-    return true; */
 }
 
 bool Tags::generateHeader(std::vector <uint8_t> & image_header_data, std::string & error_message) {

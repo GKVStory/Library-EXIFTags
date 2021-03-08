@@ -123,6 +123,7 @@ public:
     static const std::vector <double> DEFAULT_DISTORTION;
     static const std::vector <double> DEFAULT_POSE;
     static const std::string DEFAULT_TIMESTAMP_FORMAT;
+    static const std::string SECONDARY_TIMESTAMP_FORMAT;
 
 };
 

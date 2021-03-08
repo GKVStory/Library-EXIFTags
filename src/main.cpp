@@ -20,6 +20,7 @@ int main (int argc, char * argv[]) {
     options.add_options()
         ("filename", "Input filename", cxxopts::value<std::string>(filename))
         ("v,verbose", "Verbose output", cxxopts::value<bool>()->default_value("false"))
+        ("o,old_file", "Use old format", cxxopts::value<bool>()->default_value("false"))
         ;
 
     options.parse_positional({"filename"});
@@ -27,6 +28,7 @@ int main (int argc, char * argv[]) {
 
     auto result = options.parse(argc, argv);
     bool verbose = result["verbose"].as<bool>();
+    bool old_style = result["old_file"].as<bool>();
 
     if (filename == "") {
         std::cerr << "USAGE: exif2Gtool <input filename .tif or .jpg>";
@@ -42,6 +44,9 @@ int main (int argc, char * argv[]) {
     }
 
     uint64_t dt = tags.dateTime();
+    if (old_style) {
+        dt = tags.ppsTime();
+    }
     double lat = tags.latitude();
     double lon = tags.longitude();
     double range = tags.subjectDistance();
