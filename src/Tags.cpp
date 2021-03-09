@@ -70,6 +70,24 @@ bool Tags::loadHeader(const std::string & filename, std::string & error_message)
 }
 
 bool Tags::generateHeader(std::vector <uint8_t> & image_header_data, std::string & error_message) {
+    ExifData *exif = exif_data_new();
+	if (!exif) {
+		error_message = ErrorMessages::memory_error;
+		return false;
+	}
+
+    for (auto & tag: m_tags) {
+        if (tag->isSet()) {
+            if (tag->isStandardTag()) {
+                tag->setTag(exif);
+            } else {
+                //TODO handle the custom 2G tags.
+            }
+        }
+    }
+
+    //TODO fill imageheaderdata
+
     return false;
 }
 

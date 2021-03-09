@@ -124,6 +124,7 @@ public:
     static const std::vector <double> DEFAULT_POSE;
     static const std::string DEFAULT_TIMESTAMP_FORMAT;
     static const std::string SECONDARY_TIMESTAMP_FORMAT;
+    static const ExifByteOrder DEFAULT_BYTE_ORDER;
 
 };
 
@@ -132,6 +133,7 @@ public:
     static const std::string failed_header_load;
     static const std::string failed_file_load;
     static const std::string file_too_small;
+    static const std::string memory_error;
 };
 
 } //tags

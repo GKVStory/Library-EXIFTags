@@ -38,15 +38,6 @@ public:
      */
     static std::unique_ptr<Tag> tagFactory (const Constants::SupportedTags &  tag);
 
-    /**
-     * @brief Load data from a block of memory from the header.
-     * @param pointer to header data (lifetime handled by caller)
-     * @param length of header buffer
-     * @param error message string returned by reference.
-     * @return unique pointer to tags containing data that's in the header file. If null, there was a problem.
-     */
-    //static std::unique_ptr<Tag> loadFromHeader(const Constants::SupportedTags &  tag, const uint8_t * header, size_t header_len, std::string & error_message);
-
     /** 
      * @brief Given an ExifData structure, add this tag to the structure Overridden in base class.
      * @param pointer to ExifData structure
@@ -68,15 +59,47 @@ public:
         return !m_tag_info.custom;
     };
 
+    /**
+     * Is the parameter set (either loaded from a file or set directly)
+     * @return bool is the parameter set.
+     */
+    bool isSet() const {
+        return m_is_set;
+    };
+
 protected:
     //Tag constructor //stores a reference to the tag structure. This is a reference, 
     //and should only reference something with the same lifetime as the program, like the 
     //TAG_INFO vector in TagConstants.h
     Tag( const Constants::TagInfo & tag_info ) : 
-        m_tag_info(tag_info)
+        m_tag_info(tag_info),
+        m_is_set(false)
         {};
 
     Constants::TagInfo m_tag_info;
+    bool m_is_set;
+
+    /**
+     * Get an existing tag, or create one if it doesn't exist
+     * @param [in/out] pointer to exif data structure 
+     * @param ifd to store the entry in.
+     * @param exiftag to be created/loaded
+     * @return pointer to the exif entry, memory is managed by the exif data if not null
+     */
+    static ExifEntry *initTag(ExifData *exif, ExifIfd ifd, ExifTag tag);
+
+    /**
+     * Create a brand-new tag with a data field of the given length, in the
+     * given IFD. This is needed when exif_entry_initialize() isn't able to create
+     * this type of tag itself, or the default data length it creates isn't the
+     * correct length.
+     * @param [in/out] exif data structure 
+     * @param [in] ifd ifd to place the entry in
+     * @param [in] tag tag id
+     * @param [in] size_t size of data, in bytes.
+     * @return pointer to exif entry. If not null, the memory is managed by the exif structure.
+     */
+    static ExifEntry *createTag(ExifData *exif, ExifIfd ifd, ExifTag tag, size_t len);
 
 };
 
@@ -86,7 +109,13 @@ protected:
 class Tag_UINT32 : public Tag {
 public:
     virtual void setTag (ExifData *exif) const override {
-
+        if (m_is_set) {
+            ExifEntry *entry = initTag (exif, m_tag_info.ifd, static_cast<ExifTag>(m_tag_info.tag));
+            if (!entry) {
+                return;
+            }
+            exif_set_long (entry->data, Constants::DEFAULT_BYTE_ORDER, m_data);
+        }
     }
 
     virtual bool getTag (ExifData * ed) override {
@@ -96,14 +125,17 @@ public:
             switch (entry->size) {
                 case 4: {
                     m_data = static_cast<uint32_t>(exif_get_long (entry->data, o));
+                    m_is_set = true;
                     break;
                 }
                 case 2: {
                     m_data = static_cast<uint32_t>(exif_get_short (entry->data, o));
+                    m_is_set = true;
                     break;
                 }
                 case 1: {
                     m_data = static_cast<uint32_t>(*(reinterpret_cast<uint8_t *> (entry->data)));
+                    m_is_set = true;
                     break;
                 }
                 default: {
@@ -121,6 +153,7 @@ public:
     };
     void setData(const uint32_t & data) {
         m_data = data;
+        m_is_set = true;
     };
 
     Tag_UINT32( const Constants::TagInfo & tag_info ) : 
@@ -138,7 +171,13 @@ private:
 class Tag_UINT16 : public Tag {
 public:
     virtual void setTag (ExifData *exif) const override {
-        
+        if (m_is_set) {
+            ExifEntry *entry = initTag (exif, m_tag_info.ifd, static_cast<ExifTag>(m_tag_info.tag));
+            if (!entry) {
+                return;
+            }
+            exif_set_short (entry->data, Constants::DEFAULT_BYTE_ORDER, m_data);
+        }
     }
 
     virtual bool getTag (ExifData * ed) {
@@ -148,14 +187,17 @@ public:
             switch (entry->size) {
                 case 4: {
                     m_data = static_cast<uint16_t>(exif_get_long (entry->data, o));
+                    m_is_set = true;
                     break;
                 }
                 case 2: {
                     m_data = static_cast<uint16_t>(exif_get_short (entry->data, o));
+                    m_is_set = true;
                     break;
                 }
                 case 1: {
                     m_data = static_cast<uint16_t>(*(reinterpret_cast<uint8_t *> (entry->data)));
+                    m_is_set = true;
                     break;
                 }
                 default: {
@@ -173,6 +215,7 @@ public:
     };
     void setData(const uint16_t & data) {
         m_data = data;
+        m_is_set = true;
     };
 
     Tag_UINT16( const Constants::TagInfo & tag_info ) : 
@@ -189,8 +232,14 @@ private:
  */
 class Tag_UINT8 : public Tag {
 public:
-    virtual void setTag (ExifData *ed) const override {
-
+    virtual void setTag (ExifData *exif) const override {
+        if (m_is_set) {
+            ExifEntry *entry = initTag (exif, m_tag_info.ifd, static_cast<ExifTag>(m_tag_info.tag));
+            if (!entry) {
+                return;
+            }
+            *(entry->data) = m_data;
+        }
     }
 
     virtual bool getTag (ExifData * ed) {
@@ -200,14 +249,17 @@ public:
             switch (entry->size) {
                 case 4: {
                     m_data = static_cast<uint8_t>(*(reinterpret_cast<uint32_t *> (entry->data)));
+                    m_is_set = true;
                     break;
                 }
                 case 2: {
                     m_data = static_cast<uint8_t>(*(reinterpret_cast<uint16_t *> (entry->data)));
+                    m_is_set = true;
                     break;
                 }
                 case 1: {
                     m_data = static_cast<uint8_t>(*(reinterpret_cast<uint8_t *> (entry->data)));
+                    m_is_set = true;
                     break;
                 }
                 default: {
@@ -225,9 +277,12 @@ public:
     };
     void setData(const uint8_t & data) {
         m_data = data;
+        m_is_set = true;
     };
 
-    Tag_UINT8( const Constants::TagInfo & tag_info ) : Tag(tag_info) {}
+    Tag_UINT8( const Constants::TagInfo & tag_info ) : 
+        Tag(tag_info),
+        m_data (0){}
 
 private:
 
@@ -239,8 +294,17 @@ private:
  */
 class Tag_UDOUBLE : public Tag {
 public:
-    virtual void setTag (ExifData *ed) const override {
-
+    virtual void setTag (ExifData *exif) const override {
+        if (m_is_set) {
+            ExifEntry *entry = initTag (exif, m_tag_info.ifd, static_cast<ExifTag>(m_tag_info.tag));
+            if (!entry) {
+                return;
+            }
+            ExifRational val;
+            val.numerator = static_cast<uint32_t> (m_data*1E6);
+            val.denominator = 1000000;
+            exif_set_rational (entry->data, Constants::DEFAULT_BYTE_ORDER, val);
+        }
     }
 
     virtual bool getTag (ExifData * ed) {
@@ -249,6 +313,7 @@ public:
             const ExifByteOrder o = exif_data_get_byte_order (entry->parent->parent);
             ExifRational rat = exif_get_rational (entry->data, o);
             m_data = static_cast<double>(rat.numerator)/static_cast<double>(rat.denominator);
+            m_is_set = true;
         } else {
             return false;
         }
@@ -260,6 +325,7 @@ public:
     };
     void setData(const double & data) {
         m_data = std::abs(data);
+        m_is_set = true;
     };
 
     Tag_UDOUBLE( const Constants::TagInfo & tag_info ) : 
@@ -276,14 +342,21 @@ private:
  */
 class Tag_DOUBLE : public Tag {
 public:
-    virtual void setTag (ExifData *ed) const override {
-
+    virtual void setTag (ExifData *exif) const override {
+        if (m_is_set) {
+            ExifEntry *entry = createTag (exif, m_tag_info.ifd, static_cast<ExifTag>(m_tag_info.tag), sizeof (m_data));
+            if (!entry) {
+                return;
+            }
+            memcpy (entry->data, &m_data, sizeof (m_data));
+        }
     }
 
     virtual bool getTag (ExifData * ed) {
         ExifEntry *entry = exif_content_get_entry(ed->ifd[m_tag_info.ifd], static_cast<ExifTag>(m_tag_info.tag)); //points to exif data, do not delete.
         if (entry) {
             m_data = *(reinterpret_cast<double *> (entry->data));
+            m_is_set = true;
         } else {
             return false;
         }
@@ -295,6 +368,7 @@ public:
     };
     void setData(const double & data) {
         m_data = data;
+        m_is_set = true;
     };
 
     Tag_DOUBLE( const Constants::TagInfo & tag_info ) : 
@@ -311,8 +385,14 @@ private:
  */
 class Tag_STRING : public Tag {
 public:
-    virtual void setTag (ExifData *ed) const override {
-
+    virtual void setTag (ExifData *exif) const override {
+        if (m_is_set) {
+            ExifEntry *entry = createTag (exif, m_tag_info.ifd, static_cast<ExifTag>(m_tag_info.tag), sizeof (char) * m_data.size());
+            if (!entry) {
+                return;
+            }
+            memcpy (entry->data, m_data.c_str(), sizeof (char) * m_data.size());
+        }
     }
 
     virtual bool getTag (ExifData * ed) {
@@ -320,6 +400,7 @@ public:
         if (entry) {
             if (entry->size > 0) {
                 m_data = std::string (reinterpret_cast<char *> (entry->data), entry->size-1);
+                m_is_set = true;
             } else {
                 m_data = "";
             }
@@ -334,6 +415,7 @@ public:
     };
     void setData(const std::string & data) {
         m_data = data;
+        m_is_set = true;
     };
 
     Tag_STRING( const Constants::TagInfo & tag_info ) : 
@@ -350,14 +432,21 @@ private:
  */
 class Tag_UINT16_ARRAY : public Tag {
 public:
-    virtual void setTag (ExifData *ed) const override {
-        
+    virtual void setTag (ExifData *exif) const override {
+        if (m_is_set) {
+            ExifEntry *entry = createTag (exif, m_tag_info.ifd, static_cast<ExifTag>(m_tag_info.tag), sizeof (uint16_t) * m_data.size());
+            if (!entry) {
+                return;
+            }
+            memcpy (entry->data, m_data.data(), sizeof (uint16_t) * m_data.size());
+        }
     }
 
     virtual bool getTag (ExifData * ed) {
         ExifEntry *entry = exif_content_get_entry(ed->ifd[m_tag_info.ifd], static_cast<ExifTag>(m_tag_info.tag)); //points to exif data, do not delete.
         if (entry) {
             m_data = std::vector<uint16_t> (reinterpret_cast<uint16_t *> (entry->data), reinterpret_cast<uint16_t *> (entry->data) + entry->size/sizeof(uint16_t));
+            m_is_set = true;
         } else {
             return false;
         }
@@ -386,7 +475,23 @@ private:
 class Tag_UDOUBLE_ARRAY : public Tag{
 public:
     virtual void setTag (ExifData *exif) const override {
+        if (m_is_set) {
+            std::vector <ExifRational> temp_vec;
+            temp_vec.reserve (m_data.size());
 
+            for (const auto & elem : m_data) {
+                ExifRational val;
+                val.numerator = static_cast <uint32_t> (elem * 1E6);
+                val.denominator = 1000000;
+                temp_vec.push_back (val);
+            }
+
+            ExifEntry *entry = createTag (exif, m_tag_info.ifd, static_cast<ExifTag>(m_tag_info.tag), sizeof (ExifRational) * temp_vec.size());
+            if (!entry) {
+                return;
+            }
+            memcpy (entry->data, temp_vec.data(), sizeof (ExifRational) * temp_vec.size());
+        }
     }
 
     virtual bool getTag (ExifData * ed) {
@@ -399,6 +504,7 @@ public:
                 ExifRational * rat = &(reinterpret_cast<ExifRational*> (entry->data)[i]);
                 m_data.push_back(static_cast<double>(rat->numerator)/static_cast<double>(rat->denominator));
             }
+            m_is_set = true;
         } else {
             return false;
         }
@@ -409,6 +515,7 @@ public:
     };
     void setData(const std::vector <double> & data) {
         m_data = data;
+        m_is_set = true;
     };
 
     Tag_UDOUBLE_ARRAY( const Constants::TagInfo & tag_info ) : 
@@ -426,13 +533,20 @@ private:
 class Tag_DOUBLE_ARRAY : public Tag{
 public:
     virtual void setTag (ExifData *exif) const override {
-
+        if (m_is_set) {
+            ExifEntry *entry = createTag (exif, m_tag_info.ifd, static_cast<ExifTag>(m_tag_info.tag), sizeof (double) * m_data.size());
+            if (!entry) {
+                return;
+            }
+            memcpy (entry->data, m_data.data(), sizeof (double) * m_data.size());
+        }
     }
 
     virtual bool getTag (ExifData * ed) {
         ExifEntry *entry = exif_content_get_entry(ed->ifd[m_tag_info.ifd], static_cast<ExifTag>(m_tag_info.tag)); //points to exif data, do not delete.
         if (entry) {
             m_data = std::vector<double> (reinterpret_cast<double *> (entry->data), reinterpret_cast<double *> (entry->data) + entry->size / sizeof(double));
+            m_is_set = true;
         } else {
             return false;
         }
@@ -443,6 +557,7 @@ public:
     };
     void setData(const std::vector <double> & data) {
         m_data = data;
+        m_is_set = true;
     };
 
     Tag_DOUBLE_ARRAY( const Constants::TagInfo & tag_info ) : 
