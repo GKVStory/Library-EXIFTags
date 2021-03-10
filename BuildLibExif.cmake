@@ -15,11 +15,11 @@ configure_file("lib/config.h" "${CMAKE_CURRENT_SOURCE_DIR}/lib/libexif/config.h"
 configure_file("lib/_stdint.h" "${CMAKE_CURRENT_SOURCE_DIR}/lib/libexif/libexif/_stdint.h" COPYONLY)
 
 #apply patch
-if (!GIT_PATCH_RESULT)
-    execute_process(COMMAND git apply lib/tiff_support.patch --ignore-space-change --ignore-whitespace --directory=lib/libexif/
+
+execute_process(COMMAND git apply lib/tiff_support.patch --ignore-space-change --ignore-whitespace --directory=lib/libexif/
                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                     RESULT_VARIABLE GIT_PATCH_RESULT)
-endif()
+
 
 include_directories("lib/libexif/")
 
