@@ -8,6 +8,7 @@
  */
 #include <libexif/exif-data.h>
 #include <vector>
+#include <string>
 
 namespace tg {
 namespace tags {

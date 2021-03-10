@@ -42,7 +42,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     endif (ADDRESS_SANITIZE)
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
-include(BuildLibEXIF.cmake)
+include(BuildLibExif.cmake)
 include(Dependencies.cmake)
 include(ProjectFiles.cmake)
 include_directories(AFTER "${INCLUDE_PATH}")

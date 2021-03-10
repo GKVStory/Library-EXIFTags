@@ -14,6 +14,7 @@
 #include <string>
 #include <memory>
 #include <cmath>
+#include <cstring>
 
 #include "EXIFTags/TagConstants.h"
 
@@ -245,7 +246,6 @@ public:
     virtual bool getTag (ExifData * ed) {
         ExifEntry *entry = exif_content_get_entry(ed->ifd[m_tag_info.ifd], static_cast<ExifTag>(m_tag_info.tag)); //points to exif data, do not delete.
         if (entry) {
-            const ExifByteOrder o = exif_data_get_byte_order (entry->parent->parent);
             switch (entry->size) {
                 case 4: {
                     m_data = static_cast<uint8_t>(*(reinterpret_cast<uint32_t *> (entry->data)));
