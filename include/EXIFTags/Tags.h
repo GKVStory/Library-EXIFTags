@@ -44,12 +44,13 @@ public:
     bool loadHeader(const std::string & filename, std::string & error_message);
 
     /**
-     * @brief Generate an EXIF header to be placed into an image based on the classes data.
-     * @param vector of bytes, the image header data, returned by reference.
-     * @param string an error message returned by reference when there is a failure.
+     * @brief Generate an EXIF header to be placed into an image based on the classes data. 
+     * @param pointer [out] unique pointerto an array of characters, the image header data.
+     * @param unsigned [out] length of buffer in bytes.
+     * @param string [out] an error message returned by reference when there is a failure.
      * @return bool was the header generation successful
      */
-    bool generateHeader(std::vector <uint8_t> & image_header_data, std::string & error_message);
+    bool generateHeader(std::unique_ptr <unsigned char[], void (*)(void *)> & image_header_data, unsigned int & length, std::string & error_message);
 
     ///--------------------------------------------------------------------
     /// Accessors and associate enums

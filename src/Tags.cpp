@@ -69,12 +69,18 @@ bool Tags::loadHeader(const std::string & filename, std::string & error_message)
     return true;
 }
 
-bool Tags::generateHeader(std::vector <uint8_t> & image_header_data, std::string & error_message) {
+bool Tags::generateHeader(std::unique_ptr <unsigned char[], void (*)(void *)> & image_header_data, unsigned int & length, std::string & error_message) {
     ExifData *exif = exif_data_new();
 	if (!exif) {
 		error_message = ErrorMessages::memory_error;
 		return false;
 	}
+
+    exif_data_set_data_type(exif, EXIF_DATA_TYPE_COMPRESSED);
+	exif_data_set_byte_order(exif, Constants::DEFAULT_BYTE_ORDER);
+
+	/* Create the mandatory EXIF fields with default data */
+	exif_data_fix(exif);
 
     for (auto & tag: m_tags) {
         if (tag->isSet()) {
@@ -87,8 +93,21 @@ bool Tags::generateHeader(std::vector <uint8_t> & image_header_data, std::string
     }
 
     //TODO fill imageheaderdata
+    unsigned char *exif_data;
+	unsigned int exif_data_len;
+    exif_data_save_data(exif, &exif_data, &exif_data_len);
 
-    return false;
+    if (!exif_data) {
+        error_message = ErrorMessages::memory_error;
+        exif_data_unref(exif);
+        return false;
+    }
+
+    //The following gives ownership and management of the memory to the unique pointer.
+    image_header_data = std::unique_ptr<unsigned char[], void (*)(void *)> (exif_data, &std::free);
+
+    exif_data_unref(exif);
+    return true;
 }
 
 Tags::SubfileTypes Tags::subfileType () const {
