@@ -7,8 +7,8 @@ using namespace tags;
 
 const std::vector<Constants::TagInfo> Constants::TAG_INFO {
     TagInfo(EXIF_TAG_NEW_SUBFILE_TYPE, EXIF_IFD_0, sizeof(uint32_t), UINT32, false), //SUBFILE_TYPE,
-    TagInfo(EXIF_TAG_IMAGE_WIDTH, EXIF_IFD_0, sizeof(uint32_t), UINT32, false), //IMAGE_WIDTH,
-    TagInfo(EXIF_TAG_IMAGE_LENGTH, EXIF_IFD_0, sizeof(uint32_t), UINT32, false), //IMAGE_HEIGHT,
+    TagInfo(EXIF_TAG_IMAGE_WIDTH, EXIF_IFD_0, sizeof(uint16_t), UINT16, false), //IMAGE_WIDTH,
+    TagInfo(EXIF_TAG_IMAGE_LENGTH, EXIF_IFD_0, sizeof(uint16_t), UINT16, false), //IMAGE_HEIGHT,
                             //EXIF_TAG_BITS_PER_SAMPLE?
     TagInfo(EXIF_TAG_COMPRESSION, EXIF_IFD_0, sizeof(uint16_t), UINT16, false), //COMPRESSION,
     TagInfo(EXIF_TAG_PHOTOMETRIC_INTERPRETATION, EXIF_IFD_0, sizeof(uint16_t), UINT16, false), //PHOTOMETRIC_INTERPOLATION,

@@ -92,7 +92,6 @@ bool Tags::generateHeader(std::unique_ptr <unsigned char[], void (*)(void *)> & 
         }
     }
 
-    //TODO fill imageheaderdata
     unsigned char *exif_data;
 	unsigned int exif_data_len;
     exif_data_save_data(exif, &exif_data, &exif_data_len);
@@ -105,6 +104,7 @@ bool Tags::generateHeader(std::unique_ptr <unsigned char[], void (*)(void *)> & 
 
     //The following gives ownership and management of the memory to the unique pointer.
     image_header_data = std::unique_ptr<unsigned char[], void (*)(void *)> (exif_data, &std::free);
+    length = exif_data_len;
 
     FILE* pFile;
     pFile = fopen("file.binary", "wb");
@@ -123,26 +123,26 @@ Tags::SubfileTypes Tags::subfileType () const {
 }
 
 uint32_t Tags::imageWidth() const {
-    uint32_t width =  dynamic_cast<Tag_UINT32*>(m_tags[Constants::IMAGE_WIDTH].get())->getData();
+    uint32_t width =  dynamic_cast<Tag_UINT16*>(m_tags[Constants::IMAGE_WIDTH].get())->getData();
     if (width == 0) { //handles case of loading jpg without tiff headers
         width =  dynamic_cast<Tag_UINT16*>(m_tags[Constants::PIXEL_X_DIMENSION].get())->getData();
     }
     return width;
 }
 void Tags::imageWidth(uint32_t width) {
-    dynamic_cast<Tag_UINT32*>(m_tags[Constants::IMAGE_WIDTH].get())->setData(width);
+    dynamic_cast<Tag_UINT16*>(m_tags[Constants::IMAGE_WIDTH].get())->setData(width);
     dynamic_cast<Tag_UINT16*>(m_tags[Constants::PIXEL_X_DIMENSION].get())->setData(width);
 }
 
 uint32_t Tags::imageHeight() const {
-    uint32_t height =  dynamic_cast<Tag_UINT32*>(m_tags[Constants::IMAGE_HEIGHT].get())->getData();
+    uint32_t height =  dynamic_cast<Tag_UINT16*>(m_tags[Constants::IMAGE_HEIGHT].get())->getData();
     if (height == 0) { //handles case of loading jpg without tiff headers
         height =  dynamic_cast<Tag_UINT16*>(m_tags[Constants::PIXEL_Y_DIMENSION].get())->getData();
     }
     return height;
 }
 void Tags::imageHeight(uint32_t height) {
-    dynamic_cast<Tag_UINT32*>(m_tags[Constants::IMAGE_HEIGHT].get())->setData(height);
+    dynamic_cast<Tag_UINT16*>(m_tags[Constants::IMAGE_HEIGHT].get())->setData(height);
     dynamic_cast<Tag_UINT16*>(m_tags[Constants::PIXEL_Y_DIMENSION].get())->setData(height);
 }
 

@@ -12,7 +12,7 @@ namespace tg {
 namespace tags {
 
 TEST ( TagTest, UINT32) {
-    std::unique_ptr <Tag> tag = Tag::tagFactory(Constants::IMAGE_WIDTH);
+    std::unique_ptr <Tag> tag = Tag::tagFactory(Constants::IMAGE_NUMBER);
 
     GTEST_ASSERT_NE(tag, nullptr);
 

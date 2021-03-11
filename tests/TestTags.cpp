@@ -253,7 +253,7 @@ TEST ( TagsTest, Tags_generate_tag_and_reparse) {
     Tags tags;
     setTags(tags);
 
-    std::unique_ptr <unsigned char[], void (*)(void *)> data {nullptr, &std::free};
+    std::unique_ptr <unsigned char[], decltype(&std::free)> data {static_cast<unsigned char *>(nullptr), std::free};
     unsigned int data_length;
     std::string error_message;
 
