@@ -12,6 +12,8 @@
 namespace tg {
 namespace tags {
 
+class Tags; //forward declare
+
 class ImageHandler { 
 public:
 
@@ -23,6 +25,26 @@ public:
      * @return bool was the load successful?
      */
     static bool loadHeader(const std::string & filename, std::vector <uint8_t> & image_header_data, std::string & error_message);
+
+    /**
+     * Given a Tags object and an encoded jpeg image, apply the new exif tag object to the encoded image. 
+     * @param Tags [in] constant reference to the tag object.
+     * @param vector [in] encoded image data with existing header (what is output by cv::imencode)
+     * @param vector [out] reference to output image (contains new header and a copy of the original encoded image data)
+     * @param string [out] error message string.
+     * @return bool was the tagging successful?
+     */
+    static bool tagJpeg (const Tags & exif_tags, const std::vector <uint8_t> & encoded_image, std::vector<uint8_t> & output_image, std::string & error_message);
+
+    /**
+     * Given a Tags object and an encoded tiff image, apply the new exif tag object to the encoded image. 
+     * @param Tags [in] constant reference to the tag object.
+     * @param vector [in] encoded image data with existing header (what is output by cv::imencode or libtiff)
+     * @param vector [out] reference to output image (contains new header and a copy of the original encoded image data)
+     * @param string [out] error message string.
+     * @return bool was the tagging successful?
+     */
+    static bool tagTiff(const Tags & exif_tags, const std::vector <uint8_t> & encoded_image, std::vector<uint8_t> & output_image, std::string & error_message);
 
 private:
 

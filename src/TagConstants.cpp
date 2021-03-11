@@ -59,7 +59,7 @@ const std::vector<Constants::TagInfo> Constants::TAG_INFO {
     TagInfo(EXIF_TAG_GPS_LONGITUDE_REF, EXIF_IFD_GPS, 2, STRING, false), //GPS_LONGITUDE_REF, E/W
     TagInfo(EXIF_TAG_GPS_LONGITUDE, EXIF_IFD_GPS,  sizeof(double) * 3, UDOUBLE_ARRAY, false), //GPS_LONGITUDE,
     TagInfo(EXIF_TAG_GPS_ALTITUDE_REF, EXIF_IFD_GPS, sizeof(uint8_t), UINT8, false), //GPS_ALTITUDE_REF, 0 above, 1 below
-    TagInfo(EXIF_TAG_GPS_ALTITUDE, EXIF_IFD_GPS, sizeof(double), UDOUBLE, false), //GPS_ALTITUDE,
+    TagInfo(EXIF_TAG_GPS_ALTITUDE, EXIF_IFD_GPS, sizeof(double) * 1, UDOUBLE_ARRAY, false), //GPS_ALTITUDE, Making this an array is a hack to fix libexif's poor support of writing GPS tags.
 
     TagInfo(65000, EXIF_IFD_0, sizeof(uint16_t), UINT32, false), //PPS_TIME_UPPER.
     TagInfo(65001, EXIF_IFD_0, sizeof(uint16_t), UINT32, false), //PPS_TIME_LOWER,

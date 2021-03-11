@@ -106,6 +106,14 @@ bool Tags::generateHeader(std::unique_ptr <unsigned char[], void (*)(void *)> & 
     //The following gives ownership and management of the memory to the unique pointer.
     image_header_data = std::unique_ptr<unsigned char[], void (*)(void *)> (exif_data, &std::free);
 
+    FILE* pFile;
+    pFile = fopen("file.binary", "wb");
+       
+    fwrite(image_header_data.get(), 1, exif_data_len*sizeof(unsigned char), pFile);
+
+    fclose(pFile);
+
+
     exif_data_unref(exif);
     return true;
 }
@@ -424,7 +432,7 @@ void Tags::vehicleAltitude(double altitude) {
 
 Tags::LatitudeRefType Tags::latitudeRef() const {
     std::string ref = dynamic_cast<Tag_STRING*>(m_tags[Constants::GPS_LATITUDE_REF].get())->getData();
-    if (ref == "N") {
+    if (ref[0] == 'N') {
         return LatitudeRefType::LATITUDEREF_NORTH;
     }   else {
         return LatitudeRefType::LATITUDEREF_SOUTH;
@@ -487,14 +495,20 @@ Tags::AltitudeRefType Tags::altitudeRef() const {
     return static_cast<AltitudeRefType> (dynamic_cast<Tag_UINT8*>(m_tags[Constants::GPS_ALTITUDE_REF].get())->getData());
 }
 void Tags::altitudeRef(Tags::AltitudeRefType altitude_ref) {
-     dynamic_cast<Tag_UINT8*>(m_tags[Constants::GPS_ALTITUDE_REF].get())->setData(altitude_ref);
+    dynamic_cast<Tag_UINT8*>(m_tags[Constants::GPS_ALTITUDE_REF].get())->setData(altitude_ref);
 }
 
 double Tags::altitude() const {
-    return dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::GPS_ALTITUDE].get())->getData();
+    std::vector <double> temp = dynamic_cast<Tag_UDOUBLE_ARRAY*>(m_tags[Constants::GPS_ALTITUDE].get())->getData();
+    if (temp.size() > 0) {
+        return temp[0];
+    }
+    return 0.0;
 }
 void Tags::altitude(double alt){
-    dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::GPS_ALTITUDE].get())->setData(alt);
+    std::vector<double> temp;
+    temp.push_back(alt);
+    dynamic_cast<Tag_UDOUBLE_ARRAY*>(m_tags[Constants::GPS_ALTITUDE].get())->setData(temp);
 }
 
 uint64_t Tags::ppsTime() const {

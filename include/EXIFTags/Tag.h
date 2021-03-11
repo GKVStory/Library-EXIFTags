@@ -235,7 +235,7 @@ class Tag_UINT8 : public Tag {
 public:
     virtual void setTag (ExifData *exif) const override {
         if (m_is_set) {
-            ExifEntry *entry = initTag (exif, m_tag_info.ifd, static_cast<ExifTag>(m_tag_info.tag));
+            ExifEntry *entry = createTag (exif, m_tag_info.ifd, static_cast<ExifTag>(m_tag_info.tag), sizeof(m_data));
             if (!entry) {
                 return;
             }
@@ -399,7 +399,7 @@ public:
         ExifEntry *entry = exif_content_get_entry(ed->ifd[m_tag_info.ifd], static_cast<ExifTag>(m_tag_info.tag)); //points to exif data, do not delete.
         if (entry) {
             if (entry->size > 0) {
-                m_data = std::string (reinterpret_cast<char *> (entry->data), entry->size-1);
+                m_data = std::string (reinterpret_cast<char *> (entry->data), entry->size);
                 m_is_set = true;
             } else {
                 m_data = "";

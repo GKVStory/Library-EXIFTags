@@ -2,6 +2,7 @@
 //Copyright 2G Robotics Inc., 2021
 #include "EXIFTags/ImageHandler.h"
 #include "EXIFTags/TagConstants.h"
+#include "EXIFTags/Tags.h"
 
 #include <fstream>
 
@@ -43,3 +44,14 @@ bool ImageHandler::loadHeader(const std::string & filename, std::vector <uint8_t
     return true;
 }
 
+bool ImageHandler::tagJpeg (const Tags & exif_tags, const std::vector <uint8_t> & encoded_image, std::vector<uint8_t> & output_image, std::string & error_message) {
+
+    error_message = "Not implemented.";
+    return false;
+}
+
+bool ImageHandler::tagTiff(const Tags & exif_tags, const std::vector <uint8_t> & encoded_image, std::vector<uint8_t> & output_image, std::string & error_message) {
+
+    error_message = "Not implemented.";
+    return false;
+}
