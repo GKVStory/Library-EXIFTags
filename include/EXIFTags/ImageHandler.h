@@ -48,11 +48,12 @@ public:
 
 private:
 
-    /*! Magic number for TIFF files */
+    /*! Magic number for TIFF and JPEG files */
     static const unsigned char ExifHeader[6];
     static const unsigned char TIFFHeaderMotorola[4];
     static const unsigned char TIFFHeaderIntel[4];
     static const unsigned char JPEGHeaderStart[2];
+    static const unsigned char APP1[2];
     
 };
 

@@ -69,7 +69,7 @@ bool Tags::loadHeader(const std::string & filename, std::string & error_message)
     return true;
 }
 
-bool Tags::generateHeader(std::unique_ptr <unsigned char[], void (*)(void *)> & image_header_data, unsigned int & length, std::string & error_message) {
+bool Tags::generateHeader(std::unique_ptr <unsigned char[], void (*)(void *)> & image_header_data, unsigned int & length, std::string & error_message) const {
     ExifData *exif = exif_data_new();
 	if (!exif) {
 		error_message = ErrorMessages::memory_error;
@@ -106,13 +106,14 @@ bool Tags::generateHeader(std::unique_ptr <unsigned char[], void (*)(void *)> & 
     image_header_data = std::unique_ptr<unsigned char[], void (*)(void *)> (exif_data, &std::free);
     length = exif_data_len;
 
+    /* //Put int for debugging.
     FILE* pFile;
     pFile = fopen("file.binary", "wb");
        
     fwrite(image_header_data.get(), 1, exif_data_len*sizeof(unsigned char), pFile);
 
     fclose(pFile);
-
+    */
 
     exif_data_unref(exif);
     return true;

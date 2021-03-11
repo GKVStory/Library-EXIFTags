@@ -126,7 +126,7 @@ public:
     static const std::string DEFAULT_TIMESTAMP_FORMAT;
     static const std::string SECONDARY_TIMESTAMP_FORMAT;
     static const ExifByteOrder DEFAULT_BYTE_ORDER;
-
+    static const int MIN_IMAGE_SIZE;
 };
 
 class ErrorMessages {
@@ -135,6 +135,8 @@ public:
     static const std::string failed_file_load;
     static const std::string file_too_small;
     static const std::string memory_error;
+    static const std::string image_size_too_small;
+    static const std::string not_a_jpeg;
 };
 
 } //tags

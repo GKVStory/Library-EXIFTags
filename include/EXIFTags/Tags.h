@@ -50,7 +50,7 @@ public:
      * @param string [out] an error message returned by reference when there is a failure.
      * @return bool was the header generation successful
      */
-    bool generateHeader(std::unique_ptr <unsigned char[], void (*)(void *)> & image_header_data, unsigned int & length, std::string & error_message);
+    bool generateHeader(std::unique_ptr <unsigned char[], void (*)(void *)> & image_header_data, unsigned int & length, std::string & error_message) const;
 
     ///--------------------------------------------------------------------
     /// Accessors and associate enums

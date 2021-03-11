@@ -86,9 +86,13 @@ const std::vector <double> Constants::DEFAULT_DISTORTION = {0.0, 0.0, 0.0, 0.0, 
 const std::vector <double> Constants::DEFAULT_POSE = {0.0, 0.0, 0.0};
 const std::string Constants::DEFAULT_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%S";
 const ExifByteOrder Constants::DEFAULT_BYTE_ORDER = EXIF_BYTE_ORDER_INTEL;
+const int Constants::MIN_IMAGE_SIZE = 10;
+
 
 //Error messages
 const std::string ErrorMessages::failed_header_load = "Failed to load header.";
 const std::string ErrorMessages::failed_file_load = "Failed to load file: ";
 const std::string ErrorMessages::file_too_small = "File is too small to be an image file: ";
 const std::string ErrorMessages::memory_error = "Unable to allocate memory.";
+const std::string ErrorMessages::image_size_too_small = "Encoded image is too small.";
+const std::string ErrorMessages::not_a_jpeg = "Not a jpeg file";

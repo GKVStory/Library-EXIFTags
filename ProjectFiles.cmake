@@ -18,4 +18,5 @@ set(TEST_SRC
   "${TEST_SRC_PATH}/TestTags.cpp"
   "${TEST_SRC_PATH}/TestTag.cpp"
   "${TEST_SRC_PATH}/TestTagConstants.cpp"
+  "${TEST_SRC_PATH}/TestImageHandler.cpp"
 )
