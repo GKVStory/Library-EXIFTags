@@ -23,7 +23,9 @@ enum DataType {
     UDOUBLE,
     DOUBLE,
     STRING,
+    UINT32_ARRAY,
     UINT16_ARRAY,
+    UINT8_ARRAY,
     UDOUBLE_ARRAY,
     DOUBLE_ARRAY,
 };
@@ -37,8 +39,11 @@ enum SupportedTags {
         IMAGE_DESCRIPTION,
         MAKE,
         MODEL,
+        STRIP_OFFSETS,
         ORIENTATION,
         SAMPLES_PER_PIXEL,
+        ROWS_PER_STRIP,
+        STRIP_BYTE_COUNTS,
         PLANAR_CONFIGURATION,
         SOFTWARE,
         EXPOSURE_TIME,
@@ -137,6 +142,7 @@ public:
     static const std::string memory_error;
     static const std::string image_size_too_small;
     static const std::string not_a_jpeg;
+    static const std::string tiff_header_encoding_failed;
 };
 
 } //tags

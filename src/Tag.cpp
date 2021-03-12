@@ -19,8 +19,12 @@ std::unique_ptr<Tag> Tag::tagFactory (const Constants::SupportedTags &  tag) {
             return std::make_unique<Tag_DOUBLE> (Constants::TAG_INFO[tag]);
         case Constants::STRING:
             return std::make_unique<Tag_STRING> (Constants::TAG_INFO[tag]);
+		case Constants::UINT32_ARRAY:
+            return std::make_unique<Tag_UINT32_ARRAY> (Constants::TAG_INFO[tag]);
         case Constants::UINT16_ARRAY:
             return std::make_unique<Tag_UINT16_ARRAY> (Constants::TAG_INFO[tag]);
+		case Constants::UINT8_ARRAY:
+            return std::make_unique<Tag_UINT8_ARRAY> (Constants::TAG_INFO[tag]);
         case Constants::DOUBLE_ARRAY:
             return std::make_unique<Tag_DOUBLE_ARRAY> (Constants::TAG_INFO[tag]);
         case Constants::UDOUBLE_ARRAY:

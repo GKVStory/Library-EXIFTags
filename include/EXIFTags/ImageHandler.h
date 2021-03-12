@@ -38,13 +38,13 @@ public:
 
     /**
      * Given a Tags object and an encoded tiff image, apply the new exif tag object to the encoded image. 
-     * @param Tags [in] constant reference to the tag object.
+     * @param Tags [in] reference to the tag object. This value might be adjusted based on the settings in the encoded image
      * @param vector [in] encoded image data with existing header (what is output by cv::imencode or libtiff)
      * @param vector [out] reference to output image (contains new header and a copy of the original encoded image data)
      * @param string [out] error message string.
      * @return bool was the tagging successful?
      */
-    static bool tagTiff(const Tags & exif_tags, const std::vector <uint8_t> & encoded_image, std::vector<uint8_t> & output_image, std::string & error_message);
+    static bool tagTiff(Tags & exif_tags, const std::vector <uint8_t> & encoded_image, std::vector<uint8_t> & output_image, std::string & error_message);
 
 private:
 

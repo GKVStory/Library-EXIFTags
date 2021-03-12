@@ -428,6 +428,49 @@ private:
 };
 
 /**
+ * Tag for uint8 vector/array types
+ */
+class Tag_UINT8_ARRAY : public Tag {
+public:
+    virtual void setTag (ExifData *exif) const override {
+        if (m_is_set) {
+            ExifEntry *entry = createTag (exif, m_tag_info.ifd, static_cast<ExifTag>(m_tag_info.tag), sizeof (uint8_t) * m_data.size());
+            if (!entry) {
+                return;
+            }
+            memcpy (entry->data, m_data.data(), sizeof (uint8_t) * m_data.size());
+        }
+    }
+
+    virtual bool getTag (ExifData * ed) {
+        ExifEntry *entry = exif_content_get_entry(ed->ifd[m_tag_info.ifd], static_cast<ExifTag>(m_tag_info.tag)); //points to exif data, do not delete.
+        if (entry) {
+            m_data = std::vector<uint8_t> (reinterpret_cast<uint8_t *> (entry->data), reinterpret_cast<uint8_t *> (entry->data) + entry->size/sizeof(uint8_t));
+            m_is_set = true;
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    std::vector <uint8_t> getData () const {
+        return m_data;
+    };
+    void setData(const std::vector <uint8_t> & data) {
+        m_data = data;
+    };
+
+    Tag_UINT8_ARRAY( const Constants::TagInfo & tag_info ) : 
+        Tag(tag_info),
+        m_data() {}
+
+private:
+
+    std::vector <uint8_t> m_data;
+};
+
+
+/**
  * Tag for uint16 vector/array types
  */
 class Tag_UINT16_ARRAY : public Tag {
@@ -468,6 +511,49 @@ private:
 
     std::vector <uint16_t> m_data;
 };
+
+/**
+ * Tag for uint32 vector/array types
+ */
+class Tag_UINT32_ARRAY : public Tag {
+public:
+    virtual void setTag (ExifData *exif) const override {
+        if (m_is_set) {
+            ExifEntry *entry = createTag (exif, m_tag_info.ifd, static_cast<ExifTag>(m_tag_info.tag), sizeof (uint32_t) * m_data.size());
+            if (!entry) {
+                return;
+            }
+            memcpy (entry->data, m_data.data(), sizeof (uint32_t) * m_data.size());
+        }
+    }
+
+    virtual bool getTag (ExifData * ed) {
+        ExifEntry *entry = exif_content_get_entry(ed->ifd[m_tag_info.ifd], static_cast<ExifTag>(m_tag_info.tag)); //points to exif data, do not delete.
+        if (entry) {
+            m_data = std::vector<uint32_t> (reinterpret_cast<uint32_t *> (entry->data), reinterpret_cast<uint32_t *> (entry->data) + entry->size/sizeof(uint32_t));
+            m_is_set = true;
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    std::vector <uint32_t> getData () const {
+        return m_data;
+    };
+    void setData(const std::vector <uint32_t> & data) {
+        m_data = data;
+    };
+
+    Tag_UINT32_ARRAY( const Constants::TagInfo & tag_info ) : 
+        Tag(tag_info),
+        m_data() {}
+
+private:
+
+    std::vector <uint32_t> m_data;
+};
+
 
 /**
  * Tag for unsigned double array types

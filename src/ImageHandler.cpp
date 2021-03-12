@@ -108,14 +108,41 @@ bool ImageHandler::tagJpeg (const Tags & exif_tags, const std::vector <uint8_t> 
     return true;
 }
 
-bool ImageHandler::tagTiff(const Tags & exif_tags, const std::vector <uint8_t> & encoded_image, std::vector<uint8_t> & output_image, std::string & error_message) {
+bool ImageHandler::tagTiff(Tags & exif_tags, const std::vector <uint8_t> & encoded_image, std::vector<uint8_t> & output_image, std::string & error_message) {
 
     if (encoded_image.size() < static_cast<size_t>(Constants::MIN_IMAGE_SIZE)) {
         error_message = ErrorMessages::image_size_too_small;
         return false;
     }
 
+    Tags orig_tags;
+    if (!orig_tags.loadHeader(encoded_image, error_message)) {
+        return false;
+    }
 
-    error_message = "Not implemented.";
-    return false;
+    //copy essential fields from the original header to the new header, including the image data.
+    exif_tags.photometricInterpolation(orig_tags.photometricInterpolation());
+    exif_tags.samplesPerPixel(orig_tags.samplesPerPixel());
+    exif_tags.compression(orig_tags.compression());
+    //need to sync up rows per strip, strip offset and strip byte count. If we only support saving 2g images, then we only need the last two.
+
+
+    std::unique_ptr <unsigned char[], decltype(&std::free)> header_data {static_cast<unsigned char *>(nullptr), std::free};
+    unsigned int header_length;
+    if ( !exif_tags.generateHeader( header_data, header_length, error_message )) {
+        return false;
+    }
+
+    if (header_length < sizeof(ExifHeader)) {
+        error_message = ErrorMessages::tiff_header_encoding_failed;
+        return false;
+    }
+
+    output_image.clear();
+    output_image.reserve(header_length - 6);
+    for (unsigned int i = sizeof(ExifHeader); i < header_length; ++i) {
+        output_image.push_back(header_data[i]);
+    }
+
+    return true;
 }

@@ -107,7 +107,7 @@ bool Tags::generateHeader(std::unique_ptr <unsigned char[], void (*)(void *)> & 
     image_header_data = std::unique_ptr<unsigned char[], void (*)(void *)> (exif_data, &std::free);
     length = exif_data_len;
 
-    /* //Put int for debugging.
+    /* //Put in for debugging.
     FILE* pFile;
     pFile = fopen("file.binary", "wb");
        
@@ -180,6 +180,13 @@ void Tags::model(const std::string & model) {
     dynamic_cast<Tag_STRING*>(m_tags[Constants::MODEL].get())->setData(model);
 }
 
+std::vector <uint32_t> Tags::stripOffsets() const {
+    return dynamic_cast<Tag_UINT32_ARRAY*>(m_tags[Constants::STRIP_OFFSETS].get())->getData();
+}
+void Tags::stripOffsets(const std::vector <uint32_t> & offsets) {
+    dynamic_cast<Tag_UINT32_ARRAY*>(m_tags[Constants::STRIP_OFFSETS].get())->setData(offsets);
+}
+
 Tags::OrientationType Tags::orientation() const {
      return static_cast<OrientationType>(dynamic_cast<Tag_UINT16*>(m_tags[Constants::ORIENTATION].get())->getData());
 }
@@ -189,6 +196,20 @@ uint16_t Tags::samplesPerPixel () const {
 }
 void Tags::samplesPerPixel (uint16_t samples) {
     dynamic_cast<Tag_UINT16*>(m_tags[Constants::SAMPLES_PER_PIXEL].get())->setData(samples);
+}
+
+uint32_t Tags::rowsPerStrip() const {
+    return dynamic_cast<Tag_UINT32*>(m_tags[Constants::ROWS_PER_STRIP].get())->getData();
+}
+void Tags::rowsPerStrip(uint32_t rows_per_pixel) {
+    dynamic_cast<Tag_UINT32*>(m_tags[Constants::ROWS_PER_STRIP].get())->setData(rows_per_pixel);
+}
+
+std::vector <uint32_t> Tags::stripByteCount() const {
+    return dynamic_cast<Tag_UINT32_ARRAY*>(m_tags[Constants::STRIP_BYTE_COUNTS].get())->getData();
+}
+void Tags::stripByteCount(const std::vector<uint32_t> & byte_count) {
+    dynamic_cast<Tag_UINT32_ARRAY*>(m_tags[Constants::STRIP_BYTE_COUNTS].get())->setData(byte_count);
 }
 
 Tags::PlanarConfigurationType Tags::planarConfiguration() const {
