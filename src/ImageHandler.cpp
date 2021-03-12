@@ -17,6 +17,7 @@ const unsigned char ImageHandler::ExifHeader[6] = {0x45, 0x78, 0x69, 0x66, 0x00,
 const unsigned char ImageHandler::TIFFHeaderMotorola[4] = {'M', 'M', 0, 42};
 const unsigned char ImageHandler::TIFFHeaderIntel[4] = {'I', 'I', 42, 0};
 const unsigned char ImageHandler::JPEGHeaderStart[2] = {0xff, 0xd8};
+const unsigned char ImageHandler::APP0[2] = {0xff, 0xe0};
 const unsigned char ImageHandler::APP1[2] = {0xff, 0xe1};
 
 bool ImageHandler::loadHeader(const std::string & filename, std::vector <uint8_t> & image_header_data, std::string & error_message){ 
@@ -59,17 +60,26 @@ bool ImageHandler::tagJpeg (const Tags & exif_tags, const std::vector <uint8_t> 
         return false;
     }
 
-    auto start_header_offset = std::search (encoded_image.begin(), encoded_image.end(), std::begin(APP1), std::end(APP1));
-    uint16_t data_size = 0;
-    if (start_header_offset == encoded_image.end()) { //No app1 note
-        start_header_offset = encoded_image.begin();
-        start_header_offset += 2; //skip the header
-    } else {
-        data_size = ((*start_header_offset) << 8) + *(++start_header_offset);
+    auto start_header_offset = std::search (encoded_image.begin(), encoded_image.end(), std::begin(APP0), std::end(APP0));
+    if (start_header_offset == encoded_image.end()) {
+        error_message = ErrorMessages::not_a_jpeg;
+        return false;
     }
+    start_header_offset += 2;
+    uint16_t app0_offset = ((*start_header_offset) << 8) + *(++start_header_offset);
+    start_header_offset += app0_offset - 1; // move to end of APP0
 
-    auto end_header_offset = start_header_offset + data_size;
-
+    auto APP1_header_offset = std::search (encoded_image.begin(), encoded_image.end(), std::begin(APP1), std::end(APP1));
+    auto APP1_header_end = APP1_header_offset;
+    if (APP1_header_offset == encoded_image.end()) { //Skip the header app1 note (replace with ours)
+        APP1_header_offset = start_header_offset;
+        APP1_header_end = start_header_offset;
+    } else {
+        APP1_header_offset += 2;
+        uint16_t APP1_data_size =  ((*APP1_header_offset) << 8) + *(++APP1_header_offset);
+        APP1_header_offset -= 3;
+        APP1_header_end = APP1_header_offset + APP1_data_size + 2;
+    }
 
     std::unique_ptr <unsigned char[], decltype(&std::free)> header_data {static_cast<unsigned char *>(nullptr), std::free};
     unsigned int header_length;
@@ -80,13 +90,18 @@ bool ImageHandler::tagJpeg (const Tags & exif_tags, const std::vector <uint8_t> 
     output_image.clear();
     output_image.reserve( encoded_image.size() + header_length );
 
-    for (auto it = encoded_image.begin(); it != start_header_offset; ++it) {
+    for (auto it = encoded_image.begin(); it !=APP1_header_offset; ++it) {
         output_image.push_back(*it);
     }
+    for (size_t i = 0; i < 2; ++i) {
+        output_image.push_back (static_cast<uint8_t>(APP1[i]));
+    }
+    output_image.push_back( header_length >> 8);
+    output_image.push_back ( header_length & 0x00FF);
     for (size_t i = 0; i < header_length; ++i) {
         output_image.push_back (static_cast<uint8_t>(header_data[i]));
     }
-    for (auto it = end_header_offset; it != encoded_image.end(); ++it) {
+    for (auto it = APP1_header_end; it != encoded_image.end(); ++it) {
         output_image.push_back (*it);
     }
     

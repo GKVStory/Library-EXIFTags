@@ -39,4 +39,5 @@
 # Generated files
 tests/TestConstants.h
 *~
-
+test_data/testout.jpg
+test_data/testout.tif

@@ -53,6 +53,7 @@ private:
     static const unsigned char TIFFHeaderMotorola[4];
     static const unsigned char TIFFHeaderIntel[4];
     static const unsigned char JPEGHeaderStart[2];
+    static const unsigned char APP0[2];
     static const unsigned char APP1[2];
     
 };

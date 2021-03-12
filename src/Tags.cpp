@@ -76,6 +76,7 @@ bool Tags::generateHeader(std::unique_ptr <unsigned char[], void (*)(void *)> & 
 		return false;
 	}
 
+    exif_data_set_option(exif, EXIF_DATA_OPTION_FOLLOW_SPECIFICATION);
     exif_data_set_data_type(exif, EXIF_DATA_TYPE_COMPRESSED);
 	exif_data_set_byte_order(exif, Constants::DEFAULT_BYTE_ORDER);
 

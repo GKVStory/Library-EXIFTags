@@ -41,12 +41,7 @@ public:
         return testDataDir() + "testout.tif";
     };
 
-    static void setTags (Tags & tags);
-    static void testTags (const Tags & tags);
-
-};
-
-void TagsTestCommon::setTags (Tags & tags) {
+    static void setTags (Tags & tags) {
 
     tags.imageHeight(1024);
     tags.imageWidth(2048);
@@ -96,10 +91,9 @@ void TagsTestCommon::setTags (Tags & tags) {
     tags.altitudeRef(Tags::ALTITUDEREF_BELOW_SEA_LEVEL);
     tags.altitude(10.765);  
     tags.ppsTime(1614632629005011);
-}
+};
 
-
-void TagsTestCommon::testTags (const Tags & tags) {
+    static void testTags (const Tags & tags) {
     const std::vector<uint16_t> pixel_vec = {3600, 3700};
     const std::vector<double> nav_vec = {1.0, 2.0, 3.0, 4.0, 5.0, 1.0, 6.0, 7.0, 8.0, 9.0, 1.0, 11.0, 12.0, 13.0, 14.0, 1.0};
     const std::vector<double> cam_vec = {2000.0, 2001.0, 1036, 738.2};
@@ -154,7 +148,10 @@ void TagsTestCommon::testTags (const Tags & tags) {
     ASSERT_EQ(tags.altitudeRef(), Tags::ALTITUDEREF_BELOW_SEA_LEVEL);
     ASSERT_NEAR(tags.altitude(), 10.765, 0.0000001);
     //ASSERT_EQ(tags.ppsTime(), 1614632629005011); //This does not work with standard tags. Has to be done with arrays and buffers. See reasoning behind the altitude gps data.
-}
+};
+
+};
+
 
 } //tags
 } //tg

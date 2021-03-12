@@ -87,6 +87,9 @@ const std::vector<unsigned char> image_jpeg = {
   0x51, 0x45, 0x7f, 0xff, 0xd9
 };
 
+/* dimensions of image */
+const unsigned int image_jpg_x = 64;
+const unsigned int image_jpg_y = 64;
 
 /* raw EXIF header data */
 static const unsigned char exif_header[] = {
@@ -97,7 +100,12 @@ static const unsigned int exif_header_len = sizeof(exif_header);
 
 TEST ( TEST_ImageHandler, TestJPEG) {
     Tags tags;
+    
     TagsTestCommon::setTags(tags);
+    tags.imageHeight(image_jpg_x);
+    tags.imageWidth(image_jpg_y);
+    tags.compression(Tags::COMPRESSION_JPEG);
+    tags.colourSpace(Tags::COLOURSPACE_sRGB);
 
     std::vector <uint8_t> out_image;
     std::string error_message;
@@ -113,7 +121,30 @@ TEST ( TEST_ImageHandler, TestJPEG) {
     
     ASSERT_TRUE (new_tags.loadHeader(TagsTestCommon::jpegOutputFile(), error_message));
 
-    TagsTestCommon::testTags(new_tags);
+    ASSERT_EQ(tags.subfileType(), Tags::FULL_RESOLUTION_IMAGE);
+    ASSERT_EQ(tags.imageHeight(), image_jpg_x);
+    ASSERT_EQ(tags.imageWidth(), image_jpg_y);
+    ASSERT_EQ(tags.compression(), Tags::COMPRESSION_JPEG);
+    ASSERT_EQ(tags.photometricInterpolation(), Tags::PHOTOMETRIC_RGB);
+    ASSERT_EQ(tags.imageDescription(), "Test description!");
+    ASSERT_EQ(tags.make(), Constants::DEFAULT_MAKE);
+    ASSERT_EQ(tags.model(), "Test model!");
+    ASSERT_EQ(tags.orientation(), Tags::ORIENTATION_TOPLEFT);
+    ASSERT_EQ(tags.samplesPerPixel(), 3);
+    ASSERT_EQ(tags.planarConfiguration(), Tags::PLANARCONFIG_CONTIG);
+    ASSERT_EQ(tags.software(), "Test software!");
+    ASSERT_DOUBLE_EQ(tags.exposureTime(), 3.0);
+    ASSERT_DOUBLE_EQ(tags.fNumber(), 5.0);
+    ASSERT_EQ(tags.dateTime(), 1614632629005001);
+    ASSERT_DOUBLE_EQ(tags.subjectDistance(), 6.0);
+    ASSERT_EQ(tags.lightSource(), Tags::LIGHTSOURCE_BLUELED);
+    ASSERT_EQ(tags.flash(), Tags::FLASH_FIRED);
+    ASSERT_DOUBLE_EQ(tags.focalLength(), 1.2);
+    ASSERT_EQ(tags.colourSpace(), Tags::COLOURSPACE_sRGB);
+    ASSERT_DOUBLE_EQ(tags.flashEnergy(), 67.0);
+    ASSERT_EQ(tags.serialNumber(), "Test serial number");
+    ASSERT_EQ(tags.lensModel(), "Test lens model");
+
 }
 
 TEST (TEST_ImageHandler, TestTIFF) {
