@@ -127,7 +127,7 @@ TEST ( TEST_ImageHandler, TestJPEG) {
     ASSERT_EQ(new_tags.imageWidth(), image_jpg_y);
     ASSERT_EQ(new_tags.compression(), Tags::COMPRESSION_JPEG);
     ASSERT_EQ(new_tags.photometricInterpolation(), Tags::PHOTOMETRIC_RGB);
-    ASSERT_EQ(tags.colourSpace(), Tags::COLOURSPACE_sRGB);
+    ASSERT_EQ(new_tags.colourSpace(), Tags::COLOURSPACE_sRGB);
     TagsTestCommon::testTags(new_tags);
 
 }
