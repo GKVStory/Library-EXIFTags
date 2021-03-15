@@ -55,6 +55,7 @@ private:
     static const unsigned char JPEGHeaderStart[2];
     static const unsigned char APP0[2];
     static const unsigned char APP1[2];
+    static const unsigned char STRIP_OFFSET_TAG[8];
     
 };
 

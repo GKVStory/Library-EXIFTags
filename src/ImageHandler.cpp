@@ -19,6 +19,7 @@ const unsigned char ImageHandler::TIFFHeaderIntel[4] = {'I', 'I', 42, 0};
 const unsigned char ImageHandler::JPEGHeaderStart[2] = {0xff, 0xd8};
 const unsigned char ImageHandler::APP0[2] = {0xff, 0xe0};
 const unsigned char ImageHandler::APP1[2] = {0xff, 0xe1};
+const unsigned char ImageHandler::STRIP_OFFSET_TAG[8] = {0x11, 0x01, 0x04, 0x00, 0x01, 0x00, 0x00, 0x00};
 
 bool ImageHandler::loadHeader(const std::string & filename, std::vector <uint8_t> & image_header_data, std::string & error_message){ 
 
@@ -133,19 +134,9 @@ bool ImageHandler::tagTiff(Tags & exif_tags, const std::vector <uint8_t> & encod
     exif_tags.bitsPerSample(orig_tags.bitsPerSample());
 
     uint32_t offsets = orig_tags.stripOffsets();
-    uint32_t rows = orig_tags.rowsPerStrip();
     uint32_t strip_bytes = orig_tags.stripByteCount();
-    
+
     unsigned int header_length;
-    {
-        std::unique_ptr <unsigned char[], decltype(&std::free)> header_data {static_cast<unsigned char *>(nullptr), std::free};
-        if ( !exif_tags.generateHeader( header_data, header_length, error_message )) {
-            return false;
-        }
-    }
-
-    exif_tags.stripOffsets (header_length-6);
-
     std::unique_ptr <unsigned char[], decltype(&std::free)> header_data {static_cast<unsigned char *>(nullptr), std::free};
     if ( !exif_tags.generateHeader( header_data, header_length, error_message )) {
         return false;
@@ -164,6 +155,23 @@ bool ImageHandler::tagTiff(Tags & exif_tags, const std::vector <uint8_t> & encod
     for (unsigned int i = offsets; i < strip_bytes; ++i) {
         output_image.push_back(encoded_image[i]);
     }
+
+    //change the header offset value to the new position. This is faster to do manually than loading the header twice.
+    std::vector<uint8_t>::iterator strip_offset_tag_start = std::search (output_image.begin(), output_image.end(), std::begin(STRIP_OFFSET_TAG), std::end(STRIP_OFFSET_TAG));
+    if (strip_offset_tag_start == output_image.end()) {
+        error_message = ErrorMessages::tiff_header_encoding_failed;
+        return false;
+    }
+
+    auto data_offset = header_length - 6;
+    strip_offset_tag_start += 8;
+    *strip_offset_tag_start = data_offset & 0xff;
+    ++strip_offset_tag_start;
+    *strip_offset_tag_start = (data_offset & 0xff00) >> 8;
+    ++strip_offset_tag_start;
+    *strip_offset_tag_start = (data_offset & 0xff0000) >> 16;
+    ++strip_offset_tag_start;
+    *strip_offset_tag_start = (data_offset & 0xff0000000) >> 24;
 
     return true;
 }

@@ -116,7 +116,7 @@ public:
     ASSERT_DOUBLE_EQ(tags.flashEnergy(), 67.0);
     ASSERT_EQ(tags.serialNumber(), "Test serial number");
     ASSERT_EQ(tags.lensModel(), "Test lens model");
-    /* 2G tags not supported yet.
+     
     ASSERT_DOUBLE_EQ(tags.indexOfRefraction(), 1.345);
     ASSERT_DOUBLE_EQ(tags.viewportIndex(), 1.4);
     ASSERT_DOUBLE_EQ(tags.viewportThickness(), 0.25);
@@ -134,14 +134,14 @@ public:
     ASSERT_EQ(tags.distortion(), dist_vec);
     ASSERT_EQ(tags.pose(), pose_vec);
     ASSERT_DOUBLE_EQ(tags.vehicleAltitude(), 10.87);
-    */
+    
     ASSERT_EQ(tags.latitudeRef(), Tags::LATITUDEREF_SOUTH);
     ASSERT_NEAR(tags.latitude(), 83.1245678, 0.000001);
     ASSERT_EQ(tags.longitudeRef(), Tags::LONGITUDEREF_WEST);
     ASSERT_NEAR(tags.longitude(), 43.67890, 0.0000001);
     ASSERT_EQ(tags.altitudeRef(), Tags::ALTITUDEREF_BELOW_SEA_LEVEL);
     ASSERT_NEAR(tags.altitude(), 10.765, 0.0000001);
-    //ASSERT_EQ(tags.ppsTime(), 1614632629005011); //This does not work with standard tags. Has to be done with arrays and buffers. See reasoning behind the altitude gps data.
+    ASSERT_EQ(tags.ppsTime(), 1614632629005011); //This does not work with standard tags. Has to be done with arrays and buffers. See reasoning behind the altitude gps data.
 };
 
 };

@@ -191,6 +191,16 @@ public:
             if (!entry) {
                 return;
             }
+            if (entry->format = EXIF_FORMAT_UNDEFINED) {
+                entry->components = 1;
+		        entry->format = EXIF_FORMAT_SHORT;
+		        entry->size = exif_format_get_size (entry->format) * entry->components;
+		        entry->data = reinterpret_cast<unsigned char *> (exif_entry_alloc (entry, entry->size));
+		        if (!entry->data) { 
+                    clear_entry(entry); 
+                    return;
+                }
+            }
             exif_set_short (entry->data, Constants::DEFAULT_BYTE_ORDER, m_data);
         }
     }
@@ -313,6 +323,16 @@ public:
             ExifEntry *entry = initTag (exif, m_tag_info.ifd, static_cast<ExifTag>(m_tag_info.tag));
             if (!entry) {
                 return;
+            }
+            if (entry->format == EXIF_FORMAT_UNDEFINED) {
+                entry->components = 1;
+		        entry->format = EXIF_FORMAT_RATIONAL;
+		        entry->size = exif_format_get_size (entry->format) * entry->components;
+		        entry->data = reinterpret_cast <unsigned char *> (exif_entry_alloc (entry, entry->size));
+		        if (!entry->data) { 
+                    clear_entry(entry); 
+                    return;
+                }
             }
             ExifRational val;
             val.numerator = static_cast<uint32_t> (m_data*1E6);
