@@ -191,7 +191,7 @@ public:
             if (!entry) {
                 return;
             }
-            if (entry->format = EXIF_FORMAT_UNDEFINED) {
+            if (entry->format == EXIF_FORMAT_UNDEFINED) {
                 entry->components = 1;
 		        entry->format = EXIF_FORMAT_SHORT;
 		        entry->size = exif_format_get_size (entry->format) * entry->components;
