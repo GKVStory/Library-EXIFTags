@@ -23,6 +23,10 @@ TEST ( TagsTest, GenerateEmptyTagsClass_CheckDefaultBehaviour) {
     tags.imageWidth(2048);
     ASSERT_EQ(tags.imageWidth(), 2048);
 
+    ASSERT_EQ(tags.bitsPerSample(), 1);
+    tags.bitsPerSample(3);
+    ASSERT_EQ(tags.bitsPerSample(), 3);
+
     ASSERT_EQ(tags.compression(), Tags::COMPRESSION_NONE);
     tags.compression(Tags::COMPRESSION_JPEG);
     ASSERT_EQ(tags.compression(), Tags::COMPRESSION_JPEG);
@@ -41,11 +45,24 @@ TEST ( TagsTest, GenerateEmptyTagsClass_CheckDefaultBehaviour) {
     tags.model("Test model!");
     ASSERT_EQ(tags.model(), "Test model!");
 
+    ASSERT_EQ(tags.stripOffsets(), 0);
+    tags.stripOffsets(440);
+    ASSERT_EQ(tags.stripOffsets(), 440);
+
     ASSERT_EQ(tags.orientation(), Tags::ORIENTATION_TOPLEFT);
 
     ASSERT_EQ(tags.samplesPerPixel(), 1);
     tags.samplesPerPixel(3);
     ASSERT_EQ(tags.samplesPerPixel(), 3);
+
+    ASSERT_EQ(tags.rowsPerStrip(), 0);
+    tags.rowsPerStrip(56);
+    ASSERT_EQ(tags.rowsPerStrip(), 56);
+
+    ASSERT_EQ(tags.stripByteCount(), 0);
+    tags.stripByteCount(1025);
+    ASSERT_EQ(tags.stripByteCount(), 1025);
+
 
     ASSERT_EQ(tags.planarConfiguration(), Tags::PLANARCONFIG_CONTIG);
 

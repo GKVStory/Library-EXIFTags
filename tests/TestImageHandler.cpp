@@ -5,6 +5,7 @@
 #include "EXIFTags/Tags.h"
 #include "EXIFTags/ImageHandler.h"
 #include "TestConstants.h"
+#include <fstream>
 #include <cstdint>
 #include <string>
 
@@ -121,29 +122,29 @@ TEST ( TEST_ImageHandler, TestJPEG) {
     
     ASSERT_TRUE (new_tags.loadHeader(TagsTestCommon::jpegOutputFile(), error_message));
 
-    ASSERT_EQ(tags.subfileType(), Tags::FULL_RESOLUTION_IMAGE);
-    ASSERT_EQ(tags.imageHeight(), image_jpg_x);
-    ASSERT_EQ(tags.imageWidth(), image_jpg_y);
-    ASSERT_EQ(tags.compression(), Tags::COMPRESSION_JPEG);
-    ASSERT_EQ(tags.photometricInterpolation(), Tags::PHOTOMETRIC_RGB);
-    ASSERT_EQ(tags.imageDescription(), "Test description!");
-    ASSERT_EQ(tags.make(), Constants::DEFAULT_MAKE);
-    ASSERT_EQ(tags.model(), "Test model!");
-    ASSERT_EQ(tags.orientation(), Tags::ORIENTATION_TOPLEFT);
-    ASSERT_EQ(tags.samplesPerPixel(), 3);
-    ASSERT_EQ(tags.planarConfiguration(), Tags::PLANARCONFIG_CONTIG);
-    ASSERT_EQ(tags.software(), "Test software!");
-    ASSERT_DOUBLE_EQ(tags.exposureTime(), 3.0);
-    ASSERT_DOUBLE_EQ(tags.fNumber(), 5.0);
-    ASSERT_EQ(tags.dateTime(), 1614632629005001);
-    ASSERT_DOUBLE_EQ(tags.subjectDistance(), 6.0);
-    ASSERT_EQ(tags.lightSource(), Tags::LIGHTSOURCE_BLUELED);
-    ASSERT_EQ(tags.flash(), Tags::FLASH_FIRED);
-    ASSERT_DOUBLE_EQ(tags.focalLength(), 1.2);
-    ASSERT_EQ(tags.colourSpace(), Tags::COLOURSPACE_sRGB);
-    ASSERT_DOUBLE_EQ(tags.flashEnergy(), 67.0);
-    ASSERT_EQ(tags.serialNumber(), "Test serial number");
-    ASSERT_EQ(tags.lensModel(), "Test lens model");
+    ASSERT_EQ(new_tags.subfileType(), Tags::FULL_RESOLUTION_IMAGE);
+    ASSERT_EQ(new_tags.imageHeight(), image_jpg_x);
+    ASSERT_EQ(new_tags.imageWidth(), image_jpg_y);
+    ASSERT_EQ(new_tags.compression(), Tags::COMPRESSION_JPEG);
+    ASSERT_EQ(new_tags.photometricInterpolation(), Tags::PHOTOMETRIC_RGB);
+    ASSERT_EQ(new_tags.imageDescription(), "Test description!");
+    ASSERT_EQ(new_tags.make(), Constants::DEFAULT_MAKE);
+    ASSERT_EQ(new_tags.model(), "Test model!");
+    ASSERT_EQ(new_tags.orientation(), Tags::ORIENTATION_TOPLEFT);
+    ASSERT_EQ(new_tags.samplesPerPixel(), 3);
+    ASSERT_EQ(new_tags.planarConfiguration(), Tags::PLANARCONFIG_CONTIG);
+    ASSERT_EQ(new_tags.software(), "Test software!");
+    ASSERT_DOUBLE_EQ(new_tags.exposureTime(), 3.0);
+    ASSERT_DOUBLE_EQ(new_tags.fNumber(), 5.0);
+    ASSERT_EQ(new_tags.dateTime(), 1614632629005001);
+    ASSERT_DOUBLE_EQ(new_tags.subjectDistance(), 6.0);
+    ASSERT_EQ(new_tags.lightSource(), Tags::LIGHTSOURCE_BLUELED);
+    ASSERT_EQ(new_tags.flash(), Tags::FLASH_FIRED);
+    ASSERT_DOUBLE_EQ(new_tags.focalLength(), 1.2);
+    ASSERT_EQ(new_tags.colourSpace(), Tags::COLOURSPACE_sRGB);
+    ASSERT_DOUBLE_EQ(new_tags.flashEnergy(), 67.0);
+    ASSERT_EQ(new_tags.serialNumber(), "Test serial number");
+    ASSERT_EQ(new_tags.lensModel(), "Test lens model");
 
 }
 
@@ -154,7 +155,15 @@ TEST (TEST_ImageHandler, TestTIFF) {
     std::vector <uint8_t> out_image;
     std::string error_message;
 
-    ASSERT_TRUE(ImageHandler::tagTiff(tags, image_jpeg, out_image, error_message));
+    std::vector<uint8_t> image_tiff;
+
+    std::ifstream infile (TagsTestCommon::testTifOld2g(), std::ios::binary | std::ios::ate );
+    std::streamsize file_size = infile.tellg();
+    infile.seekg(0, std::ios::beg);
+
+    image_tiff.resize(static_cast<unsigned int>(file_size));
+    infile.read(reinterpret_cast<char *>(image_tiff.data()), file_size );
+    ASSERT_TRUE(ImageHandler::tagTiff(tags, image_tiff, out_image, error_message));
 
     FILE* pFile;
     pFile = fopen(TagsTestCommon::tiffOutputFile().c_str(), "wb");      
@@ -165,7 +174,28 @@ TEST (TEST_ImageHandler, TestTIFF) {
     
     ASSERT_TRUE (new_tags.loadHeader(TagsTestCommon::tiffOutputFile(), error_message));
 
-    TagsTestCommon::testTags(new_tags);
+    ASSERT_EQ(new_tags.subfileType(), Tags::FULL_RESOLUTION_IMAGE);
+    ASSERT_EQ(new_tags.imageHeight(), 2056);
+    ASSERT_EQ(new_tags.imageWidth(), 2464);
+    ASSERT_EQ(new_tags.compression(), Tags::COMPRESSION_NONE);
+    ASSERT_EQ(new_tags.photometricInterpolation(), Tags::PHOTOMETRIC_MINISBLACK);
+    ASSERT_EQ(new_tags.imageDescription(), "Test description!");
+    ASSERT_EQ(new_tags.make(), Constants::DEFAULT_MAKE);
+    ASSERT_EQ(new_tags.model(), "Test model!");
+    ASSERT_EQ(new_tags.orientation(), Tags::ORIENTATION_TOPLEFT);
+    ASSERT_EQ(new_tags.samplesPerPixel(), 1);
+    ASSERT_EQ(new_tags.planarConfiguration(), Tags::PLANARCONFIG_CONTIG);
+    ASSERT_EQ(new_tags.software(), "Test software!");
+    ASSERT_DOUBLE_EQ(new_tags.exposureTime(), 3.0);
+    ASSERT_DOUBLE_EQ(new_tags.fNumber(), 5.0);
+    ASSERT_EQ(new_tags.dateTime(), 1614632629005001);
+    ASSERT_DOUBLE_EQ(new_tags.subjectDistance(), 6.0);
+    ASSERT_EQ(new_tags.lightSource(), Tags::LIGHTSOURCE_BLUELED);
+    ASSERT_EQ(new_tags.flash(), Tags::FLASH_FIRED);
+    ASSERT_DOUBLE_EQ(new_tags.focalLength(), 1.2);
+    ASSERT_DOUBLE_EQ(new_tags.flashEnergy(), 67.0);
+    ASSERT_EQ(new_tags.serialNumber(), "Test serial number");
+    ASSERT_EQ(new_tags.lensModel(), "Test lens model");
 }
 
 }

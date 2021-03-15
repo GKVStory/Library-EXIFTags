@@ -125,10 +125,28 @@ bool ImageHandler::tagTiff(Tags & exif_tags, const std::vector <uint8_t> & encod
     exif_tags.samplesPerPixel(orig_tags.samplesPerPixel());
     exif_tags.compression(orig_tags.compression());
     //need to sync up rows per strip, strip offset and strip byte count. If we only support saving 2g images, then we only need the last two.
+    exif_tags.stripByteCount(orig_tags.stripByteCount());
+    exif_tags.stripOffsets (orig_tags.stripOffsets());
+    exif_tags.imageWidth(orig_tags.imageWidth());
+    exif_tags.imageHeight(orig_tags.imageHeight());
+    exif_tags.samplesPerPixel(orig_tags.samplesPerPixel());
+    exif_tags.bitsPerSample(orig_tags.bitsPerSample());
 
+    uint32_t offsets = orig_tags.stripOffsets();
+    uint32_t rows = orig_tags.rowsPerStrip();
+    uint32_t strip_bytes = orig_tags.stripByteCount();
+    
+    unsigned int header_length;
+    {
+        std::unique_ptr <unsigned char[], decltype(&std::free)> header_data {static_cast<unsigned char *>(nullptr), std::free};
+        if ( !exif_tags.generateHeader( header_data, header_length, error_message )) {
+            return false;
+        }
+    }
+
+    exif_tags.stripOffsets (header_length-6);
 
     std::unique_ptr <unsigned char[], decltype(&std::free)> header_data {static_cast<unsigned char *>(nullptr), std::free};
-    unsigned int header_length;
     if ( !exif_tags.generateHeader( header_data, header_length, error_message )) {
         return false;
     }
@@ -139,9 +157,12 @@ bool ImageHandler::tagTiff(Tags & exif_tags, const std::vector <uint8_t> & encod
     }
 
     output_image.clear();
-    output_image.reserve(header_length - 6);
+    output_image.reserve(header_length - 6 + strip_bytes);
     for (unsigned int i = sizeof(ExifHeader); i < header_length; ++i) {
         output_image.push_back(header_data[i]);
+    }
+    for (unsigned int i = offsets; i < strip_bytes; ++i) {
+        output_image.push_back(encoded_image[i]);
     }
 
     return true;

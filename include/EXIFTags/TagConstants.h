@@ -34,6 +34,7 @@ enum SupportedTags {
         SUBFILE_TYPE,
         IMAGE_WIDTH,
         IMAGE_HEIGHT,
+        BITS_PER_SAMPLE,
         COMPRESSION,
         PHOTOMETRIC_INTERPOLATION,
         IMAGE_DESCRIPTION,
@@ -143,6 +144,7 @@ public:
     static const std::string image_size_too_small;
     static const std::string not_a_jpeg;
     static const std::string tiff_header_encoding_failed;
+    static const std::string unsupported_tiff_format;
 };
 
 } //tags

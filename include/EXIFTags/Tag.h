@@ -10,6 +10,7 @@
  */
 
 #include <libexif/exif-data.h>
+#include <libexif/exif-entry.h>
 #include <vector>
 #include <string>
 #include <memory>
@@ -20,6 +21,7 @@
 
 /* byte order to use in the EXIF block */
 #define FILE_BYTE_ORDER EXIF_BYTE_ORDER_INTEL
+
 
 namespace tg {
 namespace tags {
@@ -115,6 +117,18 @@ public:
             if (!entry) {
                 return;
             }
+
+            if (entry->format == EXIF_FORMAT_UNDEFINED ) {
+                entry->components = 1;
+		        entry->format = EXIF_FORMAT_LONG;
+		        entry->size = exif_format_get_size (entry->format) * entry->components;
+		        entry->data = reinterpret_cast <unsigned char *> (exif_entry_alloc (entry, entry->size));
+		        if (!entry->data) { 
+                    clear_entry(entry); 
+                    return; 
+                }
+            }
+
             exif_set_long (entry->data, Constants::DEFAULT_BYTE_ORDER, m_data);
         }
     }
@@ -458,6 +472,7 @@ public:
     };
     void setData(const std::vector <uint8_t> & data) {
         m_data = data;
+        m_is_set = true;
     };
 
     Tag_UINT8_ARRAY( const Constants::TagInfo & tag_info ) : 
@@ -501,6 +516,7 @@ public:
     };
     void setData(const std::vector <uint16_t> & data) {
         m_data = data;
+        m_is_set = true;
     };
 
     Tag_UINT16_ARRAY( const Constants::TagInfo & tag_info ) : 
@@ -543,6 +559,7 @@ public:
     };
     void setData(const std::vector <uint32_t> & data) {
         m_data = data;
+        m_is_set = true;
     };
 
     Tag_UINT32_ARRAY( const Constants::TagInfo & tag_info ) : 

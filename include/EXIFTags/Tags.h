@@ -70,6 +70,9 @@ public:
     uint32_t imageHeight() const;
     void imageHeight(uint32_t height); 
 
+    uint16_t bitsPerSample() const;
+    void bitsPerSample( uint16_t bits );
+
     enum CompressionType {
         COMPRESSION_NONE = 1,
         COMPRESSION_CCITTRLE = 2,
@@ -124,8 +127,8 @@ public:
     std::string model() const;
     void model(const std::string & model);
 
-    std::vector <uint32_t> stripOffsets() const;
-    void stripOffsets(const std::vector <uint32_t> & offsets);
+    uint32_t stripOffsets() const;
+    void stripOffsets(uint32_t offsets);
 
     enum OrientationType {
         ORIENTATION_TOPLEFT = 1,
@@ -145,8 +148,8 @@ public:
     uint32_t rowsPerStrip() const;
     void rowsPerStrip(uint32_t rows_per_pixel);
 
-    std::vector <uint32_t> stripByteCount() const;
-    void stripByteCount(const std::vector<uint32_t> & byte_count);
+    uint32_t stripByteCount() const;
+    void stripByteCount(uint32_t byte_count);
 
     enum PlanarConfigurationType {
         PLANARCONFIG_CONTIG = 1,
