@@ -127,24 +127,8 @@ TEST ( TEST_ImageHandler, TestJPEG) {
     ASSERT_EQ(new_tags.imageWidth(), image_jpg_y);
     ASSERT_EQ(new_tags.compression(), Tags::COMPRESSION_JPEG);
     ASSERT_EQ(new_tags.photometricInterpolation(), Tags::PHOTOMETRIC_RGB);
-    ASSERT_EQ(new_tags.imageDescription(), "Test description!");
-    ASSERT_EQ(new_tags.make(), Constants::DEFAULT_MAKE);
-    ASSERT_EQ(new_tags.model(), "Test model!");
-    ASSERT_EQ(new_tags.orientation(), Tags::ORIENTATION_TOPLEFT);
-    ASSERT_EQ(new_tags.samplesPerPixel(), 3);
-    ASSERT_EQ(new_tags.planarConfiguration(), Tags::PLANARCONFIG_CONTIG);
-    ASSERT_EQ(new_tags.software(), "Test software!");
-    ASSERT_DOUBLE_EQ(new_tags.exposureTime(), 3.0);
-    ASSERT_DOUBLE_EQ(new_tags.fNumber(), 5.0);
-    ASSERT_EQ(new_tags.dateTime(), 1614632629005001);
-    ASSERT_DOUBLE_EQ(new_tags.subjectDistance(), 6.0);
-    ASSERT_EQ(new_tags.lightSource(), Tags::LIGHTSOURCE_BLUELED);
-    ASSERT_EQ(new_tags.flash(), Tags::FLASH_FIRED);
-    ASSERT_DOUBLE_EQ(new_tags.focalLength(), 1.2);
-    ASSERT_EQ(new_tags.colourSpace(), Tags::COLOURSPACE_sRGB);
-    ASSERT_DOUBLE_EQ(new_tags.flashEnergy(), 67.0);
-    ASSERT_EQ(new_tags.serialNumber(), "Test serial number");
-    ASSERT_EQ(new_tags.lensModel(), "Test lens model");
+    ASSERT_EQ(tags.colourSpace(), Tags::COLOURSPACE_sRGB);
+    TagsTestCommon::testTags(new_tags);
 
 }
 
@@ -179,23 +163,7 @@ TEST (TEST_ImageHandler, TestTIFF) {
     ASSERT_EQ(new_tags.imageWidth(), 2464);
     ASSERT_EQ(new_tags.compression(), Tags::COMPRESSION_NONE);
     ASSERT_EQ(new_tags.photometricInterpolation(), Tags::PHOTOMETRIC_MINISBLACK);
-    ASSERT_EQ(new_tags.imageDescription(), "Test description!");
-    ASSERT_EQ(new_tags.make(), Constants::DEFAULT_MAKE);
-    ASSERT_EQ(new_tags.model(), "Test model!");
-    ASSERT_EQ(new_tags.orientation(), Tags::ORIENTATION_TOPLEFT);
-    ASSERT_EQ(new_tags.samplesPerPixel(), 1);
-    ASSERT_EQ(new_tags.planarConfiguration(), Tags::PLANARCONFIG_CONTIG);
-    ASSERT_EQ(new_tags.software(), "Test software!");
-    ASSERT_DOUBLE_EQ(new_tags.exposureTime(), 3.0);
-    ASSERT_DOUBLE_EQ(new_tags.fNumber(), 5.0);
-    ASSERT_EQ(new_tags.dateTime(), 1614632629005001);
-    ASSERT_DOUBLE_EQ(new_tags.subjectDistance(), 6.0);
-    ASSERT_EQ(new_tags.lightSource(), Tags::LIGHTSOURCE_BLUELED);
-    ASSERT_EQ(new_tags.flash(), Tags::FLASH_FIRED);
-    ASSERT_DOUBLE_EQ(new_tags.focalLength(), 1.2);
-    ASSERT_DOUBLE_EQ(new_tags.flashEnergy(), 67.0);
-    ASSERT_EQ(new_tags.serialNumber(), "Test serial number");
-    ASSERT_EQ(new_tags.lensModel(), "Test lens model");
+    TagsTestCommon::testTags(new_tags);
 }
 
 }

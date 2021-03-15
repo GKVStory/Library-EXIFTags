@@ -100,15 +100,10 @@ public:
     const std::vector<double> dist_vec = {-0.1, 0.2, -0.3, 0.5, -0.5};
     const std::vector<double> pose_vec = {1.0, 2.3, 3.4};
     ASSERT_EQ(tags.subfileType(), Tags::FULL_RESOLUTION_IMAGE);
-    ASSERT_EQ(tags.imageHeight(), 1024);
-    ASSERT_EQ(tags.imageWidth(), 2048);
-    ASSERT_EQ(tags.compression(), Tags::COMPRESSION_NONE);
-    ASSERT_EQ(tags.photometricInterpolation(), Tags::PHOTOMETRIC_RGB);
     ASSERT_EQ(tags.imageDescription(), "Test description!");
     ASSERT_EQ(tags.make(), Constants::DEFAULT_MAKE);
     ASSERT_EQ(tags.model(), "Test model!");
     ASSERT_EQ(tags.orientation(), Tags::ORIENTATION_TOPLEFT);
-    ASSERT_EQ(tags.samplesPerPixel(), 3);
     ASSERT_EQ(tags.planarConfiguration(), Tags::PLANARCONFIG_CONTIG);
     ASSERT_EQ(tags.software(), "Test software!");
     ASSERT_DOUBLE_EQ(tags.exposureTime(), 3.0);
@@ -118,7 +113,6 @@ public:
     ASSERT_EQ(tags.lightSource(), Tags::LIGHTSOURCE_BLUELED);
     ASSERT_EQ(tags.flash(), Tags::FLASH_FIRED);
     ASSERT_DOUBLE_EQ(tags.focalLength(), 1.2);
-    ASSERT_EQ(tags.colourSpace(), Tags::COLOURSPACE_ADOBE_RGB);
     ASSERT_DOUBLE_EQ(tags.flashEnergy(), 67.0);
     ASSERT_EQ(tags.serialNumber(), "Test serial number");
     ASSERT_EQ(tags.lensModel(), "Test lens model");
