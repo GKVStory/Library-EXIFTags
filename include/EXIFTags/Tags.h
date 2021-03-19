@@ -123,6 +123,7 @@ public:
     void imageDescription(const std::string & desc);
 
     std::string make() const;
+    void make(const std::string & make);
 
     std::string model() const;
     void model(const std::string & model);
@@ -339,7 +340,7 @@ public:
 private:
 
     //storage for the different tags supported by 2G.
-    std::vector <std::unique_ptr<Tag>> m_tags;
+    std::vector <std::shared_ptr<Tag>> m_tags;
     
     /**
      * @brief handle reading the exif data into the internal data structure.

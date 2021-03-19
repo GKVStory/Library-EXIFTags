@@ -46,13 +46,14 @@ public:
      */
     static bool tagTiff(Tags & exif_tags, const std::vector <uint8_t> & encoded_image, std::vector<uint8_t> & output_image, std::string & error_message);
 
+    static const unsigned char JPEGHeaderStart[2];
+
 private:
 
     /*! Magic number for TIFF and JPEG files */
     static const unsigned char ExifHeader[6];
     static const unsigned char TIFFHeaderMotorola[4];
     static const unsigned char TIFFHeaderIntel[4];
-    static const unsigned char JPEGHeaderStart[2];
     static const unsigned char APP0[2];
     static const unsigned char APP1[2];
     static const unsigned char STRIP_OFFSET_TAG[8];

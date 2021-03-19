@@ -180,6 +180,10 @@ void Tags::imageDescription(const std::string & desc) {
 std::string Tags::make() const {
     return dynamic_cast<Tag_STRING*>(m_tags[Constants::MAKE].get())->getData();
 }
+void Tags::make(const std::string & make) {
+    dynamic_cast<Tag_STRING*>(m_tags[Constants::MAKE].get())->setData(make);
+}
+
 
 std::string Tags::model() const{
     return dynamic_cast<Tag_STRING*>(m_tags[Constants::MODEL].get())->getData();

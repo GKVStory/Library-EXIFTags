@@ -14,11 +14,7 @@ set(LIB_NAME                                   "${PROJECT_NAME}Lib")
 set(TEST_NAME                                   "${PROJECT_NAME}Test")
 OPTION(BUILD_TESTS                             "Build tests"                     OFF)
 OPTION(BUILD_MAIN                              "Build command line parser"       OFF)
-
-configure_file (
-    "${PROJECT_SOURCE_DIR}/tests/TestConstants.h.i" 
-    "${PROJECT_SOURCE_DIR}/tests/TestConstants.h"
-)
+OPTION(BUILD_PYTHON                            "Build Python bindings"          OFF)
 
 if(WIN32)
   if(MSVC)
@@ -52,6 +48,10 @@ target_link_directories(${LIB_NAME} PUBLIC ${CMAKE_BINARY_DIR})
 target_link_libraries (${LIB_NAME} libexif)
 
 if(BUILD_TESTS)
+  configure_file (
+    "${PROJECT_SOURCE_DIR}/tests/TestConstants.h.i" 
+    "${PROJECT_SOURCE_DIR}/tests/TestConstants.h"
+  )
   # Download and unpack googletest at configure time
   configure_file(GoogleTest.txt.in googletest-download/CMakeLists.txt)
   execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
@@ -105,3 +105,11 @@ if (BUILD_MAIN)
   add_executable (${BIN_NAME} "${MAIN_SRC}")
   target_link_libraries (${BIN_NAME} ${LIB_NAME})
 endif (BUILD_MAIN)
+
+if (BUILD_PYTHON)
+  pybind11_add_module("${LIB_NAME}Python" ${SRC} ${PYTHON_SRC})
+
+  #add the library dependencies
+  target_link_libraries (${LIB_NAME}Python  PUBLIC ${LIB_NAME})
+
+endif()

@@ -12,7 +12,7 @@ namespace tg {
 namespace tags {
 
 TEST ( TagTest, UINT32) {
-    std::unique_ptr <Tag> tag = Tag::tagFactory(Constants::IMAGE_NUMBER);
+    std::shared_ptr <Tag> tag = Tag::tagFactory(Constants::IMAGE_NUMBER);
 
     GTEST_ASSERT_NE(tag, nullptr);
 
@@ -23,7 +23,7 @@ TEST ( TagTest, UINT32) {
 } 
 
 TEST ( TagTest, UINT16) {
-    std::unique_ptr <Tag> tag = Tag::tagFactory(Constants::PHOTOMETRIC_INTERPOLATION);
+    std::shared_ptr <Tag> tag = Tag::tagFactory(Constants::PHOTOMETRIC_INTERPOLATION);
 
     GTEST_ASSERT_NE(tag, nullptr);
 
@@ -34,7 +34,7 @@ TEST ( TagTest, UINT16) {
 } 
 
 TEST ( TagTest, UINT8) {
-    std::unique_ptr <Tag> tag = Tag::tagFactory(Constants::GPS_ALTITUDE_REF);
+    std::shared_ptr <Tag> tag = Tag::tagFactory(Constants::GPS_ALTITUDE_REF);
 
     GTEST_ASSERT_NE(tag, nullptr);
 
@@ -45,7 +45,7 @@ TEST ( TagTest, UINT8) {
 } 
 
 TEST ( TagTest, DOUBLE) {
-    std::unique_ptr <Tag> tag = Tag::tagFactory(Constants::WATER_DEPTH);
+    std::shared_ptr <Tag> tag = Tag::tagFactory(Constants::WATER_DEPTH);
 
     GTEST_ASSERT_NE(tag, nullptr);
 
@@ -56,7 +56,7 @@ TEST ( TagTest, DOUBLE) {
 } 
 
 TEST ( TagTest, UDOUBLE) {
-    std::unique_ptr <Tag> tag = Tag::tagFactory(Constants::EXPOSURE_TIME);
+    std::shared_ptr <Tag> tag = Tag::tagFactory(Constants::EXPOSURE_TIME);
 
     GTEST_ASSERT_NE(tag, nullptr);
 
@@ -67,7 +67,7 @@ TEST ( TagTest, UDOUBLE) {
 }
 
 TEST ( TagTest, UINT16_ARRAY) {
-    std::unique_ptr <Tag> tag = Tag::tagFactory(Constants::PIXEL_SIZE);
+    std::shared_ptr <Tag> tag = Tag::tagFactory(Constants::PIXEL_SIZE);
 
     GTEST_ASSERT_NE(tag, nullptr);
 
@@ -79,7 +79,7 @@ TEST ( TagTest, UINT16_ARRAY) {
 } 
 
 TEST ( TagTest, DOUBLE_ARRAY) {
-    std::unique_ptr <Tag> tag = Tag::tagFactory(Constants::CAMERA_MATRIX);
+    std::shared_ptr <Tag> tag = Tag::tagFactory(Constants::CAMERA_MATRIX);
 
     GTEST_ASSERT_NE(tag, nullptr);
 
@@ -93,7 +93,7 @@ TEST ( TagTest, DOUBLE_ARRAY) {
 } 
 
 TEST ( TagTest, STRING) {
-    std::unique_ptr <Tag> tag = Tag::tagFactory(Constants::SOFTWARE);
+    std::shared_ptr <Tag> tag = Tag::tagFactory(Constants::SOFTWARE);
 
     GTEST_ASSERT_NE(tag, nullptr);
 
