@@ -84,11 +84,8 @@ void saveTags(tg::tags::Tags & tags, const std::string & in_filename, const std:
 
 }
 
-
-
-
 // python module for ExifTags
-PYBIND11_MODULE(ExifTagsPython, m) {
+PYBIND11_MODULE(EXIFTagsLibPython, m) {
 
     m.doc() = "Exif Tag Tools";
 
@@ -367,51 +364,6 @@ PYBIND11_MODULE(ExifTagsPython, m) {
             py::overload_cast<uint64_t>(&tg::tags::Tags::ppsTime))
       ;
 
-/*
 
-
-  // Arm Calibration File Wrapper
-  py::class_<tg::calibration::Arm>(m, "Arm")
-      .def(py::init<>())
-      .def("load_xml", &tg::calibration::Arm::loadXML,
-           "Load an arm xml calibration file.", py::arg("filename"),
-           py::arg("error_message"))
-      .def("save_xml", &tg::calibration::Arm::saveXML,
-           "Save the arm calibration to an xml file.", py::arg("filename"),
-           py::arg("error_message"))
-      .def(
-          "set_quat_origin_laser",
-          &tg::calibration::Arm::setLaserToOriginQuaternion,
-          "Set the quaternion that transforms a point in laser co-ordinates to "
-          "to scanner co-ordinates.",
-          py::arg("w"), py::arg("x"), py::arg("y"), py::arg("z"))
-      .def("set_trans_origin_laser",
-           &tg::calibration::Arm::setLaserToOriginTranslation,
-           "Set the translation that transforms a point in laser co-ordinates "
-           "to "
-           "to scanner co-ordinates.",
-           py::arg("x"), py::arg("y"), py::arg("z"))
-      .def("set_quat_origin_sensor",
-           &tg::calibration::Arm::setSensorToOriginQuaternion,
-           "Set the quaternion that transforms a point in sensor co-ordinates "
-           "to "
-           "to scanner co-ordinates.",
-           py::arg("w"), py::arg("x"), py::arg("y"), py::arg("z"))
-      .def("set_trans_origin_sensor",
-           &tg::calibration::Arm::setSensorToOriginTranslation,
-           "Set the translation that transforms a point in sensor co-ordinates "
-           "to "
-           "to scanner co-ordinates.",
-           py::arg("x"), py::arg("y"), py::arg("z"))
-      .def_property("serial_number", &tg::calibration::Arm::getSerialNumber,
-                    &tg::calibration::Arm::setSerialNumber)
-      .def_property("make", &tg::calibration::Arm::getMake,
-                    &tg::calibration::Arm::setMake)
-      .def_property("model", &tg::calibration::Arm::getModel,
-                    &tg::calibration::Arm::setModel)
-      .def_property_readonly("date", &tg::calibration::Arm::getDate);
-
-
-*/
 
 }
