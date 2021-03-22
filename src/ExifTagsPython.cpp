@@ -10,27 +10,8 @@
 namespace py = pybind11;
 
 /**
- * This function loads images directly from the hard drive to extract the tags. I do it this way to not have to include opencv as a dependency to extract numpy arrays.
- * @param const [in] reference to string
- * @return Tags reference to tag structure
- * @throws exception if anything fails.
- */
-tg::tags::Tags loadTags(const std::string & filename) {
-    tg::tags::Tags tag;
-    std::string error_message;
-    bool result = tag.loadHeader(filename, error_message);
-
-    if (!result) {
-        throw std::exception(error_message.c_str());
-    }
-
-    return tag;
-}
-
-
-/**
- * This function loads an image and resaves it with new tags.
- * @param Tags [in] reference to the filled tags structure.
+ * This function loads an image and resaves it with updated depth.
+ * @param double [in] depth/subject_distance
  * @param const [in] reference to an input filename.
  * @param const [in] reference to an output filename.
  * @throws exception if anything fails.
@@ -88,6 +69,7 @@ void saveTags(tg::tags::Tags & tags, const std::string & in_filename, const std:
 PYBIND11_MODULE(EXIFTagsLibPython, m) {
 
     m.doc() = "Exif Tag Tools";
+    m.def("save_tags", &saveTags, "Add new tags to the image and save them.", py::arg("tags"), py::arg("input_file"), py::arg ("output_file"));
 
     py::enum_<tg::tags::Tags::SubfileTypes>(m, "SubfileTypes")
       .value("FULL_RESOLUTION_IMAGE", tg::tags::Tags::SubfileTypes::FULL_RESOLUTION_IMAGE)
@@ -212,9 +194,9 @@ PYBIND11_MODULE(EXIFTagsLibPython, m) {
       .value("ALTITUDEREF_BELOW_SEA_LEVEL", tg::tags::Tags::AltitudeRefType::ALTITUDEREF_BELOW_SEA_LEVEL)
       .export_values();
 
-
     py::class_<tg::tags::Tags>(m, "Tags")
       .def(py::init<>())
+      .def("load_header", py::overload_cast<const std::string &, std::string &>(&tg::tags::Tags::loadHeader), "Load the header from a given file.", py::arg("filename"), py::arg("error_message"))
       .def("subfile_type", &tg::tags::Tags::subfileType)
       .def_property("image_width",
             py::overload_cast<void>(&tg::tags::Tags::imageWidth, py::const_),

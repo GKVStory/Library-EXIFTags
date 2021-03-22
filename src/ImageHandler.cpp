@@ -30,7 +30,7 @@ bool ImageHandler::loadHeader(const std::string & filename, std::vector <uint8_t
     std::ifstream file(filename, std::ios::binary | std::ios::ate);
     std::streamsize size = file.tellg();
     file.seekg(0, std::ios::beg);
-    if (size < 8) {
+    if (size < 32) {
         error_message = ErrorMessages::file_too_small + filename;
         return false;
     }

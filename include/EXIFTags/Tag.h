@@ -37,9 +37,9 @@ public:
     /**
      * @brief Factory method to create only supported tags.
      * @param tag supported tag type, defined in TagConstants.h
-     * @return shared pointer to tag type.
+     * @return unique pointer to tag type.
      */
-    static std::shared_ptr<Tag> tagFactory (const Constants::SupportedTags &  tag);
+    static std::unique_ptr<Tag> tagFactory (const Constants::SupportedTags &  tag);
 
     /** 
      * @brief Given an ExifData structure, add this tag to the structure Overridden in base class.
