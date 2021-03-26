@@ -262,7 +262,13 @@ uint64_t Tags::dateTime () const {
     if (ss_dt.fail()) {
         return 0; //couldn't parse the time correctly
     }
-    std::time_t dt = mktime(&t);
+
+#ifdef _WIN32
+    std::time_t dt = _mkgmtime(&t);
+#else
+    std::time_t dt = timegm(&t);
+#endif
+
     uint64_t epoch_time_us = static_cast <uint64_t> (dt) * 1000000;
     
     ss_ss >> subsec;
@@ -281,7 +287,7 @@ void Tags::dateTime (uint64_t date_time_us_epoch) {
     double subsec ( static_cast<double>(date_time_us_epoch - s_from_epoch*1.0E6) / 1.0E6);
 
     std::time_t t = static_cast<time_t>(s_from_epoch);
-    std::tm tm = *std::localtime(&t);
+    std::tm tm = *std::gmtime(&t);
 
     ss_dt << std::put_time (&tm, Constants::DEFAULT_TIMESTAMP_FORMAT.c_str());
     ss_ss << subsec;
