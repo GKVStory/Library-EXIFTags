@@ -218,6 +218,11 @@ TEST ( TagsTest, GenerateEmptyTagsClass_CheckDefaultBehaviour) {
     ASSERT_EQ(tags.ppsTime(), 0);
     tags.ppsTime(1614632629005011);
     ASSERT_EQ(tags.ppsTime(), 1614632629005011);
+
+    tags.ppsTime(1714632629005021);
+    tags.dateTime(1714632629005021);
+    ASSERT_EQ(tags.ppsTime(), 1714632629005021);
+    ASSERT_EQ(tags.ppsTime(), tags.dateTime());
 } 
 
 TEST ( TagsTest, ParseJpegFile) {

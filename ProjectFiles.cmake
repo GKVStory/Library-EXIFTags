@@ -13,6 +13,10 @@ set(MAIN_SRC
   "${SRC_PATH}/main.cpp"
 )
 
+set(PYTHON_SRC 
+  "${SRC_PATH}/ExifTagsPython.cpp"
+)
+
 # Set project test source files.
 set(TEST_SRC
   "${TEST_SRC_PATH}/TestTags.cpp"

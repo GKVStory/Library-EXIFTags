@@ -123,6 +123,7 @@ public:
     void imageDescription(const std::string & desc);
 
     std::string make() const;
+    void make(const std::string & make);
 
     std::string model() const;
     void model(const std::string & model);
