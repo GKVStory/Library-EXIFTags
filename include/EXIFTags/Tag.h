@@ -421,10 +421,11 @@ class Tag_STRING : public Tag {
 public:
     virtual void setTag (ExifData *exif) const override {
         if (m_is_set) {
-            ExifEntry *entry = createTag (exif, m_tag_info.ifd, static_cast<ExifTag>(m_tag_info.tag), sizeof (char) * m_data.size());
+            ExifEntry *entry = createTag (exif, m_tag_info.ifd, static_cast<ExifTag>(m_tag_info.tag), sizeof (char) * (m_data.size()+1));
             if (!entry) {
                 return;
             }
+            memset(entry->data, 0, sizeof(char) * (m_data.size()+1));
             memcpy (entry->data, m_data.c_str(), sizeof (char) * m_data.size());
         }
     }
@@ -433,7 +434,7 @@ public:
         ExifEntry *entry = exif_content_get_entry(ed->ifd[m_tag_info.ifd], static_cast<ExifTag>(m_tag_info.tag)); //points to exif data, do not delete.
         if (entry) {
             if (entry->size > 0) {
-                m_data = std::string (reinterpret_cast<char *> (entry->data), entry->size);
+                m_data = std::string (reinterpret_cast<char *> (entry->data), entry->size-1);
                 m_is_set = true;
             } else {
                 m_data = "";
