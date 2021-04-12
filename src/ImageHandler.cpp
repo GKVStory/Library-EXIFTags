@@ -133,8 +133,8 @@ bool ImageHandler::tagTiff(Tags & exif_tags, const std::vector <uint8_t> & encod
     exif_tags.samplesPerPixel(orig_tags.samplesPerPixel());
     exif_tags.bitsPerSample(orig_tags.bitsPerSample());
 
-    uint32_t offsets = orig_tags.stripOffsets();
-    uint32_t strip_bytes = orig_tags.stripByteCount();
+    const uint32_t offsets = orig_tags.stripOffsets();
+    const uint32_t strip_bytes = orig_tags.stripByteCount();
 
     unsigned int header_length;
     std::unique_ptr <unsigned char[], decltype(&std::free)> header_data {static_cast<unsigned char *>(nullptr), std::free};
@@ -152,7 +152,7 @@ bool ImageHandler::tagTiff(Tags & exif_tags, const std::vector <uint8_t> & encod
     for (unsigned int i = sizeof(ExifHeader); i < header_length; ++i) {
         output_image.push_back(header_data[i]);
     }
-    for (unsigned int i = offsets; i < strip_bytes; ++i) {
+    for (unsigned int i = offsets; i < strip_bytes+offsets; ++i) {
         output_image.push_back(encoded_image[i]);
     }
 
