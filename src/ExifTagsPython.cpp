@@ -56,7 +56,7 @@ void saveTags(tg::tags::Tags & tags, const std::string & in_filename, const std:
     }
 
     std::ofstream fileout(out_filename, std::ios::binary);
-    if (!fileout.write(reinterpret_cast<char *>(output_image_data.data()), size )) {
+    if (!fileout.write(reinterpret_cast<char *>(output_image_data.data()), output_image_data.size() )) {
         error_message = "Could not save file: " + out_filename;
         throw std::exception(error_message.c_str());
         return;
