@@ -6,7 +6,10 @@
  * 
  * This file contains a bunch of constants associated with the 2G Exif tag library.
  */
-#include <libexif/exif-data.h>
+
+extern "C" {
+#include "libexif/exif-data.h"
+}
 #include <vector>
 #include <string>
 

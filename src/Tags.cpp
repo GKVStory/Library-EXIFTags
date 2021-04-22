@@ -20,13 +20,13 @@ Tags::Tags() {
     //Set the default, non-user accessible tags
     dynamic_cast<Tag_UINT32*>(m_tags[Constants::SUBFILE_TYPE].get())->setData(FULL_RESOLUTION_IMAGE);
     bitsPerSample(1);
-    compression(COMPRESSION_NONE);
-    photometricInterpolation(PHOTOMETRIC_MINISBLACK);
+    compression(COMPRESSION_EXIF_NONE);
+    photometricInterpolation(PHOTOMETRIC_EXIF_MINISBLACK);
     dynamic_cast<Tag_STRING*>(m_tags[Constants::MAKE].get())->setData(Constants::DEFAULT_MAKE);
     dateTime(0);
-    dynamic_cast<Tag_UINT16*>(m_tags[Constants::ORIENTATION].get())->setData(ORIENTATION_TOPLEFT);
+    dynamic_cast<Tag_UINT16*>(m_tags[Constants::ORIENTATION].get())->setData(ORIENTATION_EXIF_TOPLEFT);
     samplesPerPixel(1);
-    dynamic_cast<Tag_UINT16*>(m_tags[Constants::PLANAR_CONFIGURATION].get())->setData(PLANARCONFIG_CONTIG);
+    dynamic_cast<Tag_UINT16*>(m_tags[Constants::PLANAR_CONFIGURATION].get())->setData(PLANARCONFIG_EXIF_CONTIG);
     colourSpace(COLOURSPACE_sRGB);
     indexOfRefraction(Constants::DEFAULT_INDEX);
     viewportIndex(Constants::DEFAULT_VIEWPORT_INDEX);

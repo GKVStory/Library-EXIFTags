@@ -1,3 +1,4 @@
+#pragma once
 /**
  * Tag.h
  * 
@@ -9,8 +10,10 @@
  * 
  */
 
+extern "C" {
 #include <libexif/exif-data.h>
 #include <libexif/exif-entry.h>
+}
 #include <vector>
 #include <string>
 #include <memory>

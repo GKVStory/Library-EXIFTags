@@ -45,7 +45,7 @@ public:
 
     tags.imageHeight(1024);
     tags.imageWidth(2048);
-    tags.compression(Tags::COMPRESSION_NONE);
+    tags.compression(Tags::COMPRESSION_EXIF_NONE);
     tags.photometricInterpolation(Tags::PHOTOMETRIC_RGB);
     tags.imageDescription("Test description!");
     tags.model("Test model!");
