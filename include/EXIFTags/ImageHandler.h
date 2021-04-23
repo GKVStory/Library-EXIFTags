@@ -19,7 +19,7 @@ public:
 
     /**
      * @brief Given a file, load the included tags.
-     * @param[in] image_header_data, vector of bytes containing at a minimum the image header data.
+     * @param[in] filename, path of image to load
      * @param[in/out] image_header_data, vector of bytes containing at a minimum the image header data.
      * @param[out] error emssage returned by reference in case of a failure.
      * @return bool was the load successful?
