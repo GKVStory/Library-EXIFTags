@@ -66,7 +66,7 @@ void saveTags(tg::tags::Tags & tags, const std::string & in_filename, const std:
 }
 
 // python module for ExifTags
-PYBIND11_MODULE(EXIFTagsLibPython, m) {
+PYBIND11_MODULE(EXIFTagsPython, m) {
 
     m.doc() = "Exif Tag Tools";
     m.def("save_tags", &saveTags, "Add new tags to the image and save them.", py::arg("tags"), py::arg("input_file"), py::arg ("output_file"));
@@ -78,62 +78,62 @@ PYBIND11_MODULE(EXIFTagsLibPython, m) {
       .export_values();
 
     py::enum_<tg::tags::Tags::CompressionType>(m, "Compressiontype")
-      .value("COMPRESSION_NONE", tg::tags::Tags::CompressionType::COMPRESSION_NONE)
-      .value("COMPRESSION_CCITTRLE", tg::tags::Tags::CompressionType::COMPRESSION_CCITTRLE)
-      .value("COMPRESSION_CCITTFAX3", tg::tags::Tags::CompressionType::COMPRESSION_CCITTFAX3)
-      .value("COMPRESSION_CCITTFAX4", tg::tags::Tags::CompressionType::COMPRESSION_CCITTFAX4)
-      .value("COMPRESSION_LZW", tg::tags::Tags::CompressionType::COMPRESSION_LZW)
-      .value("COMPRESSION_OJPEG", tg::tags::Tags::CompressionType::COMPRESSION_OJPEG)
-      .value("COMPRESSION_JPEG", tg::tags::Tags::CompressionType::COMPRESSION_JPEG)
-      .value("COMPRESSION_NEXT", tg::tags::Tags::CompressionType::COMPRESSION_NEXT)
-      .value("COMPRESSION_CCITTRLEW", tg::tags::Tags::CompressionType::COMPRESSION_CCITTRLEW)
-      .value("COMPRESSION_PACKBITS", tg::tags::Tags::CompressionType::COMPRESSION_PACKBITS)
-      .value("COMPRESSION_THUNDERSCAN", tg::tags::Tags::CompressionType::COMPRESSION_THUNDERSCAN)
-      .value("COMPRESSION_IT8CTPAD", tg::tags::Tags::CompressionType::COMPRESSION_IT8CTPAD)
-      .value("COMPRESSION_IT8LW", tg::tags::Tags::CompressionType::COMPRESSION_IT8LW)
-      .value("COMPRESSION_IT8MP", tg::tags::Tags::CompressionType::COMPRESSION_IT8MP)
-      .value("COMPRESSION_IT8BL", tg::tags::Tags::CompressionType::COMPRESSION_IT8BL)
-      .value("COMPRESSION_PIXARFILM", tg::tags::Tags::CompressionType::COMPRESSION_PIXARFILM)
-      .value("COMPRESSION_PIXARLOG", tg::tags::Tags::CompressionType::COMPRESSION_PIXARLOG)
-      .value("COMPRESSION_DEFLATE", tg::tags::Tags::CompressionType::COMPRESSION_DEFLATE)
-      .value("COMPRESSION_ADOBE_DEFLATE", tg::tags::Tags::CompressionType::COMPRESSION_ADOBE_DEFLATE)
-      .value("COMPRESSION_DCS", tg::tags::Tags::CompressionType::COMPRESSION_DCS)
-      .value("COMPRESSION_JBIG", tg::tags::Tags::CompressionType::COMPRESSION_JBIG)
-      .value("COMPRESSION_SGILOG", tg::tags::Tags::CompressionType::COMPRESSION_SGILOG)
-      .value("COMPRESSION_SGILOG24", tg::tags::Tags::CompressionType::COMPRESSION_SGILOG24)
-      .value("COMPRESSION_JP2000", tg::tags::Tags::CompressionType::COMPRESSION_JP2000)
+      .value("COMPRESSION_EXIF_NONE", tg::tags::Tags::CompressionType::COMPRESSION_EXIF_NONE)
+      .value("COMPRESSION_EXIF_CCITTRLE", tg::tags::Tags::CompressionType::COMPRESSION_EXIF_CCITTRLE)
+      .value("COMPRESSION_EXIF_CCITTFAX3", tg::tags::Tags::CompressionType::COMPRESSION_EXIF_CCITTFAX3)
+      .value("COMPRESSION_EXIF_CCITTFAX4", tg::tags::Tags::CompressionType::COMPRESSION_EXIF_CCITTFAX4)
+      .value("COMPRESSION_EXIF_LZW", tg::tags::Tags::CompressionType::COMPRESSION_EXIF_LZW)
+      .value("COMPRESSION_EXIF_OJPEG", tg::tags::Tags::CompressionType::COMPRESSION_EXIF_OJPEG)
+      .value("COMPRESSION_EXIF_JPEG", tg::tags::Tags::CompressionType::COMPRESSION_EXIF_JPEG)
+      .value("COMPRESSION_EXIF_NEXT", tg::tags::Tags::CompressionType::COMPRESSION_EXIF_NEXT)
+      .value("COMPRESSION_EXIF_CCITTRLEW", tg::tags::Tags::CompressionType::COMPRESSION_EXIF_CCITTRLEW)
+      .value("COMPRESSION_EXIF_PACKBITS", tg::tags::Tags::CompressionType::COMPRESSION_EXIF_PACKBITS)
+      .value("COMPRESSION_EXIF_THUNDERSCAN", tg::tags::Tags::CompressionType::COMPRESSION_EXIF_THUNDERSCAN)
+      .value("COMPRESSION_EXIF_IT8CTPAD", tg::tags::Tags::CompressionType::COMPRESSION_EXIF_IT8CTPAD)
+      .value("COMPRESSION_EXIF_IT8LW", tg::tags::Tags::CompressionType::COMPRESSION_EXIF_IT8LW)
+      .value("COMPRESSION_EXIF_IT8MP", tg::tags::Tags::CompressionType::COMPRESSION_EXIF_IT8MP)
+      .value("COMPRESSION_EXIF_IT8BL", tg::tags::Tags::CompressionType::COMPRESSION_EXIF_IT8BL)
+      .value("COMPRESSION_EXIF_PIXARFILM", tg::tags::Tags::CompressionType::COMPRESSION_EXIF_PIXARFILM)
+      .value("COMPRESSION_EXIF_PIXARLOG", tg::tags::Tags::CompressionType::COMPRESSION_EXIF_PIXARLOG)
+      .value("COMPRESSION_EXIF_DEFLATE", tg::tags::Tags::CompressionType::COMPRESSION_EXIF_DEFLATE)
+      .value("COMPRESSION_EXIF_ADOBE_DEFLATE", tg::tags::Tags::CompressionType::COMPRESSION_EXIF_ADOBE_DEFLATE)
+      .value("COMPRESSION_EXIF_DCS", tg::tags::Tags::CompressionType::COMPRESSION_EXIF_DCS)
+      .value("COMPRESSION_EXIF_JBIG", tg::tags::Tags::CompressionType::COMPRESSION_EXIF_JBIG)
+      .value("COMPRESSION_EXIF_SGILOG", tg::tags::Tags::CompressionType::COMPRESSION_EXIF_SGILOG)
+      .value("COMPRESSION_EXIF_SGILOG24", tg::tags::Tags::CompressionType::COMPRESSION_EXIF_SGILOG24)
+      .value("COMPRESSION_EXIF_JP2000", tg::tags::Tags::CompressionType::COMPRESSION_EXIF_JP2000)
       .export_values();
 
     py::enum_<tg::tags::Tags::PhotometricInterpolationType>(m, "PhotometricInterpolationType")
-      .value("PHOTOMETRIC_MINISWHITE", tg::tags::Tags::PhotometricInterpolationType::PHOTOMETRIC_MINISWHITE)
-      .value("PHOTOMETRIC_MINISBLACK", tg::tags::Tags::PhotometricInterpolationType::PHOTOMETRIC_MINISBLACK)
-      .value("PHOTOMETRIC_RGB", tg::tags::Tags::PhotometricInterpolationType::PHOTOMETRIC_RGB)
-      .value("PHOTOMETRIC_PALETTE", tg::tags::Tags::PhotometricInterpolationType::PHOTOMETRIC_PALETTE)
-      .value("PHOTOMETRIC_MASK", tg::tags::Tags::PhotometricInterpolationType::PHOTOMETRIC_MASK)
-      .value("PHOTOMETRIC_SEPARATED", tg::tags::Tags::PhotometricInterpolationType::PHOTOMETRIC_SEPARATED)
-      .value("PHOTOMETRIC_YCBCR", tg::tags::Tags::PhotometricInterpolationType::PHOTOMETRIC_YCBCR)
-      .value("PHOTOMETRIC_CIELAB", tg::tags::Tags::PhotometricInterpolationType::PHOTOMETRIC_CIELAB)
-      .value("PHOTOMETRIC_ICCLAB", tg::tags::Tags::PhotometricInterpolationType::PHOTOMETRIC_ICCLAB)
-      .value("PHOTOMETRIC_ITULAB", tg::tags::Tags::PhotometricInterpolationType::PHOTOMETRIC_ITULAB)
-      .value("PHOTOMETRIC_LOGL", tg::tags::Tags::PhotometricInterpolationType::PHOTOMETRIC_LOGL)
-      .value("PHOTOMETRIC_LOGLUV", tg::tags::Tags::PhotometricInterpolationType::PHOTOMETRIC_LOGLUV)
+      .value("PHOTOMETRIC_EXIF_MINISWHITE", tg::tags::Tags::PhotometricInterpolationType::PHOTOMETRIC_EXIF_MINISWHITE)
+      .value("PHOTOMETRIC_EXIF_MINISBLACK", tg::tags::Tags::PhotometricInterpolationType::PHOTOMETRIC_EXIF_MINISBLACK)
+      .value("PHOTOMETRIC_EXIF_RGB", tg::tags::Tags::PhotometricInterpolationType::PHOTOMETRIC_EXIF_RGB)
+      .value("PHOTOMETRIC_EXIF_PALETTE", tg::tags::Tags::PhotometricInterpolationType::PHOTOMETRIC_EXIF_PALETTE)
+      .value("PHOTOMETRIC_EXIF_MASK", tg::tags::Tags::PhotometricInterpolationType::PHOTOMETRIC_EXIF_MASK)
+      .value("PHOTOMETRIC_EXIF_SEPARATED", tg::tags::Tags::PhotometricInterpolationType::PHOTOMETRIC_EXIF_SEPARATED)
+      .value("PHOTOMETRIC_EXIF_YCBCR", tg::tags::Tags::PhotometricInterpolationType::PHOTOMETRIC_EXIF_YCBCR)
+      .value("PHOTOMETRIC_EXIF_CIELAB", tg::tags::Tags::PhotometricInterpolationType::PHOTOMETRIC_EXIF_CIELAB)
+      .value("PHOTOMETRIC_EXIF_ICCLAB", tg::tags::Tags::PhotometricInterpolationType::PHOTOMETRIC_EXIF_ICCLAB)
+      .value("PHOTOMETRIC_EXIF_ITULAB", tg::tags::Tags::PhotometricInterpolationType::PHOTOMETRIC_EXIF_ITULAB)
+      .value("PHOTOMETRIC_EXIF_LOGL", tg::tags::Tags::PhotometricInterpolationType::PHOTOMETRIC_EXIF_LOGL)
+      .value("PHOTOMETRIC_EXIF_LOGLUV", tg::tags::Tags::PhotometricInterpolationType::PHOTOMETRIC_EXIF_LOGLUV)
       .export_values();
 
     py::enum_<tg::tags::Tags::OrientationType>(m, "OrientationType")
-      .value("ORIENTATION_TOPLEFT", tg::tags::Tags::OrientationType::ORIENTATION_TOPLEFT)
-      .value("ORIENTATION_TOPRIGHT", tg::tags::Tags::OrientationType::ORIENTATION_TOPRIGHT)
-      .value("ORIENTATION_BOTRIGHT", tg::tags::Tags::OrientationType::ORIENTATION_BOTRIGHT)
-      .value("ORIENTATION_BOTLEFT", tg::tags::Tags::OrientationType::ORIENTATION_BOTLEFT)
-      .value("ORIENTATION_LEFTTOP", tg::tags::Tags::OrientationType::ORIENTATION_LEFTTOP)
-      .value("ORIENTATION_RIGHTTOP", tg::tags::Tags::OrientationType::ORIENTATION_RIGHTTOP)
-      .value("ORIENTATION_RIGHTBOT", tg::tags::Tags::OrientationType::ORIENTATION_RIGHTBOT)
-      .value("ORIENTATION_LEFTBOT", tg::tags::Tags::OrientationType::ORIENTATION_LEFTBOT)
+      .value("ORIENTATION_EXIF_TOPLEFT", tg::tags::Tags::OrientationType::ORIENTATION_EXIF_TOPLEFT)
+      .value("ORIENTATION_EXIF_TOPRIGHT", tg::tags::Tags::OrientationType::ORIENTATION_EXIF_TOPRIGHT)
+      .value("ORIENTATION_EXIF_BOTRIGHT", tg::tags::Tags::OrientationType::ORIENTATION_EXIF_BOTRIGHT)
+      .value("ORIENTATION_EXIF_BOTLEFT", tg::tags::Tags::OrientationType::ORIENTATION_EXIF_BOTLEFT)
+      .value("ORIENTATION_EXIF_LEFTTOP", tg::tags::Tags::OrientationType::ORIENTATION_EXIF_LEFTTOP)
+      .value("ORIENTATION_EXIF_RIGHTTOP", tg::tags::Tags::OrientationType::ORIENTATION_EXIF_RIGHTTOP)
+      .value("ORIENTATION_EXIF_RIGHTBOT", tg::tags::Tags::OrientationType::ORIENTATION_EXIF_RIGHTBOT)
+      .value("ORIENTATION_EXIF_LEFTBOT", tg::tags::Tags::OrientationType::ORIENTATION_EXIF_LEFTBOT)
       .export_values();
       
 
     py::enum_<tg::tags::Tags::PlanarConfigurationType>(m, "PlanarConfigurationType")
-      .value("PLANARCONFIG_CONTIG", tg::tags::Tags::PlanarConfigurationType::PLANARCONFIG_CONTIG)
-      .value("PLANARCONFIG_SEPARATE", tg::tags::Tags::PlanarConfigurationType::PLANARCONFIG_SEPARATE)
+      .value("PLANARCONFIG_EXIF_CONTIG", tg::tags::Tags::PlanarConfigurationType::PLANARCONFIG_EXIF_CONTIG)
+      .value("PLANARCONFIG_EXIF_SEPARATE", tg::tags::Tags::PlanarConfigurationType::PLANARCONFIG_EXIF_SEPARATE)
       .export_values();
 
     py::enum_<tg::tags::Tags::LightSourceType>(m, "LightSourceType")
@@ -210,7 +210,7 @@ PYBIND11_MODULE(EXIFTagsLibPython, m) {
       .def_property("compression", 
             py::overload_cast<void>(&tg::tags::Tags::compression, py::const_),
             py::overload_cast<tg::tags::Tags::CompressionType>(&tg::tags::Tags::compression))
-      .def_property("photometric_interpolation", 
+      .def_property("PHOTOMETRIC_EXIF_interpolation", 
             py::overload_cast<void>(&tg::tags::Tags::photometricInterpolation, py::const_),
             py::overload_cast<tg::tags::Tags::PhotometricInterpolationType>(&tg::tags::Tags::photometricInterpolation))
       .def_property("image_description", 

@@ -27,13 +27,13 @@ TEST ( TagsTest, GenerateEmptyTagsClass_CheckDefaultBehaviour) {
     tags.bitsPerSample(3);
     ASSERT_EQ(tags.bitsPerSample(), 3);
 
-    ASSERT_EQ(tags.compression(), Tags::COMPRESSION_NONE);
-    tags.compression(Tags::COMPRESSION_JPEG);
-    ASSERT_EQ(tags.compression(), Tags::COMPRESSION_JPEG);
+    ASSERT_EQ(tags.compression(), Tags::COMPRESSION_EXIF_NONE);
+    tags.compression(Tags::COMPRESSION_EXIF_JPEG);
+    ASSERT_EQ(tags.compression(), Tags::COMPRESSION_EXIF_JPEG);
 
-    ASSERT_EQ(tags.photometricInterpolation(), Tags::PHOTOMETRIC_MINISBLACK);
-    tags.photometricInterpolation(Tags::PHOTOMETRIC_RGB);
-    ASSERT_EQ(tags.photometricInterpolation(), Tags::PHOTOMETRIC_RGB);
+    ASSERT_EQ(tags.photometricInterpolation(), Tags::PHOTOMETRIC_EXIF_MINISBLACK);
+    tags.photometricInterpolation(Tags::PHOTOMETRIC_EXIF_RGB);
+    ASSERT_EQ(tags.photometricInterpolation(), Tags::PHOTOMETRIC_EXIF_RGB);
 
     ASSERT_EQ(tags.imageDescription(), "");
     tags.imageDescription("Test description!");
@@ -49,7 +49,7 @@ TEST ( TagsTest, GenerateEmptyTagsClass_CheckDefaultBehaviour) {
     tags.stripOffsets(440);
     ASSERT_EQ(tags.stripOffsets(), 440);
 
-    ASSERT_EQ(tags.orientation(), Tags::ORIENTATION_TOPLEFT);
+    ASSERT_EQ(tags.orientation(), Tags::ORIENTATION_EXIF_TOPLEFT);
 
     ASSERT_EQ(tags.samplesPerPixel(), 1);
     tags.samplesPerPixel(3);
@@ -64,7 +64,7 @@ TEST ( TagsTest, GenerateEmptyTagsClass_CheckDefaultBehaviour) {
     ASSERT_EQ(tags.stripByteCount(), 1025);
 
 
-    ASSERT_EQ(tags.planarConfiguration(), Tags::PLANARCONFIG_CONTIG);
+    ASSERT_EQ(tags.planarConfiguration(), Tags::PLANARCONFIG_EXIF_CONTIG);
 
     ASSERT_EQ(tags.software(), "");
     tags.software("Test software!");
@@ -234,7 +234,7 @@ TEST ( TagsTest, ParseJpegFile) {
 
     ASSERT_TRUE (tags.loadHeader(TagsTestCommon::testJpgNon2g(), error_message));
 
-    ASSERT_EQ (tags.orientation(), Tags::ORIENTATION_TOPLEFT);
+    ASSERT_EQ (tags.orientation(), Tags::ORIENTATION_EXIF_TOPLEFT);
     ASSERT_EQ (tags.imageWidth(), 640);
     ASSERT_EQ (tags.imageHeight(), 480);
     ASSERT_DOUBLE_EQ (tags.fNumber(), 4.7);
@@ -250,7 +250,7 @@ TEST ( TagsTest, ParseNon2GTifFile) {
 
     ASSERT_TRUE (tags.loadHeader(TagsTestCommon::testTifNon2g(), error_message));
 
-    ASSERT_EQ (tags.orientation(), Tags::ORIENTATION_TOPLEFT);
+    ASSERT_EQ (tags.orientation(), Tags::ORIENTATION_EXIF_TOPLEFT);
     ASSERT_EQ (tags.imageWidth(), 15);
     ASSERT_EQ (tags.imageHeight(), 7);
     //ASSERT_EQ (tags.imageDescription(), "Test image");
@@ -262,7 +262,7 @@ TEST ( TagsTest, ParseOld2GTifFile) {
 
     ASSERT_TRUE (tags.loadHeader(TagsTestCommon::testTifOld2g(), error_message));
 
-    ASSERT_EQ (tags.orientation(), Tags::ORIENTATION_TOPLEFT);
+    ASSERT_EQ (tags.orientation(), Tags::ORIENTATION_EXIF_TOPLEFT);
     ASSERT_EQ (tags.imageWidth(), 2464);
     ASSERT_EQ (tags.imageHeight(), 2056);
     ASSERT_EQ (tags.ppsTime(), 711698604);

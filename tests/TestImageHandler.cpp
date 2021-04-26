@@ -105,7 +105,7 @@ TEST ( TEST_ImageHandler, TestJPEG) {
     TagsTestCommon::setTags(tags);
     tags.imageHeight(image_jpg_x);
     tags.imageWidth(image_jpg_y);
-    tags.compression(Tags::COMPRESSION_JPEG);
+    tags.compression(Tags::COMPRESSION_EXIF_JPEG);
     tags.colourSpace(Tags::COLOURSPACE_sRGB);
 
     std::vector <uint8_t> out_image;
@@ -125,8 +125,8 @@ TEST ( TEST_ImageHandler, TestJPEG) {
     ASSERT_EQ(new_tags.subfileType(), Tags::FULL_RESOLUTION_IMAGE);
     ASSERT_EQ(new_tags.imageHeight(), image_jpg_x);
     ASSERT_EQ(new_tags.imageWidth(), image_jpg_y);
-    ASSERT_EQ(new_tags.compression(), Tags::COMPRESSION_JPEG);
-    ASSERT_EQ(new_tags.photometricInterpolation(), Tags::PHOTOMETRIC_RGB);
+    ASSERT_EQ(new_tags.compression(), Tags::COMPRESSION_EXIF_JPEG);
+    ASSERT_EQ(new_tags.photometricInterpolation(), Tags::PHOTOMETRIC_EXIF_RGB);
     ASSERT_EQ(new_tags.colourSpace(), Tags::COLOURSPACE_sRGB);
     TagsTestCommon::testTags(new_tags);
 
@@ -161,8 +161,8 @@ TEST (TEST_ImageHandler, TestTIFF) {
     ASSERT_EQ(new_tags.subfileType(), Tags::FULL_RESOLUTION_IMAGE);
     ASSERT_EQ(new_tags.imageHeight(), 2056);
     ASSERT_EQ(new_tags.imageWidth(), 2464);
-    ASSERT_EQ(new_tags.compression(), Tags::COMPRESSION_NONE);
-    ASSERT_EQ(new_tags.photometricInterpolation(), Tags::PHOTOMETRIC_MINISBLACK);
+    ASSERT_EQ(new_tags.compression(), Tags::COMPRESSION_EXIF_NONE);
+    ASSERT_EQ(new_tags.photometricInterpolation(), Tags::PHOTOMETRIC_EXIF_MINISBLACK);
     TagsTestCommon::testTags(new_tags);
 }
 
