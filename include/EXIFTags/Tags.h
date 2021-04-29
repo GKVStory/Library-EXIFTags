@@ -340,7 +340,7 @@ public:
 private:
 
     //storage for the different tags supported by 2G.
-    std::vector <std::unique_ptr<Tag>> m_tags;
+    std::vector <std::shared_ptr<Tag>> m_tags;
     
     /**
      * @brief handle reading the exif data into the internal data structure.

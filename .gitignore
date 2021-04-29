@@ -35,6 +35,8 @@
 **/target
 **/build
 **/.vscode
+build_release/
+build_debug/
 
 # Generated files
 tests/TestConstants.h
