@@ -46,7 +46,7 @@ public:
     tags.imageHeight(1024);
     tags.imageWidth(2048);
     tags.compression(Tags::COMPRESSION_EXIF_NONE);
-    tags.photometricInterpolation(Tags::PHOTOMETRIC_RGB);
+    tags.photometricInterpolation(Tags::PHOTOMETRIC_EXIF_RGB);
     tags.imageDescription("Test description!");
     tags.model("Test model!");
     tags.samplesPerPixel(3);
@@ -103,8 +103,8 @@ public:
     ASSERT_EQ(tags.imageDescription(), "Test description!");
     ASSERT_EQ(tags.make(), Constants::DEFAULT_MAKE);
     ASSERT_EQ(tags.model(), "Test model!");
-    ASSERT_EQ(tags.orientation(), Tags::ORIENTATION_TOPLEFT);
-    ASSERT_EQ(tags.planarConfiguration(), Tags::PLANARCONFIG_CONTIG);
+    ASSERT_EQ(tags.orientation(), Tags::ORIENTATION_EXIF_TOPLEFT);
+    ASSERT_EQ(tags.planarConfiguration(), Tags::PLANARCONFIG_EXIF_CONTIG);
     ASSERT_EQ(tags.software(), "Test software!");
     ASSERT_DOUBLE_EQ(tags.exposureTime(), 3.0);
     ASSERT_DOUBLE_EQ(tags.fNumber(), 5.0);
