@@ -1,6 +1,6 @@
 from pathlib import Path
 import numpy as np
-import EXIFTagsLibPython as et
+import EXIFTagsPython as et
 import datetime as dt
 import PSONNAV_parser as psp
 
@@ -42,18 +42,31 @@ for i, (in_file, out_file) in enumerate (zip(in_files, out_files)):
         tags.latitude = np.abs(lat)
         tags.longitude = np.abs(lon)
         tags.altitude = np.abs(altitude)
+        tags.subject_distance = np.abs(depth[time_index, 1])
+        tags.vehicle_altitude = np.abs(depth[time_index, 1])
         tags.latitude_ref = et.LATITUDEREF_NORTH if lat > 0 else et.LATITUDEREF_SOUTH
         tags.longitude_ref = et.LONGITUDEREF_EAST if lon > 0 else et.LONGITUDEREF_WEST
         tags.altitude_ref = et.ALTITUDEREF_BELOW_SEA_LEVEL
-        tags.intrinsics = [1585.2054, 1584.8402, 1031.6161, 979.1387]
+        tags.camera_matrix = [1585.2054, 1584.8402, 1031.6161, 979.1387]
         tags.distortion = [-0.09467, 0.12439, -0.0016, 1e-05, -0.03157]
         tags.lens_model = "40-0444"
-        tags.camera_model = "40-0026"
+        tags.model = "40-0026"
         tags.bayer_pattern = et.BayerPatternType.BAYER_RG2BGR
-        tags.viewport_type = et.ViewPortType.VIEWPORT_DOMED
+        tags.viewport_type = et.ViewportType.VIEWPORT_DOMED
         tags.pixel_size = [6500, 6500]
-        tags.focal_length=12
-        tags.aperature=1.0/(2.0/12.0) #The f-number is the reciprocal of the relative aperture (the aperture diameter divided by focal length)
+        tags.focal_length=12.0
+        tags.f_number=1.0/(2.0/12.0) #The f-number is the reciprocal of the relative aperture (the aperture diameter divided by focal length)
+        tags.index_of_refraction = 1.34
+        tags.frame_rate = 2.0
+        tags.viewport_distance = -1
+        tags.viewport_index = 1.472
+        tags.viewport_thickness = -1
+        tags.flash_energy = 0
+        tags.flash = et.FlashType.FLASH_DIDNOTFIRE
+        tags.light_source = et.LightSourceType.LIGHTSOURCE_DAYLIGHT
+        tags.exposure_time = 2.0
+        tags.pose =[nav[nav_index].roll, nav[nav_index].pitch, nav[nav_index].heading]
+
 
         et.save_tags (tags, str(in_file), str(out_file))
     except Exception as e:

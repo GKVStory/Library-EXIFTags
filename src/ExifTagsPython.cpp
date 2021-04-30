@@ -288,7 +288,7 @@ PYBIND11_MODULE(EXIFTagsPython, m) {
       .def_property("vignetting", 
             py::overload_cast<void>(&tg::tags::Tags::vignetting, py::const_),
             py::overload_cast<bool>(&tg::tags::Tags::vignetting))
-      .def_property("viewportType", 
+      .def_property("viewport_type", 
             py::overload_cast<void>(&tg::tags::Tags::viewportType, py::const_),
             py::overload_cast<tg::tags::Tags::ViewportType>(&tg::tags::Tags::viewportType))
       .def_property("enhancement", 
@@ -309,7 +309,7 @@ PYBIND11_MODULE(EXIFTagsPython, m) {
       .def_property("bayer_pattern", 
             py::overload_cast<void>(&tg::tags::Tags::bayerPattern, py::const_),
             py::overload_cast<tg::tags::Tags::BayerPatternType>(&tg::tags::Tags::bayerPattern))
-      .def_property("frameRate", 
+      .def_property("frame_rate", 
             py::overload_cast<void>(&tg::tags::Tags::frameRate, py::const_),
             py::overload_cast<double>(&tg::tags::Tags::frameRate))
       .def_property("camera_matrix", 
