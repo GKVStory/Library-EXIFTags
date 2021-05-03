@@ -46,6 +46,7 @@ include_directories(AFTER "${INCLUDE_PATH}")
 add_library(${LIB_NAME} ${SRC} ${HEADERS})
 target_link_directories(${LIB_NAME} PUBLIC ${CMAKE_BINARY_DIR})
 target_link_libraries (${LIB_NAME} libexif)
+target_include_directories(${LIB_NAME} PUBLIC "lib/libexif/")
 
 if(BUILD_TESTS)
   configure_file (
