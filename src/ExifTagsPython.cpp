@@ -225,7 +225,7 @@ PYBIND11_MODULE(EXIFTagsPython, m) {
             py::overload_cast<const std::string &>(&tg::tags::Tags::model))
       .def_property("strip_offsets", 
             py::overload_cast<void>(&tg::tags::Tags::stripOffsets, py::const_),
-            py::overload_cast<uint32_t>(&tg::tags::Tags::stripOffsets))
+            py::overload_cast<const std::vector<uint32_t> &>(&tg::tags::Tags::stripOffsets))
       .def_property_readonly("orientation", &tg::tags::Tags::orientation)
       .def_property("samples_per_pixel", 
             py::overload_cast<void>(&tg::tags::Tags::samplesPerPixel, py::const_),
@@ -235,7 +235,7 @@ PYBIND11_MODULE(EXIFTagsPython, m) {
             py::overload_cast<uint32_t>(&tg::tags::Tags::rowsPerStrip))
       .def_property("strip_byte_count", 
             py::overload_cast<void>(&tg::tags::Tags::stripByteCount, py::const_),
-            py::overload_cast<uint32_t>(&tg::tags::Tags::stripByteCount))
+            py::overload_cast<const std::vector<uint32_t> &>(&tg::tags::Tags::stripByteCount))
       .def_property_readonly("planar_config", &tg::tags::Tags::planarConfiguration)
       .def_property("software", 
             py::overload_cast<void>(&tg::tags::Tags::software, py::const_),

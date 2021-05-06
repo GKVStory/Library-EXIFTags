@@ -128,8 +128,8 @@ public:
     std::string model() const;
     void model(const std::string & model);
 
-    uint32_t stripOffsets() const;
-    void stripOffsets(uint32_t offsets);
+    std::vector<uint32_t> stripOffsets() const;
+    void stripOffsets(const std::vector<uint32_t> & offsets);
 
     enum OrientationType {
         ORIENTATION_EXIF_TOPLEFT = 1,
@@ -149,8 +149,8 @@ public:
     uint32_t rowsPerStrip() const;
     void rowsPerStrip(uint32_t rows_per_pixel);
 
-    uint32_t stripByteCount() const;
-    void stripByteCount(uint32_t byte_count);
+    std::vector<uint32_t> stripByteCount() const;
+    void stripByteCount(const std::vector<uint32_t> & byte_count);
 
     enum PlanarConfigurationType {
         PLANARCONFIG_EXIF_CONTIG = 1,

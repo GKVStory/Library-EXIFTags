@@ -78,6 +78,20 @@ TEST ( TagTest, UINT16_ARRAY) {
     ASSERT_EQ (dynamic_cast <Tag_UINT16_ARRAY*>(tag.get())->getData()[1], test_in[1]);
 } 
 
+TEST ( TagTest, UINT32_ARRAY) {
+    std::unique_ptr <Tag> tag = Tag::tagFactory(Constants::STRIP_OFFSETS);
+
+    GTEST_ASSERT_NE(tag, nullptr);
+
+    std::vector<uint32_t> test_in {1, 2, 3, 4};
+    dynamic_cast <Tag_UINT32_ARRAY*>(tag.get())->setData(test_in);
+
+    ASSERT_EQ (dynamic_cast <Tag_UINT32_ARRAY*>(tag.get())->getData()[0], test_in[0]);
+    ASSERT_EQ (dynamic_cast <Tag_UINT32_ARRAY*>(tag.get())->getData()[1], test_in[1]);
+    ASSERT_EQ (dynamic_cast <Tag_UINT32_ARRAY*>(tag.get())->getData()[2], test_in[2]);
+    ASSERT_EQ (dynamic_cast <Tag_UINT32_ARRAY*>(tag.get())->getData()[3], test_in[3]);
+} 
+
 TEST ( TagTest, DOUBLE_ARRAY) {
     std::unique_ptr <Tag> tag = Tag::tagFactory(Constants::CAMERA_MATRIX);
 

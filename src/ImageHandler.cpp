@@ -19,7 +19,10 @@ const unsigned char ImageHandler::TIFFHeaderIntel[4] = {'I', 'I', 42, 0};
 const unsigned char ImageHandler::JPEGHeaderStart[2] = {0xff, 0xd8};
 const unsigned char ImageHandler::APP0[2] = {0xff, 0xe0};
 const unsigned char ImageHandler::APP1[2] = {0xff, 0xe1};
-const unsigned char ImageHandler::STRIP_OFFSET_TAG[8] = {0x11, 0x01, 0x04, 0x00, 0x01, 0x00, 0x00, 0x00};
+const unsigned char ImageHandler::STRIP_OFFSET[12] = {0x11, 0x01, 0x07, 0x00, 0x04, 0x00, 0x00, 0x00, 0x0F, 0x0E, 0x0E, 0x0B};
+const unsigned char ImageHandler::OFFSET_LENGTH[8] = {0x17, 0x01, 0x07, 0x00, 0x04, 0x00, 0x00, 0x00};
+
+
 
 bool ImageHandler::loadHeader(const std::string & filename, std::vector <uint8_t> & image_header_data, std::string & error_message){ 
 
@@ -125,16 +128,39 @@ bool ImageHandler::tagTiff(Tags & exif_tags, const std::vector <uint8_t> & encod
     exif_tags.photometricInterpolation(orig_tags.photometricInterpolation());
     exif_tags.samplesPerPixel(orig_tags.samplesPerPixel());
     exif_tags.compression(orig_tags.compression());
-    //need to sync up rows per strip, strip offset and strip byte count. If we only support saving 2g images, then we only need the last two.
-    exif_tags.stripByteCount(orig_tags.stripByteCount());
-    exif_tags.stripOffsets (orig_tags.stripOffsets());
-    exif_tags.imageWidth(orig_tags.imageWidth());
     exif_tags.imageHeight(orig_tags.imageHeight());
     exif_tags.samplesPerPixel(orig_tags.samplesPerPixel());
     exif_tags.bitsPerSample(orig_tags.bitsPerSample());
+    exif_tags.imageWidth(orig_tags.imageWidth());
 
-    const uint32_t offsets = orig_tags.stripOffsets();
-    const uint32_t strip_bytes = orig_tags.stripByteCount();
+    const std::vector<uint32_t> offsets = orig_tags.stripOffsets();
+    const std::vector<uint32_t> strip_bytes = orig_tags.stripByteCount();
+
+    if (offsets.size() != strip_bytes.size()) {
+        error_message = ErrorMessages::invalid_image_data;
+        return false;
+    }
+
+    if (offsets.size() == 0) {
+        error_message = ErrorMessages::no_image_data;
+        return false;
+    }
+
+    uint32_t final_row_size (0);
+    std::vector<uint8_t> image_data;
+    image_data.reserve(encoded_image.size());
+    for (int i = 0; i < offsets.size(); ++i) {
+        auto start_block (encoded_image.begin() + offsets[i]);
+        auto end_block (start_block + strip_bytes[i]);
+        image_data.insert (image_data.end(), start_block, end_block);
+        final_row_size += strip_bytes[i];
+    }
+
+    //need to sync up rows per strip, strip offset and strip byte count. If we only support saving 2g images, then we only need the last two.
+    exif_tags.stripByteCount(std::vector<uint32_t>{final_row_size});
+    exif_tags.rowsPerStrip(exif_tags.imageHeight());
+    exif_tags.stripOffsets (std::vector<uint32_t>{0x0B0E0E0F});
+
 
     unsigned int header_length;
     std::unique_ptr <unsigned char[], decltype(&std::free)> header_data {static_cast<unsigned char *>(nullptr), std::free};
@@ -148,23 +174,25 @@ bool ImageHandler::tagTiff(Tags & exif_tags, const std::vector <uint8_t> & encod
     }
 
     output_image.clear();
-    output_image.reserve(header_length - 6 + strip_bytes);
+    output_image.reserve(header_length - 6 + final_row_size); //6 is a magic number, fear it.
     for (unsigned int i = sizeof(ExifHeader); i < header_length; ++i) {
         output_image.push_back(header_data[i]);
     }
-    for (unsigned int i = offsets; i < strip_bytes+offsets; ++i) {
-        output_image.push_back(encoded_image[i]);
-    }
+    output_image.insert(output_image.end(), image_data.begin(), image_data.end());
 
-    //change the header offset value to the new position. This is faster to do manually than loading the header twice.
-    std::vector<uint8_t>::iterator strip_offset_tag_start = std::search (output_image.begin(), output_image.end(), std::begin(STRIP_OFFSET_TAG), std::end(STRIP_OFFSET_TAG));
+    //change the header offset value to the new position and format. This is faster to do manually than loading the header twice, and works around a problem with the exif tags C library.
+    std::vector<uint8_t>::iterator strip_offset_tag_start = std::search (output_image.begin(), output_image.end(), std::begin(STRIP_OFFSET), std::end(STRIP_OFFSET));
     if (strip_offset_tag_start == output_image.end()) {
         error_message = ErrorMessages::tiff_header_encoding_failed;
         return false;
     }
 
     auto data_offset = header_length - 6;
-    strip_offset_tag_start += 8;
+    strip_offset_tag_start += 2;
+    *strip_offset_tag_start =  0x04;
+    strip_offset_tag_start += 2;
+    *strip_offset_tag_start =  0x01;
+    strip_offset_tag_start += 4;
     *strip_offset_tag_start = data_offset & 0xff;
     ++strip_offset_tag_start;
     *strip_offset_tag_start = (data_offset & 0xff00) >> 8;
@@ -173,5 +201,15 @@ bool ImageHandler::tagTiff(Tags & exif_tags, const std::vector <uint8_t> & encod
     ++strip_offset_tag_start;
     *strip_offset_tag_start = (data_offset & 0xff0000000) >> 24;
 
+    std::vector<uint8_t>::iterator data_length_tag_start = std::search (output_image.begin(), output_image.end(), std::begin(OFFSET_LENGTH), std::end(OFFSET_LENGTH));
+    if (data_length_tag_start == output_image.end()) {
+        error_message = ErrorMessages::tiff_header_encoding_failed;
+        return false;
+    }
+
+    data_length_tag_start += 2;
+    *data_length_tag_start = 0x04;
+    data_length_tag_start += 2;
+    *data_length_tag_start = 0x01;
     return true;
 }

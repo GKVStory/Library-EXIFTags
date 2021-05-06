@@ -148,6 +148,8 @@ public:
     static const std::string not_a_jpeg;
     static const std::string tiff_header_encoding_failed;
     static const std::string unsupported_tiff_format;
+    static const std::string invalid_image_data;
+    static const std::string no_image_data;
 };
 
 } //tags

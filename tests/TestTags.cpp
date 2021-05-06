@@ -45,9 +45,9 @@ TEST ( TagsTest, GenerateEmptyTagsClass_CheckDefaultBehaviour) {
     tags.model("Test model!");
     ASSERT_EQ(tags.model(), "Test model!");
 
-    ASSERT_EQ(tags.stripOffsets(), 0);
-    tags.stripOffsets(440);
-    ASSERT_EQ(tags.stripOffsets(), 440);
+    ASSERT_EQ(tags.stripOffsets().size(), 0);
+    tags.stripOffsets(std::vector<uint32_t>{440});
+    ASSERT_EQ(tags.stripOffsets()[0], 440);
 
     ASSERT_EQ(tags.orientation(), Tags::ORIENTATION_EXIF_TOPLEFT);
 
@@ -59,9 +59,9 @@ TEST ( TagsTest, GenerateEmptyTagsClass_CheckDefaultBehaviour) {
     tags.rowsPerStrip(56);
     ASSERT_EQ(tags.rowsPerStrip(), 56);
 
-    ASSERT_EQ(tags.stripByteCount(), 0);
-    tags.stripByteCount(1025);
-    ASSERT_EQ(tags.stripByteCount(), 1025);
+    ASSERT_EQ(tags.stripByteCount().size(), 0);
+    tags.stripByteCount(std::vector<uint32_t>{1025});
+    ASSERT_EQ(tags.stripByteCount()[0], 1025);
 
 
     ASSERT_EQ(tags.planarConfiguration(), Tags::PLANARCONFIG_EXIF_CONTIG);

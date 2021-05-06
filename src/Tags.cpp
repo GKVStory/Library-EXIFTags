@@ -192,11 +192,11 @@ void Tags::model(const std::string & model) {
     dynamic_cast<Tag_STRING*>(m_tags[Constants::MODEL].get())->setData(model);
 }
 
-uint32_t Tags::stripOffsets() const {
-    return dynamic_cast<Tag_UINT32*>(m_tags[Constants::STRIP_OFFSETS].get())->getData();
+std::vector<uint32_t> Tags::stripOffsets() const {
+    return dynamic_cast<Tag_UINT32_ARRAY*>(m_tags[Constants::STRIP_OFFSETS].get())->getData();
 }
-void Tags::stripOffsets(uint32_t offsets) {
-    dynamic_cast<Tag_UINT32*>(m_tags[Constants::STRIP_OFFSETS].get())->setData(offsets);
+void Tags::stripOffsets(const std::vector<uint32_t> & offsets) {
+    dynamic_cast<Tag_UINT32_ARRAY*>(m_tags[Constants::STRIP_OFFSETS].get())->setData(offsets);
 }
 
 Tags::OrientationType Tags::orientation() const {
@@ -217,11 +217,11 @@ void Tags::rowsPerStrip(uint32_t rows_per_pixel) {
     dynamic_cast<Tag_UINT32*>(m_tags[Constants::ROWS_PER_STRIP].get())->setData(rows_per_pixel);
 }
 
-uint32_t Tags::stripByteCount() const {
-    return dynamic_cast<Tag_UINT32*>(m_tags[Constants::STRIP_BYTE_COUNTS].get())->getData();
+std::vector <uint32_t> Tags::stripByteCount() const {
+    return dynamic_cast<Tag_UINT32_ARRAY*>(m_tags[Constants::STRIP_BYTE_COUNTS].get())->getData();
 }
-void Tags::stripByteCount(uint32_t byte_count) {
-    dynamic_cast<Tag_UINT32*>(m_tags[Constants::STRIP_BYTE_COUNTS].get())->setData(byte_count);
+void Tags::stripByteCount(const std::vector<uint32_t> & byte_count) {
+    dynamic_cast<Tag_UINT32_ARRAY*>(m_tags[Constants::STRIP_BYTE_COUNTS].get())->setData(byte_count);
 }
 
 Tags::PlanarConfigurationType Tags::planarConfiguration() const {

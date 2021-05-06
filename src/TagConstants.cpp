@@ -15,11 +15,11 @@ const std::vector<Constants::TagInfo> Constants::TAG_INFO {
     TagInfo(EXIF_TAG_IMAGE_DESCRIPTION, EXIF_IFD_0, 0, STRING, false), //IMAGE_DESCRIPTION,
     TagInfo(EXIF_TAG_MAKE, EXIF_IFD_0, 0, STRING, false), //MAKE,
     TagInfo(EXIF_TAG_MODEL, EXIF_IFD_0, 0, STRING, false), //MODEL,
-    TagInfo(EXIF_TAG_STRIP_OFFSETS, EXIF_IFD_0, 0, UINT32, false), //STRIP_OFFSETS
+    TagInfo(EXIF_TAG_STRIP_OFFSETS, EXIF_IFD_0, 0, UINT32_ARRAY, false), //STRIP_OFFSETS
     TagInfo(EXIF_TAG_ORIENTATION, EXIF_IFD_0, sizeof(uint16_t), UINT16, false), //ORIENTATION,
     TagInfo(EXIF_TAG_SAMPLES_PER_PIXEL, EXIF_IFD_0, sizeof(uint16_t), UINT16, false), //SAMPLES_PER_PIXEL,
     TagInfo(EXIF_TAG_ROWS_PER_STRIP, EXIF_IFD_0, sizeof(uint32_t), UINT32, false), //ROWS_PER_STRIP
-    TagInfo(EXIF_TAG_STRIP_BYTE_COUNTS, EXIF_IFD_0, 0, UINT32, false), //STRIP_BYTE_COUNTS
+    TagInfo(EXIF_TAG_STRIP_BYTE_COUNTS, EXIF_IFD_0, 0, UINT32_ARRAY, false), //STRIP_BYTE_COUNTS
     TagInfo(EXIF_TAG_PLANAR_CONFIGURATION, EXIF_IFD_0, sizeof(uint16_t), UINT16, false), //PLANAR_CONFIGURATION,
     TagInfo(EXIF_TAG_SOFTWARE, EXIF_IFD_0, 0, STRING, false), //SOFTWARE,
     TagInfo(EXIF_TAG_EXPOSURE_TIME, EXIF_IFD_EXIF, sizeof(double), UDOUBLE, false), //EXPOSURE_TIME,
@@ -101,3 +101,5 @@ const std::string ErrorMessages::image_size_too_small = "Encoded image is too sm
 const std::string ErrorMessages::not_a_jpeg = "Not a jpeg file";
 const std::string ErrorMessages::tiff_header_encoding_failed = "Tiff header encoding failed (header to small)";
 const std::string ErrorMessages::unsupported_tiff_format = "This library does not support tiff files with split image memory.";
+const std::string ErrorMessages::invalid_image_data = "The encode image does not contain valid image data.";
+const std::string ErrorMessages::no_image_data = "The encoded image does not contain any image data.";

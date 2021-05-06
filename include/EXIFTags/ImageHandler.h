@@ -56,8 +56,8 @@ private:
     static const unsigned char TIFFHeaderIntel[4];
     static const unsigned char APP0[2];
     static const unsigned char APP1[2];
-    static const unsigned char STRIP_OFFSET_TAG[8];
-    
+    static const unsigned char STRIP_OFFSET[12];
+    static const unsigned char OFFSET_LENGTH[8];
 };
 
 } //tags
