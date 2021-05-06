@@ -41,6 +41,10 @@ public:
         return testDataDir() + "testout.tif";
     };
 
+    static std::string OpenCVTiffOutputFile() {
+        return testDataDir() + "opencv_test.tif";
+    };
+
     static void setTags (Tags & tags) {
 
     tags.imageHeight(1024);

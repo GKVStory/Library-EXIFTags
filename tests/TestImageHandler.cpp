@@ -147,6 +147,7 @@ TEST (TEST_ImageHandler, TestTIFF) {
 
     image_tiff.resize(static_cast<unsigned int>(file_size));
     infile.read(reinterpret_cast<char *>(image_tiff.data()), file_size );
+    infile.close();
     ASSERT_TRUE(ImageHandler::tagTiff(tags, image_tiff, out_image, error_message));
 
     FILE* pFile;
@@ -164,6 +165,24 @@ TEST (TEST_ImageHandler, TestTIFF) {
     ASSERT_EQ(new_tags.compression(), Tags::COMPRESSION_EXIF_NONE);
     ASSERT_EQ(new_tags.photometricInterpolation(), Tags::PHOTOMETRIC_EXIF_MINISBLACK);
     TagsTestCommon::testTags(new_tags);
+}
+
+TEST (TEST_ImageHandler, TestTIFF_OpenCV) {
+    Tags tags;
+
+    std::vector <uint8_t> out_image;
+    std::string error_message;
+
+    std::vector<uint8_t> image_tiff;
+
+    std::ifstream infile (TagsTestCommon::tiffOutputFile(), std::ios::binary | std::ios::ate );
+    std::streamsize file_size = infile.tellg();
+    infile.seekg(0, std::ios::beg);
+
+    image_tiff.resize(static_cast<unsigned int>(file_size));
+    infile.read(reinterpret_cast<char *>(image_tiff.data()), file_size );
+    infile.close();
+    ASSERT_TRUE(ImageHandler::tagTiff(tags, image_tiff, out_image, error_message));
 }
 
 }

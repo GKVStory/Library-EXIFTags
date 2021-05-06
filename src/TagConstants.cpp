@@ -101,5 +101,5 @@ const std::string ErrorMessages::image_size_too_small = "Encoded image is too sm
 const std::string ErrorMessages::not_a_jpeg = "Not a jpeg file";
 const std::string ErrorMessages::tiff_header_encoding_failed = "Tiff header encoding failed (header to small)";
 const std::string ErrorMessages::unsupported_tiff_format = "This library does not support tiff files with split image memory.";
-const std::string ErrorMessages::invalid_image_data = "The encode image does not contain valid image data.";
+const std::string ErrorMessages::invalid_image_data = "The encoded image does not contain valid image data.";
 const std::string ErrorMessages::no_image_data = "The encoded image does not contain any image data.";
