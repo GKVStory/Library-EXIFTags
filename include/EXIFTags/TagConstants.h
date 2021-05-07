@@ -50,6 +50,8 @@ enum SupportedTags {
         STRIP_BYTE_COUNTS,
         PLANAR_CONFIGURATION,
         SOFTWARE,
+        PREDICTOR,
+        SAMPLE_FORMAT,
         EXPOSURE_TIME,
         F_NUMBER,
         //GPS_INFO,

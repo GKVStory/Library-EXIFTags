@@ -175,7 +175,7 @@ TEST (TEST_ImageHandler, TestTIFF_OpenCV) {
 
     std::vector<uint8_t> image_tiff;
 
-    std::ifstream infile (TagsTestCommon::tiffOutputFile(), std::ios::binary | std::ios::ate );
+    std::ifstream infile (TagsTestCommon::OpenCVTiffInputFile(), std::ios::binary | std::ios::ate );
     std::streamsize file_size = infile.tellg();
     infile.seekg(0, std::ios::beg);
 
@@ -183,6 +183,14 @@ TEST (TEST_ImageHandler, TestTIFF_OpenCV) {
     infile.read(reinterpret_cast<char *>(image_tiff.data()), file_size );
     infile.close();
     ASSERT_TRUE(ImageHandler::tagTiff(tags, image_tiff, out_image, error_message));
+    ASSERT_TRUE(tags.stripOffsets().size() == tags.stripByteCount().size());
+    ASSERT_TRUE(tags.stripOffsets().size() == 1);
+
+    FILE* pFile;
+    pFile = fopen(TagsTestCommon::OpenCVTiffOutputFile().c_str(), "wb");      
+    fwrite(out_image.data(), 1, out_image.size()*sizeof(unsigned char), pFile);
+    fclose(pFile);
+  
 }
 
 }

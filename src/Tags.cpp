@@ -19,14 +19,16 @@ Tags::Tags() {
 
     //Set the default, non-user accessible tags
     dynamic_cast<Tag_UINT32*>(m_tags[Constants::SUBFILE_TYPE].get())->setData(FULL_RESOLUTION_IMAGE);
-    bitsPerSample(1);
     compression(COMPRESSION_EXIF_NONE);
+    bitsPerSample(std::vector<uint16_t>{8});
     photometricInterpolation(PHOTOMETRIC_EXIF_MINISBLACK);
     dynamic_cast<Tag_STRING*>(m_tags[Constants::MAKE].get())->setData(Constants::DEFAULT_MAKE);
     dateTime(0);
     dynamic_cast<Tag_UINT16*>(m_tags[Constants::ORIENTATION].get())->setData(ORIENTATION_EXIF_TOPLEFT);
     samplesPerPixel(1);
     dynamic_cast<Tag_UINT16*>(m_tags[Constants::PLANAR_CONFIGURATION].get())->setData(PLANARCONFIG_EXIF_CONTIG);
+    predictor(PREDICTOR_NONE);
+    sampleFormat (std::vector<SampleFormatType> {SAMPLE_FORMAT_UNSIGNED});
     colourSpace(COLOURSPACE_sRGB);
     indexOfRefraction(Constants::DEFAULT_INDEX);
     viewportIndex(Constants::DEFAULT_VIEWPORT_INDEX);
@@ -149,11 +151,11 @@ void Tags::imageHeight(uint32_t height) {
     dynamic_cast<Tag_UINT16*>(m_tags[Constants::PIXEL_Y_DIMENSION].get())->setData(height);
 }
 
-uint16_t Tags::bitsPerSample() const {
-    return dynamic_cast<Tag_UINT16*>(m_tags[Constants::BITS_PER_SAMPLE].get())->getData();
+std::vector<uint16_t> Tags::bitsPerSample() const {
+    return dynamic_cast<Tag_UINT16_ARRAY*>(m_tags[Constants::BITS_PER_SAMPLE].get())->getData();
 }
-void Tags::bitsPerSample( uint16_t bits ) {
-    dynamic_cast<Tag_UINT16*>(m_tags[Constants::BITS_PER_SAMPLE].get())->setData(bits);
+void Tags::bitsPerSample( const std::vector<uint16_t> &  bits ) {
+    dynamic_cast<Tag_UINT16_ARRAY*>(m_tags[Constants::BITS_PER_SAMPLE].get())->setData(bits);
 }
 
 Tags::CompressionType Tags::compression() const {
@@ -233,6 +235,31 @@ std::string Tags::software() const {
 }
 void Tags::software(const std::string & sw) {
     dynamic_cast<Tag_STRING*>(m_tags[Constants::SOFTWARE].get())->setData(sw);
+}
+
+Tags::PredictorType Tags::predictor() const {
+    return static_cast<PredictorType>(dynamic_cast<Tag_UINT16*>(m_tags[Constants::PREDICTOR].get())->getData());
+}
+void Tags::predictor(Tags::PredictorType type) {
+    dynamic_cast<Tag_UINT16*>(m_tags[Constants::PREDICTOR].get())->setData(type);
+}
+
+std::vector<Tags::SampleFormatType> Tags::sampleFormat() const {
+    std::vector<uint16_t> temp ( dynamic_cast<Tag_UINT16_ARRAY*>(m_tags[Constants::SAMPLE_FORMAT].get())->getData() );
+    std::vector <SampleFormatType> type_convert;
+    type_convert.reserve(temp.size());
+    for (auto val : temp) {
+        type_convert.push_back (static_cast<SampleFormatType>(val));
+    }
+    return type_convert;
+}
+void Tags::sampleFormat (const std::vector<Tags::SampleFormatType> & type) {
+    std::vector <uint16_t> type_convert;
+    type_convert.reserve(type.size());
+    for (auto val : type) {
+        type_convert.push_back (static_cast<uint16_t>(val));
+    }
+    dynamic_cast<Tag_UINT16_ARRAY*>(m_tags[Constants::SAMPLE_FORMAT].get())->setData(type_convert);
 }
 
 double Tags::exposureTime() const {

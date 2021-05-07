@@ -207,11 +207,11 @@ PYBIND11_MODULE(EXIFTagsPython, m) {
             py::overload_cast<uint32_t>(&tg::tags::Tags::imageHeight))
       .def_property("bits_per_sample", 
             py::overload_cast<void>(&tg::tags::Tags::bitsPerSample, py::const_),
-            py::overload_cast<uint16_t>(&tg::tags::Tags::bitsPerSample))
+            py::overload_cast<const std::vector<uint16_t> & >(&tg::tags::Tags::bitsPerSample))
       .def_property("compression", 
             py::overload_cast<void>(&tg::tags::Tags::compression, py::const_),
             py::overload_cast<tg::tags::Tags::CompressionType>(&tg::tags::Tags::compression))
-      .def_property("PHOTOMETRIC_EXIF_interpolation", 
+      .def_property("photometric_interpolation", 
             py::overload_cast<void>(&tg::tags::Tags::photometricInterpolation, py::const_),
             py::overload_cast<tg::tags::Tags::PhotometricInterpolationType>(&tg::tags::Tags::photometricInterpolation))
       .def_property("image_description", 

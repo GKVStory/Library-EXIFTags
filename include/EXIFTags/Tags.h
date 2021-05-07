@@ -70,8 +70,8 @@ public:
     uint32_t imageHeight() const;
     void imageHeight(uint32_t height); 
 
-    uint16_t bitsPerSample() const;
-    void bitsPerSample( uint16_t bits );
+    std::vector<uint16_t> bitsPerSample() const;
+    void bitsPerSample( const std::vector<uint16_t> & bits );
 
     enum CompressionType {
         COMPRESSION_EXIF_NONE = 1,
@@ -160,6 +160,31 @@ public:
 
     std::string software() const;
     void software(const std::string & sw);
+
+    enum PredictorType {
+        PREDICTOR_NONE = 1,
+        PREDICTOR_HORIZONTAL_DIFFERENCING = 2,
+        PREDICTOR_FLOATING_POINT = 3,
+        PREDICTOR_HD_X2 = 34892,
+        PREDICTOR_HD_X4 = 34893,
+        PREDICTOR_FP_X2 = 34894,
+        PREDICTOR_FP_X4 = 34895
+    };
+    //Used for jpeg encoding.
+    PredictorType predictor() const;
+    void predictor(PredictorType type);
+
+    enum SampleFormatType {
+        SAMPLE_FORMAT_UNSIGNED = 1,
+        SAMPLE_FORMAT_SIGNED = 2,
+        SAMPLE_FORMAT_FLOAT = 3,
+        SAMPLE_FORMAT_UNDEFINED = 4,
+        SAMPLE_FORMAT_COMPLEX_INT = 5,
+        SAMPLE_FORMAT_COMPLEX_FLOAT = 6
+    };
+    //used for jpeg encoding, takes a vector for each byte type.
+    std::vector<SampleFormatType> sampleFormat() const;
+    void sampleFormat (const std::vector<SampleFormatType> & type);
 
     //units of ms
     double exposureTime() const;

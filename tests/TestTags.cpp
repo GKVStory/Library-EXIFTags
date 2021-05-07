@@ -23,9 +23,10 @@ TEST ( TagsTest, GenerateEmptyTagsClass_CheckDefaultBehaviour) {
     tags.imageWidth(2048);
     ASSERT_EQ(tags.imageWidth(), 2048);
 
-    ASSERT_EQ(tags.bitsPerSample(), 1);
-    tags.bitsPerSample(3);
-    ASSERT_EQ(tags.bitsPerSample(), 3);
+    ASSERT_EQ(tags.bitsPerSample()[0], 8);
+    tags.bitsPerSample(std::vector<uint16_t>{8, 8, 8});
+    ASSERT_EQ(tags.bitsPerSample().size(), 3);
+    ASSERT_EQ(tags.bitsPerSample()[0], 8);
 
     ASSERT_EQ(tags.compression(), Tags::COMPRESSION_EXIF_NONE);
     tags.compression(Tags::COMPRESSION_EXIF_JPEG);
@@ -266,6 +267,8 @@ TEST ( TagsTest, ParseOld2GTifFile) {
     ASSERT_EQ (tags.imageWidth(), 2464);
     ASSERT_EQ (tags.imageHeight(), 2056);
     ASSERT_EQ (tags.ppsTime(), 711698604);
+    ASSERT_EQ (tags.bitsPerSample().size(), 1);
+    ASSERT_EQ (tags.bitsPerSample()[0], 8);
 }
 
 TEST ( TagsTest, Tags_generate_tag_and_reparse) {

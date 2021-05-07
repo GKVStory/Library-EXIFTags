@@ -9,7 +9,7 @@ const std::vector<Constants::TagInfo> Constants::TAG_INFO {
     TagInfo(EXIF_TAG_NEW_SUBFILE_TYPE, EXIF_IFD_0, sizeof(uint32_t), UINT32, false), //SUBFILE_TYPE,
     TagInfo(EXIF_TAG_IMAGE_WIDTH, EXIF_IFD_0, sizeof(uint16_t), UINT16, false), //IMAGE_WIDTH,
     TagInfo(EXIF_TAG_IMAGE_LENGTH, EXIF_IFD_0, sizeof(uint16_t), UINT16, false), //IMAGE_HEIGHT,
-    TagInfo(EXIF_TAG_BITS_PER_SAMPLE, EXIF_IFD_0, sizeof(uint16_t), UINT16, false), //EXIF_TAG_BITS_PER_SAMPLE?
+    TagInfo(EXIF_TAG_BITS_PER_SAMPLE, EXIF_IFD_0, 0, UINT16_ARRAY, false), //EXIF_TAG_BITS_PER_SAMPLE?
     TagInfo(EXIF_TAG_COMPRESSION, EXIF_IFD_0, sizeof(uint16_t), UINT16, false), //COMPRESSION,
     TagInfo(EXIF_TAG_PHOTOMETRIC_INTERPRETATION, EXIF_IFD_0, sizeof(uint16_t), UINT16, false), //PHOTOMETRIC_INTERPOLATION,
     TagInfo(EXIF_TAG_IMAGE_DESCRIPTION, EXIF_IFD_0, 0, STRING, false), //IMAGE_DESCRIPTION,
@@ -22,6 +22,8 @@ const std::vector<Constants::TagInfo> Constants::TAG_INFO {
     TagInfo(EXIF_TAG_STRIP_BYTE_COUNTS, EXIF_IFD_0, 0, UINT32_ARRAY, false), //STRIP_BYTE_COUNTS
     TagInfo(EXIF_TAG_PLANAR_CONFIGURATION, EXIF_IFD_0, sizeof(uint16_t), UINT16, false), //PLANAR_CONFIGURATION,
     TagInfo(EXIF_TAG_SOFTWARE, EXIF_IFD_0, 0, STRING, false), //SOFTWARE,
+    TagInfo(0x013d, EXIF_IFD_0, sizeof(uint16_t), UINT16, false), //PREDICTOR
+    TagInfo(0x0153, EXIF_IFD_0, 0, UINT16_ARRAY, false), //SAMPLE_FORMAT
     TagInfo(EXIF_TAG_EXPOSURE_TIME, EXIF_IFD_EXIF, sizeof(double), UDOUBLE, false), //EXPOSURE_TIME,
     TagInfo(EXIF_TAG_FNUMBER, EXIF_IFD_EXIF, sizeof(double), UDOUBLE, false), //F_NUMBER,
     //(EXIF_TAG_GPS_INFO_IFD_POINTER, 1), //GPS_INFO,

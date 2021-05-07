@@ -41,8 +41,12 @@ public:
         return testDataDir() + "testout.tif";
     };
 
-    static std::string OpenCVTiffOutputFile() {
+    static std::string OpenCVTiffInputFile() {
         return testDataDir() + "opencv_test.tif";
+    };
+
+    static std::string OpenCVTiffOutputFile() {
+        return testDataDir() + "opencv_test_output.tif";
     };
 
     static void setTags (Tags & tags) {
