@@ -58,6 +58,7 @@ private:
     static const unsigned char APP1[2];
     static const unsigned char STRIP_OFFSET[8];
     static const unsigned char STRIP_OFFSET_ARRAY[4];
+    static const unsigned char STRIP_SIZE_ARRAY[4];
     static const unsigned char OFFSET_LENGTH[8];
     static const unsigned char BITS_PER_SAMPLE[4];
 };

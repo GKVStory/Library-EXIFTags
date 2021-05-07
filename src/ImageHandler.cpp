@@ -22,6 +22,7 @@ const unsigned char ImageHandler::APP0[2] = {0xff, 0xe0};
 const unsigned char ImageHandler::APP1[2] = {0xff, 0xe1};
 const unsigned char ImageHandler::STRIP_OFFSET[8] = {0x11, 0x01, 0x07, 0x00, 0x04, 0x00, 0x00, 0x00};
 const unsigned char ImageHandler::STRIP_OFFSET_ARRAY[4] = {0x11, 0x01, 0x04, 0x00};
+const unsigned char ImageHandler::STRIP_SIZE_ARRAY[4] = {0x17, 0x01, 0x03, 0x00};
 const unsigned char ImageHandler::OFFSET_LENGTH[8] = {0x17, 0x01, 0x07, 0x00, 0x04, 0x00, 0x00, 0x00};
 const unsigned char ImageHandler::BITS_PER_SAMPLE[4] = {0x02, 0x01, 0x07, 0x00};
 
@@ -139,9 +140,38 @@ bool ImageHandler::tagTiff(Tags & exif_tags, const std::vector <uint8_t> & encod
     //exif_tags.predictor(orig_tags.predictor());
 
     std::vector<uint32_t> offsets = orig_tags.stripOffsets();
-    const std::vector<uint32_t> strip_bytes = orig_tags.stripByteCount();
+    std::vector<uint32_t> strip_bytes = orig_tags.stripByteCount();
 
-    if (offsets.size() == 0) {
+    if (offsets.size() == 0) { //Images produced in OpenCV cause problems. The following code works around the loading problem.
+
+        size_t memory_block_size = strip_bytes.size();
+        //Also need to check if the strip offsets are 16 bit. OpenCV will do this depending on settings. If so, we have to double the number of points in teh array,. 
+        if ( strip_bytes[0] >= encoded_image.size() ) {
+
+            memory_block_size = memory_block_size * 2;
+            strip_bytes.clear();
+            strip_bytes.reserve(memory_block_size);
+
+            auto strip_size_tag_start = std::search (encoded_image.begin(), encoded_image.end(), std::begin(STRIP_SIZE_ARRAY), std::end(STRIP_SIZE_ARRAY));
+            if (strip_size_tag_start == encoded_image.end()) {
+                error_message = ErrorMessages::tiff_header_encoding_failed;
+                return false;
+            }
+
+            strip_size_tag_start += 8;
+
+            uint32_t offset_to_size = *strip_size_tag_start + 
+                                    (*(strip_size_tag_start + 1) << 8) +
+                                    (*(strip_size_tag_start + 2) << 16) +
+                                    (*(strip_size_tag_start + 3) << 24);
+
+        
+            for (auto i = 0; i < memory_block_size; ++i) {
+                strip_bytes.push_back(encoded_image[ offset_to_size + 2*i] +
+                                   (encoded_image[ offset_to_size + 2*i + 1] << 8));                     
+            }
+        }
+
         //This is a limitation of libexif that needs to be worked around.
         auto strip_offset_tag_start = std::search (encoded_image.begin(), encoded_image.end(), std::begin(STRIP_OFFSET_ARRAY), std::end(STRIP_OFFSET_ARRAY));
         if (strip_offset_tag_start == encoded_image.end()) {
@@ -157,14 +187,16 @@ bool ImageHandler::tagTiff(Tags & exif_tags, const std::vector <uint8_t> & encod
                                     (*(strip_offset_tag_start + 3) << 24);
 
         offsets.clear();
-        offsets.reserve (strip_bytes.size());
+        offsets.reserve (memory_block_size);
 
-        for (auto i = 0; i < strip_bytes.size(); ++i) {
+        for (auto i = 0; i < memory_block_size; ++i) {
             offsets.push_back( encoded_image[ offset_to_offset + 4*i] +
                                (encoded_image[ offset_to_offset + 4*i + 1] << 8) +
                                (encoded_image[ offset_to_offset + 4*i + 2] << 16) +
                                (encoded_image[ offset_to_offset + 4*i + 3] << 24)); 
         }
+
+        
                                                             
     }
 
