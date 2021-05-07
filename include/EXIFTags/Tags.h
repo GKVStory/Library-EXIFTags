@@ -161,6 +161,7 @@ public:
     std::string software() const;
     void software(const std::string & sw);
 
+    /*These tags aren't supported by the libexif.
     enum PredictorType {
         PREDICTOR_NONE = 1,
         PREDICTOR_HORIZONTAL_DIFFERENCING = 2,
@@ -185,6 +186,7 @@ public:
     //used for jpeg encoding, takes a vector for each byte type.
     std::vector<SampleFormatType> sampleFormat() const;
     void sampleFormat (const std::vector<SampleFormatType> & type);
+    */
 
     //units of ms
     double exposureTime() const;

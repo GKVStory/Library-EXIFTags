@@ -135,8 +135,8 @@ bool ImageHandler::tagTiff(Tags & exif_tags, const std::vector <uint8_t> & encod
     exif_tags.samplesPerPixel(orig_tags.samplesPerPixel());
     exif_tags.bitsPerSample(orig_tags.bitsPerSample());
     exif_tags.imageWidth(orig_tags.imageWidth());
-    exif_tags.sampleFormat(orig_tags.sampleFormat());
-    exif_tags.predictor(orig_tags.predictor());
+    //exif_tags.sampleFormat(orig_tags.sampleFormat());
+    //exif_tags.predictor(orig_tags.predictor());
 
     std::vector<uint32_t> offsets = orig_tags.stripOffsets();
     const std::vector<uint32_t> strip_bytes = orig_tags.stripByteCount();

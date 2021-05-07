@@ -22,8 +22,8 @@ const std::vector<Constants::TagInfo> Constants::TAG_INFO {
     TagInfo(EXIF_TAG_STRIP_BYTE_COUNTS, EXIF_IFD_0, 0, UINT32_ARRAY, false), //STRIP_BYTE_COUNTS
     TagInfo(EXIF_TAG_PLANAR_CONFIGURATION, EXIF_IFD_0, sizeof(uint16_t), UINT16, false), //PLANAR_CONFIGURATION,
     TagInfo(EXIF_TAG_SOFTWARE, EXIF_IFD_0, 0, STRING, false), //SOFTWARE,
-    TagInfo(0x013d, EXIF_IFD_0, sizeof(uint16_t), UINT16, false), //PREDICTOR
-    TagInfo(0x0153, EXIF_IFD_0, 0, UINT16_ARRAY, false), //SAMPLE_FORMAT
+    //TagInfo(0x013d, EXIF_IFD_INTEROPERABILITY, sizeof(uint16_t), UINT16, false), //PREDICTOR
+    //TagInfo(0x0153, EXIF_IFD_INTEROPERABILITY, 0, UINT16_ARRAY, false), //SAMPLE_FORMAT
     TagInfo(EXIF_TAG_EXPOSURE_TIME, EXIF_IFD_EXIF, sizeof(double), UDOUBLE, false), //EXPOSURE_TIME,
     TagInfo(EXIF_TAG_FNUMBER, EXIF_IFD_EXIF, sizeof(double), UDOUBLE, false), //F_NUMBER,
     //(EXIF_TAG_GPS_INFO_IFD_POINTER, 1), //GPS_INFO,

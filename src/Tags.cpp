@@ -27,8 +27,8 @@ Tags::Tags() {
     dynamic_cast<Tag_UINT16*>(m_tags[Constants::ORIENTATION].get())->setData(ORIENTATION_EXIF_TOPLEFT);
     samplesPerPixel(1);
     dynamic_cast<Tag_UINT16*>(m_tags[Constants::PLANAR_CONFIGURATION].get())->setData(PLANARCONFIG_EXIF_CONTIG);
-    predictor(PREDICTOR_NONE);
-    sampleFormat (std::vector<SampleFormatType> {SAMPLE_FORMAT_UNSIGNED});
+    //predictor(PREDICTOR_HORIZONTAL_DIFFERENCING);
+    //sampleFormat (std::vector<SampleFormatType> {SAMPLE_FORMAT_UNSIGNED});
     colourSpace(COLOURSPACE_sRGB);
     indexOfRefraction(Constants::DEFAULT_INDEX);
     viewportIndex(Constants::DEFAULT_VIEWPORT_INDEX);
@@ -237,6 +237,7 @@ void Tags::software(const std::string & sw) {
     dynamic_cast<Tag_STRING*>(m_tags[Constants::SOFTWARE].get())->setData(sw);
 }
 
+/*
 Tags::PredictorType Tags::predictor() const {
     return static_cast<PredictorType>(dynamic_cast<Tag_UINT16*>(m_tags[Constants::PREDICTOR].get())->getData());
 }
@@ -261,6 +262,7 @@ void Tags::sampleFormat (const std::vector<Tags::SampleFormatType> & type) {
     }
     dynamic_cast<Tag_UINT16_ARRAY*>(m_tags[Constants::SAMPLE_FORMAT].get())->setData(type_convert);
 }
+*/
 
 double Tags::exposureTime() const {
     return dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::EXPOSURE_TIME].get())->getData();
