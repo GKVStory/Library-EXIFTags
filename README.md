@@ -15,3 +15,6 @@ cmake --build . --config=Release
 # Using the Python Library
 
 I haven't set up the ppython project as a proper package as it's unlikely to be used often. To work with the build, copy the produced dll into your working directory, or onto your python package path, and import it directly.
+
+# Adding the conan libs for testing
+conan install . -s build_type=Release -if build_release -r=local-server --update

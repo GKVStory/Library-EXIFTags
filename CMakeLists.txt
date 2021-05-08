@@ -92,7 +92,7 @@ if(BUILD_TESTS)
 
   add_executable(${TEST_NAME} ${TEST_SRC})
 
-  target_link_libraries(${TEST_NAME} ${LIB_NAME} gtest_main )
+  target_link_libraries(${TEST_NAME} ${LIB_NAME} gtest_main ${CONAN_LIBS} )
   add_test(NAME ${TEST_NAME} COMMAND "${TEST_PATH}/${TEST_NAME}")
 
   if(BUILD_COVERAGE_ANALYSIS)
