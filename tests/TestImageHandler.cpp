@@ -8,6 +8,7 @@
 #include <fstream>
 #include <cstdint>
 #include <string>
+#include <opencv2/imgcodecs.hpp>
 
 namespace tg {
 namespace tags {
@@ -191,6 +192,17 @@ TEST (TEST_ImageHandler, TestTIFF_OpenCV) {
     fwrite(out_image.data(), 1, out_image.size()*sizeof(unsigned char), pFile);
     fclose(pFile);
   
+}
+
+TEST (TEST_ImageHandler, TestOpenCV_Load) {
+
+  cv::Mat mat;
+  mat = cv::imread(TagsTestCommon::OpenCVTiffOutputFile());
+  
+  ASSERT_EQ (mat.rows, 2056);
+  ASSERT_EQ (mat.cols, 2464);
+  ASSERT_NE (mat.data, nullptr);
+
 }
 
 }
