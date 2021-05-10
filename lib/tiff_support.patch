@@ -1,5 +1,5 @@
 diff --git a/libexif/exif-data.c b/libexif/exif-data.c
-index 8b280d3..68f2e91 100644
+index de6facc..147c5a8 100644
 --- a/libexif/exif-data.c
 +++ b/libexif/exif-data.c
 @@ -49,6 +49,19 @@
@@ -42,7 +42,7 @@ index 8b280d3..68f2e91 100644
  	/* Default data type: none */
  	exif_data_set_data_type (data, EXIF_DATA_TYPE_COUNT);
 @@ -374,7 +387,150 @@ level_cost(unsigned int n)
- 	return ceil(log(n + 0.1)/log_1_1);
+ 	return (unsigned int)(ceil(log(n + 0.1)/log_1_1));
  }
  
 -/*! Load data for an IFD.
@@ -348,7 +348,7 @@ index 8b280d3..68f2e91 100644
  
  typedef struct _ByteOrderChangeData ByteOrderChangeData;
 diff --git a/libexif/exif-data.h b/libexif/exif-data.h
-index 7d87d1d..4c42d85 100644
+index 7d87d1d..1c1f291 100644
 --- a/libexif/exif-data.h
 +++ b/libexif/exif-data.h
 @@ -55,6 +55,9 @@ struct _ExifData
@@ -356,13 +356,13 @@ index 7d87d1d..4c42d85 100644
  
  	ExifDataPrivate *priv;
 +	/*! Format of file read to ExifData */
-+	unsigned int exifDataFormat;	
++	unsigned int exifDataFormat;
 +
  };
  
  /*! Allocate a new #ExifData. The #ExifData contains an empty
 diff --git a/libexif/exif-entry.c b/libexif/exif-entry.c
-index 5de215f..3958fa7 100644
+index ab52d3d..0aafbf3 100644
 --- a/libexif/exif-entry.c
 +++ b/libexif/exif-entry.c
 @@ -69,7 +69,7 @@ exif_entry_log (ExifEntry *e, ExifLogCode code, const char *format, ...)
@@ -384,14 +384,14 @@ index 5de215f..3958fa7 100644
  {
  	e->components = 0;
 diff --git a/libexif/exif-entry.h b/libexif/exif-entry.h
-index def5347..4a36528 100644
+index def5347..b934c5d 100644
 --- a/libexif/exif-entry.h
 +++ b/libexif/exif-entry.h
 @@ -172,6 +172,14 @@ const char *exif_entry_get_value (ExifEntry *entry, char *val,
   */
  void        exif_entry_dump      (ExifEntry *entry, unsigned int indent);
  
-+/** 
++/**
 + * Added to support tiff in external library
 + */
 +void
@@ -403,7 +403,7 @@ index def5347..4a36528 100644
   *
   * \param[in] e an #ExifEntry*
 diff --git a/libexif/exif-loader.c b/libexif/exif-loader.c
-index f0f0463..a82c0fb 100644
+index 8d855e0..f79370f 100644
 --- a/libexif/exif-loader.c
 +++ b/libexif/exif-loader.c
 @@ -60,7 +60,8 @@ typedef enum {
@@ -431,7 +431,7 @@ index f0f0463..a82c0fb 100644
  	return NULL;
  }
  
-+void 
++void
 +exif_loader_get_tiff_container_size (ExifLoader *loader, const char *fname)
 +{
 +
@@ -443,7 +443,7 @@ index f0f0463..a82c0fb 100644
 +	ExifShort tagCount;
 +	unsigned char lastIFD;
 +
-+	if (!loader) 
++	if (!loader)
 +		return;
 +
 +	f = fopen (fname, "rb");
@@ -453,7 +453,7 @@ index f0f0463..a82c0fb 100644
 +		return;
 +	}
 +
-+	size = fread (data, 1, sizeof(data), f);
++	size = (int)fread (data, 1, sizeof(data), f);
 +	if (size < 6 ) {
 +		exif_log (loader->log, EXIF_LOG_CODE_NONE, "ExifLoader",
 +			  _("The header of '%s' could not be read."), fname);
@@ -465,7 +465,7 @@ index f0f0463..a82c0fb 100644
 +	if( !memcmp(data, TIFFHeaderIntel, sizeof(TIFFHeaderIntel) )) {
 +		order = EXIF_BYTE_ORDER_INTEL;
 +	}
-+	else if (!memcmp(data,TIFFHeaderMotorola, sizeof(TIFFHeaderMotorola))) {	
++	else if (!memcmp(data,TIFFHeaderMotorola, sizeof(TIFFHeaderMotorola))) {
 +		order = EXIF_BYTE_ORDER_MOTOROLA;
 +	}
 +	else {
@@ -477,7 +477,7 @@ index f0f0463..a82c0fb 100644
 +	offsetAddress=4;
 +
 +	while(!lastIFD)
-+	{	
++	{
 +		if(fseek (f, offsetAddress, SEEK_SET)) {
 +			exif_log (loader->log, EXIF_LOG_CODE_NONE, "ExifLoader",
 +			  _("Can't read file at addres '%u'"), offsetAddress);
@@ -510,7 +510,7 @@ index f0f0463..a82c0fb 100644
 +
 +			}
 +			tagCount = exif_get_short(data, order);
-+			offsetAddress = tagCount*0xC + offsetAddress + 2;		
++			offsetAddress = tagCount*0xC + offsetAddress + 2;
 +		}
 +	}
 +
@@ -530,14 +530,12 @@ index f0f0463..a82c0fb 100644
 +	exif_loader_get_tiff_container_size (l, path);
 +
  	while (1) {
- 		size = fread (data, 1, sizeof (data), f);
+ 		size = (int)fread (data, 1, sizeof (data), f);
  		if (size <= 0) 
-@@ -213,7 +309,13 @@ exif_loader_write (ExifLoader *eld, unsigned char *buf, unsigned int len)
- 			eld->data_format = EL_DATA_FORMAT_FUJI_RAW;
+@@ -214,6 +310,12 @@ exif_loader_write (ExifLoader *eld, unsigned char *buf, unsigned int len)
  			eld->size = 84;
  			eld->state = EL_SKIP_BYTES;
--			eld->size = 84;
-+			eld->size = 84;	
+ 			eld->size = 84;
 +		} else if ((memcmp(eld->b, "II*\000", 4) == 0)
 +			|| (memcmp(eld->b, "MM\000*", 4) == 0)) {
 +			eld->data_format = EL_DATA_FORMAT_TIFF;
@@ -584,7 +582,7 @@ index 62ee87c..9c9f42e 100644
  }
  #endif /* __cplusplus */
 diff --git a/libexif/exif-tag.c b/libexif/exif-tag.c
-index 30e0917..7ab7e52 100644
+index 34f4e39..2ea059a 100644
 --- a/libexif/exif-tag.c
 +++ b/libexif/exif-tag.c
 @@ -524,6 +524,15 @@ static const struct TagEntry {
@@ -594,7 +592,7 @@ index 30e0917..7ab7e52 100644
 +	 {EXIF_TAG_SENSITIVITY_TYPE, "SensitivityType",
 +	 N_("Sensitivity Type"),
 +	 N_(""),
-+	 { ESL_NNNN, ESL_NNNN, ESL_OOOO, ESL_NNNN, ESL_NNNN } },	
++	 { ESL_NNNN, ESL_NNNN, ESL_OOOO, ESL_NNNN, ESL_NNNN } },
 +	 {EXIF_TAG_RECOMMENDED_EXPOSURE_INDEX, "RecommendedExposureIndex",
 +	 N_("Recommended Exposure Index"),
 +	 N_(""),

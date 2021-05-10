@@ -17,6 +17,9 @@ configure_file("lib/_stdint.h" "${CMAKE_CURRENT_SOURCE_DIR}/lib/libexif/libexif/
 # Apply patch only once. Better would be if 'git apply' detected that the patch has already been applied, because
 # it still fails in the case where the cache is manually removed and configuration is rerun.
 if (NOT LIBEXIF_PATCHES_APPLIED MATCHES "true")
+    execute_process(COMMAND git apply lib/64_bit_support.patch --ignore-space-change --ignore-whitespace --directory=lib/libexif/
+                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                    RESULT_VARIABLE GIT_PATCH_RESULT)
     execute_process(COMMAND git apply lib/tiff_support.patch --ignore-space-change --ignore-whitespace --directory=lib/libexif/
                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                     RESULT_VARIABLE GIT_PATCH_RESULT)
