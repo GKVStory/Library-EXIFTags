@@ -47,7 +47,7 @@ Tags::~Tags() {}
 
 bool Tags::loadHeader(const std::vector <uint8_t> & image_header_data, std::string & error_message) {
     
-    ExifData * ed = exif_data_new_from_data (reinterpret_cast<const unsigned char *>(image_header_data.data()), image_header_data.size());
+    ExifData * ed = exif_data_new_from_data (reinterpret_cast<const unsigned char *>(image_header_data.data()), static_cast<unsigned int>(image_header_data.size()));
     if (!ed) {
         error_message = ErrorMessages::failed_header_load;
         return false;
