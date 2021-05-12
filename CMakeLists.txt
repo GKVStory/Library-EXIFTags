@@ -49,6 +49,10 @@ target_link_libraries (${LIB_NAME} libexif)
 target_include_directories(${LIB_NAME} PUBLIC "lib/libexif/")
 
 if(BUILD_TESTS)
+  include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+  conan_basic_setup()
+  set(CONAN_SYSTEM_INCLUDES ON)
+
   configure_file (
     "${PROJECT_SOURCE_DIR}/tests/TestConstants.h.i" 
     "${PROJECT_SOURCE_DIR}/tests/TestConstants.h"
