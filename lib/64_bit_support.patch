@@ -1,0 +1,296 @@
+diff --git a/libexif/canon/exif-mnote-data-canon.c b/libexif/canon/exif-mnote-data-canon.c
+index ef4fcc6..6d7bba4 100644
+--- a/libexif/canon/exif-mnote-data-canon.c
++++ b/libexif/canon/exif-mnote-data-canon.c
+@@ -165,16 +165,16 @@ exif_mnote_data_canon_save (ExifMnoteData *ne,
+ 			/* Ensure even offsets. Set padding bytes to 0. */
+ 			if (s & 1) ts += 1;
+ 			t = exif_mem_realloc (ne->mem, *buf,
+-						 sizeof (char) * ts);
++						 (ExifLong)(sizeof (char) * ts));
+ 			if (!t) {
+ 				EXIF_LOG_NO_MEMORY(ne->log, "ExifMnoteCanon", ts);
+ 				return;
+ 			}
+ 			*buf = t;
+-			*buf_size = ts;
++			*buf_size = (unsigned int)ts;
+ 			doff = *buf_size - s;
+ 			if (s & 1) { doff--; *(*buf + *buf_size - 1) = '\0'; }
+-			exif_set_long (*buf + o, n->order, n->offset + doff);
++			exif_set_long (*buf + o, n->order, (ExifLong)(n->offset + doff));
+ 		} else
+ 			doff = o;
+ 
+@@ -272,7 +272,7 @@ exif_mnote_data_canon_load (ExifMnoteData *ne,
+ 		 */
+ 		s = exif_format_get_size (n->entries[tcount].format) * 
+ 								  n->entries[tcount].components;
+-		n->entries[tcount].size = s;
++		n->entries[tcount].size = (unsigned int)s;
+ 		if (!s) {
+ 			exif_log (ne->log, EXIF_LOG_CODE_CORRUPT_DATA,
+ 				  "ExifMnoteCanon",
+@@ -291,7 +291,7 @@ exif_mnote_data_canon_load (ExifMnoteData *ne,
+ 				continue;
+ 			}
+ 
+-			n->entries[tcount].data = exif_mem_alloc (ne->mem, s);
++			n->entries[tcount].data = exif_mem_alloc (ne->mem, (ExifLong)s);
+ 			if (!n->entries[tcount].data) {
+ 				EXIF_LOG_NO_MEMORY(ne->log, "ExifMnoteCanon", s);
+ 				continue;
+@@ -320,7 +320,7 @@ exif_mnote_data_canon_load (ExifMnoteData *ne,
+ 		++tcount;
+ 	}
+ 	/* Store the count of successfully parsed tags */
+-	n->count = tcount;
++	n->count = (unsigned int)tcount;
+ }
+ 
+ static unsigned int
+diff --git a/libexif/exif-data.c b/libexif/exif-data.c
+index 8b280d3..de6facc 100644
+--- a/libexif/exif-data.c
++++ b/libexif/exif-data.c
+@@ -371,7 +371,7 @@ level_cost(unsigned int n)
+     static const double log_1_1 = 0.09531017980432493;
+ 
+ 	/* Adding 0.1 protects against the case where n==1 */
+-	return ceil(log(n + 0.1)/log_1_1);
++	return (unsigned int)(ceil(log(n + 0.1)/log_1_1));
+ }
+ 
+ /*! Load data for an IFD.
+diff --git a/libexif/exif-entry.c b/libexif/exif-entry.c
+index 5de215f..ab52d3d 100644
+--- a/libexif/exif-entry.c
++++ b/libexif/exif-entry.c
+@@ -628,7 +628,7 @@ static int
+ match_repeated_char(const unsigned char *data, unsigned char ch, size_t n)
+ {
+ 	int i;
+-	for (i=n; i; --i, ++data) {
++	for (i=(int)n; i; --i, ++data) {
+ 		if (*data == 0) {
+ 			i = 0;	/* all bytes before NUL matched */
+ 			break;
+@@ -984,7 +984,7 @@ exif_entry_get_value (ExifEntry *e, char *val, unsigned int maxlen)
+ 		if (e->size && e->data) {
+ 			const unsigned char *tagdata = memchr(e->data, 0, e->size);
+ 			if (tagdata++) {
+-				unsigned int editor_ofs = tagdata - e->data;
++				unsigned int editor_ofs = (unsigned int)(tagdata - e->data);
+ 				unsigned int remaining = e->size - editor_ofs;
+ 				if (match_repeated_char(tagdata, ' ', remaining)) {
+ 					strncat (val, (const char*)tagdata, MIN (maxlen-1 - strlen (val), remaining));
+@@ -1666,7 +1666,7 @@ exif_entry_initialize (ExifEntry *e, ExifTag tag)
+ 	case EXIF_TAG_MODEL:
+ 	case EXIF_TAG_SOFTWARE:
+ 	case EXIF_TAG_ARTIST:
+-		e->components = strlen (_("[None]")) + 1;
++		e->components = (unsigned long)(strlen (_("[None]")) + 1);
+ 		e->format = EXIF_FORMAT_ASCII;
+ 		e->size = exif_format_get_size (e->format) * e->components;
+ 		e->data = exif_entry_alloc (e, e->size);
+@@ -1675,7 +1675,7 @@ exif_entry_initialize (ExifEntry *e, ExifTag tag)
+ 		break;
+ 	/* ASCII, default "[None]\0[None]\0" */
+ 	case EXIF_TAG_COPYRIGHT:
+-		e->components = (strlen (_("[None]")) + 1) * 2;
++		e->components = (unsigned long)((strlen (_("[None]")) + 1) * 2);
+ 		e->format = EXIF_FORMAT_ASCII;
+ 		e->size = exif_format_get_size (e->format) * e->components;
+ 		e->data = exif_entry_alloc (e, e->size);
+diff --git a/libexif/exif-loader.c b/libexif/exif-loader.c
+index f0f0463..8d855e0 100644
+--- a/libexif/exif-loader.c
++++ b/libexif/exif-loader.c
+@@ -120,7 +120,7 @@ exif_loader_write_file (ExifLoader *l, const char *path)
+ 		return;
+ 	}
+ 	while (1) {
+-		size = fread (data, 1, sizeof (data), f);
++		size = (int)fread (data, 1, sizeof (data), f);
+ 		if (size <= 0) 
+ 			break;
+ 		if (!exif_loader_write (l, data, size)) 
+diff --git a/libexif/exif-tag.c b/libexif/exif-tag.c
+index 30e0917..34f4e39 100644
+--- a/libexif/exif-tag.c
++++ b/libexif/exif-tag.c
+@@ -980,7 +980,7 @@ exif_tag_table_first(ExifTag tag)
+ 		return -1;	/* Not found */
+ 
+ 	/* Calculate index of found entry */
+-	i = entry - ExifTagTable;
++	i = (int)(entry - ExifTagTable);
+ 
+ 	/* There may be other entries with the same tag number, so search
+ 	 * backwards to find the first
+diff --git a/libexif/fuji/exif-mnote-data-fuji.c b/libexif/fuji/exif-mnote-data-fuji.c
+index c191490..bf6be70 100644
+--- a/libexif/fuji/exif-mnote-data-fuji.c
++++ b/libexif/fuji/exif-mnote-data-fuji.c
+@@ -129,15 +129,15 @@ exif_mnote_data_fuji_save (ExifMnoteData *ne, unsigned char **buf,
+ 
+ 			/* Ensure even offsets. Set padding bytes to 0. */
+ 			if (s & 1) ts += 1;
+-			t = exif_mem_realloc (ne->mem, *buf, ts);
++			t = exif_mem_realloc (ne->mem, *buf, (ExifLong)ts);
+ 			if (!t) {
+ 				return;
+ 			}
+ 			*buf = t;
+-			*buf_size = ts;
++			*buf_size = (unsigned int)ts;
+ 			doff = *buf_size - s;
+ 			if (s & 1) { doff--; *(*buf + *buf_size - 1) = '\0'; }
+-			exif_set_long (*buf + o, n->order, doff);
++			exif_set_long (*buf + o, n->order, (ExifLong)doff);
+ 		} else
+ 			doff = o;
+ 
+@@ -228,7 +228,7 @@ exif_mnote_data_fuji_load (ExifMnoteData *en,
+ 		 * in the entry but somewhere else (offset).
+ 		 */
+ 		s = exif_format_get_size (n->entries[tcount].format) * n->entries[tcount].components;
+-		n->entries[tcount].size = s;
++		n->entries[tcount].size = (unsigned int)s;
+ 		if (s) {
+ 			size_t dataofs = o + 8;
+ 			if (s > 4)
+@@ -242,7 +242,7 @@ exif_mnote_data_fuji_load (ExifMnoteData *en,
+ 				continue;
+ 			}
+ 
+-			n->entries[tcount].data = exif_mem_alloc (en->mem, s);
++			n->entries[tcount].data = exif_mem_alloc (en->mem, (ExifLong)s);
+ 			if (!n->entries[tcount].data) {
+ 				EXIF_LOG_NO_MEMORY(en->log, "ExifMnoteDataFuji", s);
+ 				continue;
+@@ -254,7 +254,7 @@ exif_mnote_data_fuji_load (ExifMnoteData *en,
+ 		++tcount;
+ 	}
+ 	/* Store the count of successfully parsed tags */
+-	n->count = tcount;
++	n->count = (unsigned int)tcount;
+ }
+ 
+ static unsigned int
+diff --git a/libexif/olympus/exif-mnote-data-olympus.c b/libexif/olympus/exif-mnote-data-olympus.c
+index 1d1de2c..ac58acb 100644
+--- a/libexif/olympus/exif-mnote-data-olympus.c
++++ b/libexif/olympus/exif-mnote-data-olympus.c
+@@ -212,14 +212,14 @@ exif_mnote_data_olympus_save (ExifMnoteData *ne,
+ 			doff = *buf_size;
+ 			ts = *buf_size + s;
+ 			t = exif_mem_realloc (ne->mem, *buf,
+-						 sizeof (char) * ts);
++						 (ExifLong)(sizeof (char) * ts));
+ 			if (!t) {
+ 				EXIF_LOG_NO_MEMORY(ne->log, "ExifMnoteDataOlympus", ts);
+ 				return;
+ 			}
+ 			*buf = t;
+-			*buf_size = ts;
+-			exif_set_long (*buf + o, n->order, datao + doff);
++			*buf_size = (unsigned int)ts;
++			exif_set_long (*buf + o, n->order, (ExifLong)(datao + doff));
+ 		} else
+ 			doff = o;
+ 
+@@ -274,7 +274,7 @@ exif_mnote_data_olympus_load (ExifMnoteData *en,
+ 	 * two unknown bytes (0), "MM" or "II", another byte 0 and 
+ 	 * lastly 0x2A.
+ 	 */
+-	n->version = exif_mnote_data_olympus_identify_variant(buf+o2, buf_size-o2);
++	n->version = exif_mnote_data_olympus_identify_variant(buf+o2, (unsigned int)(buf_size-o2));
+ 	switch (n->version) {
+ 	case olympusV1:
+ 	case sanyoV1:
+@@ -461,7 +461,7 @@ exif_mnote_data_olympus_load (ExifMnoteData *en,
+ 	     */
+ 	    s = exif_format_get_size (n->entries[tcount].format) *
+ 		   			 n->entries[tcount].components;
+-		n->entries[tcount].size = s;
++		n->entries[tcount].size = (unsigned int)s;
+ 		if (s) {
+ 			size_t dataofs = o + 8;
+ 			if (s > 4) {
+@@ -490,7 +490,7 @@ exif_mnote_data_olympus_load (ExifMnoteData *en,
+ 				continue;
+ 			}
+ 
+-			n->entries[tcount].data = exif_mem_alloc (en->mem, s);
++			n->entries[tcount].data = exif_mem_alloc (en->mem, (ExifLong)s);
+ 			if (!n->entries[tcount].data) {
+ 				EXIF_LOG_NO_MEMORY(en->log, "ExifMnoteOlympus", s);
+ 				continue;
+@@ -502,7 +502,7 @@ exif_mnote_data_olympus_load (ExifMnoteData *en,
+ 		++tcount;
+ 	}
+ 	/* Store the count of successfully parsed tags */
+-	n->count = tcount;
++	n->count = (unsigned int)tcount;
+ }
+ 
+ static unsigned int
+diff --git a/libexif/pentax/exif-mnote-data-pentax.c b/libexif/pentax/exif-mnote-data-pentax.c
+index 5299e63..6aa5e04 100644
+--- a/libexif/pentax/exif-mnote-data-pentax.c
++++ b/libexif/pentax/exif-mnote-data-pentax.c
+@@ -92,7 +92,7 @@ exif_mnote_data_pentax_save (ExifMnoteData *ne,
+ 	 * Allocate enough memory for header, the number of entries, entries,
+ 	 * and next IFD pointer
+ 	 */
+-	*buf_size = o2 + 2 + n->count * 12 + 4;
++	*buf_size = (unsigned int)(o2 + 2 + n->count * 12 + 4);
+ 	switch (n->version) {
+ 	case casioV2:
+ 		base = MNOTE_PENTAX2_TAG_BASE;
+@@ -182,14 +182,14 @@ exif_mnote_data_pentax_save (ExifMnoteData *ne,
+ 			size_t ts = *buf_size + s;
+ 			doff = *buf_size;
+ 			t = exif_mem_realloc (ne->mem, *buf,
+-						 sizeof (char) * ts);
++						 (ExifLong)(sizeof (char) * ts));
+ 			if (!t) {
+ 				EXIF_LOG_NO_MEMORY(ne->log, "ExifMnoteDataPentax", ts);
+ 				return;
+ 			}
+ 			*buf = t;
+-			*buf_size = ts;
+-			exif_set_long (*buf + o, n->order, datao + doff);
++			*buf_size = (unsigned int)ts;
++			exif_set_long (*buf + o, n->order, (ExifLong)(datao + doff));
+ 		} else
+ 			doff = o;
+ 
+@@ -311,7 +311,7 @@ exif_mnote_data_pentax_load (ExifMnoteData *en,
+ 		 */
+ 		s = exif_format_get_size (n->entries[tcount].format) *
+                                       n->entries[tcount].components;
+-		n->entries[tcount].size = s;
++		n->entries[tcount].size = (unsigned int)s;
+ 		if (s) {
+ 			size_t dataofs = o + 8;
+ 			if (s > 4)
+@@ -325,7 +325,7 @@ exif_mnote_data_pentax_load (ExifMnoteData *en,
+ 				continue;
+ 			}
+ 
+-			n->entries[tcount].data = exif_mem_alloc (en->mem, s);
++			n->entries[tcount].data = exif_mem_alloc (en->mem, (ExifLong)s);
+ 			if (!n->entries[tcount].data) {
+ 				EXIF_LOG_NO_MEMORY(en->log, "ExifMnoteDataPentax", s);
+ 				continue;
+@@ -337,7 +337,7 @@ exif_mnote_data_pentax_load (ExifMnoteData *en,
+ 		++tcount;
+ 	}
+ 	/* Store the count of successfully parsed tags */
+-	n->count = tcount;
++	n->count = (unsigned int)tcount;
+ }
+ 
+ static unsigned int
