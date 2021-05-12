@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
     bool old_style = result["old_file"].as<bool>();
 
     if (filename == "") {
-        std::cerr << "USAGE: exif2Gtool <input filename .tif or .jpg>";
+        std::cerr << "USAGE: exif2Gtool <input filename .tif or .jpg>" << std::endl;
         return -1;
     }
 
