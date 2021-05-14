@@ -192,6 +192,9 @@ TEST (TEST_ImageHandler, TestTIFF_OpenCV) {
     fwrite(out_image.data(), 1, out_image.size()*sizeof(unsigned char), pFile);
     fclose(pFile);
   
+    //Test we can load images saved with this library.
+    Tags new_tags;
+    ASSERT_TRUE (new_tags.loadHeader(TagsTestCommon::OpenCVTiffOutputFile(), error_message));
 }
 
 TEST (TEST_ImageHandler, TestOpenCV_Load) {
