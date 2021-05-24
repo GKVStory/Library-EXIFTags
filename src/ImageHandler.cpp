@@ -35,30 +35,38 @@ bool ImageHandler::loadHeader(const std::string& filename,
 
     image_header_data.clear();
     std::vector <uint8_t> temp_header;
-    temp_header.resize(32);
+    temp_header.resize(64);
     image_header_data.resize(MAX_READ_SIZE);
 
     std::ifstream file(filename, std::ios::binary | std::ios::ate);
     std::streamsize size = file.tellg();
     file.seekg(0, std::ios::beg);
-    if (size < 32) {
+    if (size < 64) {
         error_message = ErrorMessages::file_too_small + filename;
         return false;
     }
 
-    if (!file.read(reinterpret_cast<char*>(temp_header.data()), 32)) {
+    if (!file.read(reinterpret_cast<char*>(temp_header.data()), 64)) {
         error_message = ErrorMessages::failed_file_load + filename;
         return false;
     }
 
+    bool is_LE = false;
     auto exif_start = std::search(temp_header.begin(),
                                   temp_header.end(),
                                   std::begin(TIFFHeaderMotorola),
                                   std::end(TIFFHeaderMotorola));
 
     if (exif_start == temp_header.end()) {
-        error_message = ErrorMessages::invalid_header_data;
-        return false;
+        is_LE = true;
+        exif_start = std::search(temp_header.begin(),
+                                  temp_header.end(),
+                                  std::begin(TIFFHeaderIntel),
+                                  std::end(TIFFHeaderIntel));
+        if (exif_start == temp_header.end()) { 
+            error_message = ErrorMessages::invalid_header_data;
+            return false;
+        }
     }
     auto exif_index = std::distance( temp_header.begin(), exif_start );
 
@@ -70,18 +78,32 @@ bool ImageHandler::loadHeader(const std::string& filename,
         return false;
     }
 
-    size_t offset = image_header_data[4] +
+    size_t offset;
+    if (is_LE) {
+        offset = image_header_data[4] +
                     (image_header_data[5] << 8) +
                     (image_header_data[6] << 16) +
                     (image_header_data[7] << 24);
     
-    image_header_data[4] = 8;
-    image_header_data[5] = 0;
-    image_header_data[6] = 0;
-    image_header_data[7] = 0;
+        image_header_data[4] = 8;
+        image_header_data[5] = 0;
+        image_header_data[6] = 0;
+        image_header_data[7] = 0;
+    } else {
+        offset = image_header_data[7] +
+                    (image_header_data[6] << 8) +
+                    (image_header_data[5] << 16) +
+                    (image_header_data[4] << 24);
+    
+        image_header_data[7] = 8;
+        image_header_data[6] = 0;
+        image_header_data[5] = 0;
+        image_header_data[4] = 0;
+    }
 
     file.seekg(exif_index + offset, std::ios::beg);
-    if (!file.read(reinterpret_cast<char*>(image_header_data.data()), 65535-8)) {
+    size_t read_size = (int(size) - int(exif_index + offset + 65535 - 8) > 0) ? 65535-8 : size - (exif_index + offset);
+    if (!file.read(reinterpret_cast<char*>(image_header_data.data()+8), read_size)) {
         error_message = ErrorMessages::failed_file_load + filename;
         return false;
     }
