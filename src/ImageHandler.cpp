@@ -27,15 +27,17 @@ const unsigned char ImageHandler::STRIP_SIZE_ARRAY[4] = {0x17, 0x01, 0x03, 0x00}
 const unsigned char ImageHandler::OFFSET_LENGTH[8] = {
     0x17, 0x01, 0x07, 0x00, 0x04, 0x00, 0x00, 0x00};
 const unsigned char ImageHandler::BITS_PER_SAMPLE[4] = {0x02, 0x01, 0x07, 0x00};
+const size_t ImageHandler::HEADER_SIZE = 8;
 
 bool ImageHandler::loadHeader(const std::string& filename,
                               std::vector<uint8_t>& image_header_data,
                               std::string& error_message) {
 
     image_header_data.clear();
-    image_header_data.reserve(6 + MAX_READ_SIZE);
+    std::vector <uint8_t> temp_header;
+    temp_header.reserve(32);
+    image_header_data.reserve(MAX_READ_SIZE);
 
-    unsigned char header_bytes[8] = {0, 0, 0, 0, 0, 0, 0, 0};
     std::ifstream file(filename, std::ios::binary | std::ios::ate);
     std::streamsize size = file.tellg();
     file.seekg(0, std::ios::beg);
@@ -43,14 +45,42 @@ bool ImageHandler::loadHeader(const std::string& filename,
         error_message = ErrorMessages::file_too_small + filename;
         return false;
     }
-    if (!file.read(reinterpret_cast<char*>(header_bytes), 8)) {
+
+    if (!file.read(reinterpret_cast<char*>(temp_header), 32)) {
         error_message = ErrorMessages::failed_file_load + filename;
         return false;
     }
-    file.seekg(0, std::ios::beg);
 
-    image_header_data.resize(static_cast<unsigned int>(size));
-    if (!file.read(reinterpret_cast<char*>(image_header_data.data()), size)) {
+    auto exif_start = std::search(temp_header.begin(),
+                                  temp_header.end(),
+                                  std::begin(TIFFHeaderMotorola),
+                                  std::end(TIFFHeaderMotorola));
+
+    if (exif_start == temp_header.end()) {
+        error_message = ErrorMessages::invalid_header_data;
+        return false;
+    }
+
+    file.seekg(exif_start, std::ios::beg);
+
+    //Read in the first 8 bytes of the header, and find the offset to the start of the header.
+    if (!file.read(reinterpret_cast<char*>(image_header_data), HEADER_SIZE)) {
+        error_message = ErrorMessages::failed_file_load + filename;
+        return false;
+    }
+
+    size_t offset = image_header_data[4] +
+                    image_header_data[5] << 8 +
+                    image_header_data[6] << 16 +
+                    image_header_data[7] << 24;
+    
+    image_header_data[4] = 8;
+    image_header_data[5] = 0;
+    image_header_data[6] = 0;
+    image_header_data[7] = 0;
+
+    file.seekg(exif_start + offset, std::iod::beg);
+    if (!file.read(reinterpret_cast<char*>(image_header_data.data()), 2**16-8)) {
         error_message = ErrorMessages::failed_file_load + filename;
         return false;
     }

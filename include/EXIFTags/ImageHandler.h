@@ -61,6 +61,7 @@ private:
     static const unsigned char STRIP_SIZE_ARRAY[4];
     static const unsigned char OFFSET_LENGTH[8];
     static const unsigned char BITS_PER_SAMPLE[4];
+    static const size_t HEADER_SIZE; 
 };
 
 } //tags

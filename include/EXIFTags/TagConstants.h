@@ -152,6 +152,7 @@ public:
     static const std::string unsupported_tiff_format;
     static const std::string invalid_image_data;
     static const std::string no_image_data;
+    static const std::string invalid_header_data;
 };
 
 } //tags
