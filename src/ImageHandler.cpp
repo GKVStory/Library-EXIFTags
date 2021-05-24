@@ -35,8 +35,8 @@ bool ImageHandler::loadHeader(const std::string& filename,
 
     image_header_data.clear();
     std::vector <uint8_t> temp_header;
-    temp_header.reserve(32);
-    image_header_data.reserve(MAX_READ_SIZE);
+    temp_header.resize(32);
+    image_header_data.resize(MAX_READ_SIZE);
 
     std::ifstream file(filename, std::ios::binary | std::ios::ate);
     std::streamsize size = file.tellg();
@@ -46,7 +46,7 @@ bool ImageHandler::loadHeader(const std::string& filename,
         return false;
     }
 
-    if (!file.read(reinterpret_cast<char*>(temp_header), 32)) {
+    if (!file.read(reinterpret_cast<char*>(temp_header.data()), 32)) {
         error_message = ErrorMessages::failed_file_load + filename;
         return false;
     }
@@ -60,27 +60,28 @@ bool ImageHandler::loadHeader(const std::string& filename,
         error_message = ErrorMessages::invalid_header_data;
         return false;
     }
+    auto exif_index = std::distance( temp_header.begin(), exif_start );
 
-    file.seekg(exif_start, std::ios::beg);
+    file.seekg(exif_index, std::ios::beg);
 
     //Read in the first 8 bytes of the header, and find the offset to the start of the header.
-    if (!file.read(reinterpret_cast<char*>(image_header_data), HEADER_SIZE)) {
+    if (!file.read(reinterpret_cast<char*>(image_header_data.data()), HEADER_SIZE)) {
         error_message = ErrorMessages::failed_file_load + filename;
         return false;
     }
 
     size_t offset = image_header_data[4] +
-                    image_header_data[5] << 8 +
-                    image_header_data[6] << 16 +
-                    image_header_data[7] << 24;
+                    (image_header_data[5] << 8) +
+                    (image_header_data[6] << 16) +
+                    (image_header_data[7] << 24);
     
     image_header_data[4] = 8;
     image_header_data[5] = 0;
     image_header_data[6] = 0;
     image_header_data[7] = 0;
 
-    file.seekg(exif_start + offset, std::iod::beg);
-    if (!file.read(reinterpret_cast<char*>(image_header_data.data()), 2**16-8)) {
+    file.seekg(exif_index + offset, std::ios::beg);
+    if (!file.read(reinterpret_cast<char*>(image_header_data.data()), 65535-8)) {
         error_message = ErrorMessages::failed_file_load + filename;
         return false;
     }
@@ -216,7 +217,7 @@ bool ImageHandler::tagTiff(Tags& exif_tags,
                                       (*(strip_size_tag_start + 2) << 16) +
                                       (*(strip_size_tag_start + 3) << 24);
 
-            for (auto i = 0; i < memory_block_size; ++i) {
+            for (size_t i = 0; i < memory_block_size; ++i) {
                 strip_bytes.push_back(encoded_image[offset_to_size + 2 * i] +
                                       (encoded_image[offset_to_size + 2 * i + 1] << 8));
             }
@@ -241,7 +242,7 @@ bool ImageHandler::tagTiff(Tags& exif_tags,
         offsets.clear();
         offsets.reserve(memory_block_size);
 
-        for (auto i = 0; i < memory_block_size; ++i) {
+        for (size_t i = 0; i < memory_block_size; ++i) {
             offsets.push_back(encoded_image[offset_to_offset + 4 * i] +
                               (encoded_image[offset_to_offset + 4 * i + 1] << 8) +
                               (encoded_image[offset_to_offset + 4 * i + 2] << 16) +
@@ -262,7 +263,7 @@ bool ImageHandler::tagTiff(Tags& exif_tags,
     uint32_t final_row_size(0);
     std::vector<uint8_t> image_data;
     image_data.reserve(encoded_image.size());
-    for (int i = 0; i < offsets.size(); ++i) {
+    for (size_t i = 0; i < offsets.size(); ++i) {
         auto start_block(encoded_image.begin() + offsets[i]);
         auto end_block(start_block + strip_bytes[i]);
         image_data.insert(image_data.end(), start_block, end_block);

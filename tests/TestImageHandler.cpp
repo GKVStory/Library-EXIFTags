@@ -8,7 +8,7 @@
 #include <fstream>
 #include <cstdint>
 #include <string>
-#include <opencv2/imgcodecs.hpp>
+//#include <opencv2/imgcodecs.hpp>
 
 namespace tg {
 namespace tags {
@@ -197,7 +197,7 @@ TEST (TEST_ImageHandler, TestTIFF_OpenCV) {
     ASSERT_TRUE (new_tags.loadHeader(TagsTestCommon::OpenCVTiffOutputFile(), error_message));
 }
 
-TEST (TEST_ImageHandler, TestOpenCV_Load) {
+/*TEST (TEST_ImageHandler, TestOpenCV_Load) {
 
   cv::Mat mat;
   mat = cv::imread(TagsTestCommon::OpenCVTiffOutputFile());
@@ -206,7 +206,7 @@ TEST (TEST_ImageHandler, TestOpenCV_Load) {
   ASSERT_EQ (mat.cols, 2464);
   ASSERT_NE (mat.data, nullptr);
 
-}
+}*/
 
 }
 }
