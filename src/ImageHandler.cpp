@@ -184,6 +184,10 @@ bool ImageHandler::tagTiff(Tags& exif_tags,
     std::vector<uint32_t> offsets = orig_tags.stripOffsets();
     std::vector<uint32_t> strip_bytes = orig_tags.stripByteCount();
 
+    //  Find the offset of the 0th IFD
+    uint32_t offset_of_IFD = encoded_image[4] + (encoded_image[5] << 8) + (encoded_image[6] << 16) +
+                             (encoded_image[7] << 24);
+
     if (strip_bytes.size() == 0 || offsets.size() == 0 ||
         offsets.size() != strip_bytes.size()) { // Images produced in OpenCV cause problems. The
                                                 // following code works around the loading problem.
@@ -196,10 +200,6 @@ bool ImageHandler::tagTiff(Tags& exif_tags,
             memory_block_size = memory_block_size * 2;
             strip_bytes.clear();
             strip_bytes.reserve(memory_block_size);
-
-            //  Find the offset of the 0th IFD
-            uint32_t offset_of_IFD = encoded_image[4] + (encoded_image[5] << 8) +
-                                     (encoded_image[6] << 16) + (encoded_image[7] << 24);
 
             auto strip_size_tag_start = std::search(encoded_image.begin() + offset_of_IFD,
                                                     encoded_image.end(),
@@ -223,7 +223,7 @@ bool ImageHandler::tagTiff(Tags& exif_tags,
         }
 
         // This is a limitation of libexif that needs to be worked around.
-        auto strip_offset_tag_start = std::search(encoded_image.begin(),
+        auto strip_offset_tag_start = std::search(encoded_image.begin() + offset_of_IFD,
                                                   encoded_image.end(),
                                                   std::begin(STRIP_OFFSET_ARRAY),
                                                   std::end(STRIP_OFFSET_ARRAY));
