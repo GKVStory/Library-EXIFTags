@@ -10,10 +10,6 @@
  * 
  */
 
-extern "C" {
-#include <libexif/exif-data.h>
-#include <libexif/exif-entry.h>
-}
 #include <vector>
 #include <string>
 #include <memory>
@@ -21,6 +17,11 @@ extern "C" {
 #include <cstring>
 
 #include "EXIFTags/TagConstants.h"
+
+extern "C" {
+#include <libexif/exif-data.h>
+#include <libexif/exif-entry.h>
+}
 
 /* byte order to use in the EXIF block */
 #define FILE_BYTE_ORDER EXIF_BYTE_ORDER_INTEL

@@ -49,9 +49,9 @@ target_link_libraries (${LIB_NAME} libexif)
 target_include_directories(${LIB_NAME} PUBLIC "lib/libexif/")
 
 if(BUILD_TESTS)
-  include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-  conan_basic_setup()
-  set(CONAN_SYSTEM_INCLUDES ON)
+	#  include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+	#conan_basic_setup()
+	#set(CONAN_SYSTEM_INCLUDES ON)
 
   configure_file (
     "${PROJECT_SOURCE_DIR}/tests/TestConstants.h.i" 
@@ -96,7 +96,7 @@ if(BUILD_TESTS)
 
   add_executable(${TEST_NAME} ${TEST_SRC})
 
-  target_link_libraries(${TEST_NAME} ${LIB_NAME} gtest_main ${CONAN_LIBS} )
+  target_link_libraries(${TEST_NAME} ${LIB_NAME} gtest_main )#${CONAN_LIBS} )
   add_test(NAME ${TEST_NAME} COMMAND "${TEST_PATH}/${TEST_NAME}")
 
   if(BUILD_COVERAGE_ANALYSIS)

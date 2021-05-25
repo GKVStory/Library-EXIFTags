@@ -105,3 +105,4 @@ const std::string ErrorMessages::tiff_header_encoding_failed = "Tiff header enco
 const std::string ErrorMessages::unsupported_tiff_format = "This library does not support tiff files with split image memory.";
 const std::string ErrorMessages::invalid_image_data = "The encoded image does not contain valid image data.";
 const std::string ErrorMessages::no_image_data = "The encoded image does not contain any image data.";
+const std::string ErrorMessages::invalid_header_data = "The image header was invalid (missing TIFF tag in firts 32 bytes.";
