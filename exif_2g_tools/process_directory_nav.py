@@ -3,6 +3,8 @@ import numpy as np
 import EXIFTagsPython as et
 import datetime as dt
 import PSONNAV_parser as psp
+import cv2
+import tempfile
 
 #depth_file = Path("G:\\Shared drives\\Engineering\\Projects\\2020.07 - Boat Testing\\2020-11-09 - PRO Laser PCO Dome Camera Boat Trip\\ProcessedNav\\Daytime-Images\\depth.csv")
 #nav_file = Path("G:\\Shared drives\\Engineering\\Projects\\2020.07 - Boat Testing\\2020-11-09 - PRO Laser PCO Dome Camera Boat Trip\\ProcessedNav\\Daytime-Images\\psonnav20201122134507.asc")
@@ -20,6 +22,7 @@ out_files = [output_directory / a_file.parts[-1] for a_file in in_files]
 #nav = psp.load_psonnav(str(nav_file))
 
 error_message = ""
+temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".tif")
 for i, (in_file, out_file) in enumerate (zip(in_files, out_files)):
     print (f"{i/len(in_files)} % --- {str(in_file)} --- {str(out_file)}")
     tags = et.Tags()
@@ -68,6 +71,9 @@ for i, (in_file, out_file) in enumerate (zip(in_files, out_files)):
         #tags.pose =[nav[nav_index].roll, nav[nav_index].pitch, nav[nav_index].heading]
 
 
-        et.save_tags (tags, str(in_file), str(out_file))
+        image = cv2.imread(str(in_file))
+        cv2.imwrite(temp_file.name, image, (cv2.IMWRITE_TIFF_COMPRESSION, 1))
+
+        et.save_tags (tags, str(temp_file.name), str(out_file))
     except Exception as e:
         print (e)
