@@ -28,6 +28,7 @@ const unsigned char ImageHandler::OFFSET_LENGTH[8] = {
     0x17, 0x01, 0x07, 0x00, 0x04, 0x00, 0x00, 0x00};
 const unsigned char ImageHandler::BITS_PER_SAMPLE[4] = {0x02, 0x01, 0x07, 0x00};
 const size_t ImageHandler::HEADER_SIZE = 8;
+const size_t ImageHandler::HEADER_INITIAL_LOAD_SIZE = 64;
 
 bool ImageHandler::loadHeader(const std::string& filename,
                               std::vector<uint8_t>& image_header_data,
@@ -35,52 +36,75 @@ bool ImageHandler::loadHeader(const std::string& filename,
 
     image_header_data.clear();
     std::vector <uint8_t> temp_header;
-    temp_header.reserve(32);
-    image_header_data.reserve(MAX_READ_SIZE);
+    temp_header.resize(HEADER_INITIAL_LOAD_SIZE);
+    image_header_data.resize(MAX_READ_SIZE);
 
     std::ifstream file(filename, std::ios::binary | std::ios::ate);
     std::streamsize size = file.tellg();
     file.seekg(0, std::ios::beg);
-    if (size < 32) {
+    if (size < HEADER_INITIAL_LOAD_SIZE) {
         error_message = ErrorMessages::file_too_small + filename;
         return false;
     }
 
-    if (!file.read(reinterpret_cast<char*>(temp_header), 32)) {
+    if (!file.read(reinterpret_cast<char*>(temp_header.data()), HEADER_INITIAL_LOAD_SIZE)) {
         error_message = ErrorMessages::failed_file_load + filename;
         return false;
     }
 
+    bool is_LE = false;
     auto exif_start = std::search(temp_header.begin(),
                                   temp_header.end(),
                                   std::begin(TIFFHeaderMotorola),
                                   std::end(TIFFHeaderMotorola));
 
     if (exif_start == temp_header.end()) {
-        error_message = ErrorMessages::invalid_header_data;
-        return false;
+        is_LE = true;
+        exif_start = std::search(temp_header.begin(),
+                                  temp_header.end(),
+                                  std::begin(TIFFHeaderIntel),
+                                  std::end(TIFFHeaderIntel));
+        if (exif_start == temp_header.end()) { 
+            error_message = ErrorMessages::invalid_header_data;
+            return false;
+        }
     }
+    auto exif_index = std::distance( temp_header.begin(), exif_start );
 
-    file.seekg(exif_start, std::ios::beg);
+    file.seekg(exif_index, std::ios::beg);
 
     //Read in the first 8 bytes of the header, and find the offset to the start of the header.
-    if (!file.read(reinterpret_cast<char*>(image_header_data), HEADER_SIZE)) {
+    if (!file.read(reinterpret_cast<char*>(image_header_data.data()), HEADER_SIZE)) {
         error_message = ErrorMessages::failed_file_load + filename;
         return false;
     }
 
-    size_t offset = image_header_data[4] +
-                    image_header_data[5] << 8 +
-                    image_header_data[6] << 16 +
-                    image_header_data[7] << 24;
+    size_t offset;
+    if (is_LE) {
+        offset = image_header_data[4] |
+                    (image_header_data[5] << 8) |
+                    (image_header_data[6] << 16) |
+                    (image_header_data[7] << 24);
     
-    image_header_data[4] = 8;
-    image_header_data[5] = 0;
-    image_header_data[6] = 0;
-    image_header_data[7] = 0;
+        image_header_data[4] = 8;
+        image_header_data[5] = 0;
+        image_header_data[6] = 0;
+        image_header_data[7] = 0;
+    } else {
+        offset = image_header_data[7] |
+                    (image_header_data[6] << 8) |
+                    (image_header_data[5] << 16) |
+                    (image_header_data[4] << 24);
+    
+        image_header_data[7] = HEADER_SIZE;
+        image_header_data[6] = 0;
+        image_header_data[5] = 0;
+        image_header_data[4] = 0;
+    }
 
-    file.seekg(exif_start + offset, std::iod::beg);
-    if (!file.read(reinterpret_cast<char*>(image_header_data.data()), 2**16-8)) {
+    file.seekg(exif_index + offset, std::ios::beg);
+    size_t read_size = (int(size) - int(exif_index + offset + MAX_READ_SIZE-HEADER_SIZE-1) > 0) ? MAX_READ_SIZE-HEADER_SIZE-1 : size - (exif_index + offset);
+    if (!file.read(reinterpret_cast<char*>(image_header_data.data()+HEADER_SIZE), read_size)) {
         error_message = ErrorMessages::failed_file_load + filename;
         return false;
     }
@@ -212,12 +236,12 @@ bool ImageHandler::tagTiff(Tags& exif_tags,
 
             strip_size_tag_start += 8;
 
-            uint32_t offset_to_size = *strip_size_tag_start + (*(strip_size_tag_start + 1) << 8) +
-                                      (*(strip_size_tag_start + 2) << 16) +
+            uint32_t offset_to_size = *strip_size_tag_start | (*(strip_size_tag_start + 1) << 8) |
+                                      (*(strip_size_tag_start + 2) << 16) |
                                       (*(strip_size_tag_start + 3) << 24);
 
-            for (auto i = 0; i < memory_block_size; ++i) {
-                strip_bytes.push_back(encoded_image[offset_to_size + 2 * i] +
+            for (size_t i = 0; i < memory_block_size; ++i) {
+                strip_bytes.push_back(encoded_image[offset_to_size + 2 * i] |
                                       (encoded_image[offset_to_size + 2 * i + 1] << 8));
             }
         }
@@ -234,17 +258,17 @@ bool ImageHandler::tagTiff(Tags& exif_tags,
 
         strip_offset_tag_start += 8;
 
-        uint32_t offset_to_offset = *strip_offset_tag_start + (*(strip_offset_tag_start + 1) << 8) +
-                                    (*(strip_offset_tag_start + 2) << 16) +
+        uint32_t offset_to_offset = *strip_offset_tag_start + (*(strip_offset_tag_start + 1) << 8) |
+                                    (*(strip_offset_tag_start + 2) << 16) |
                                     (*(strip_offset_tag_start + 3) << 24);
 
         offsets.clear();
         offsets.reserve(memory_block_size);
 
-        for (auto i = 0; i < memory_block_size; ++i) {
-            offsets.push_back(encoded_image[offset_to_offset + 4 * i] +
-                              (encoded_image[offset_to_offset + 4 * i + 1] << 8) +
-                              (encoded_image[offset_to_offset + 4 * i + 2] << 16) +
+        for (size_t i = 0; i < memory_block_size; ++i) {
+            offsets.push_back(encoded_image[offset_to_offset + 4 * i] |
+                              (encoded_image[offset_to_offset + 4 * i + 1] << 8) |
+                              (encoded_image[offset_to_offset + 4 * i + 2] << 16) |
                               (encoded_image[offset_to_offset + 4 * i + 3] << 24));
         }
     }
@@ -262,7 +286,7 @@ bool ImageHandler::tagTiff(Tags& exif_tags,
     uint32_t final_row_size(0);
     std::vector<uint8_t> image_data;
     image_data.reserve(encoded_image.size());
-    for (int i = 0; i < offsets.size(); ++i) {
+    for (size_t i = 0; i < offsets.size(); ++i) {
         auto start_block(encoded_image.begin() + offsets[i]);
         auto end_block(start_block + strip_bytes[i]);
         image_data.insert(image_data.end(), start_block, end_block);

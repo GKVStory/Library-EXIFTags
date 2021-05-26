@@ -89,7 +89,7 @@ ExifEntry *Tag::createTag(ExifData *exif, ExifIfd ifd, ExifTag tag, size_t len) 
     }
 
 	/* Allocate memory to use for holding the tag data */
-	buf = exif_mem_alloc(mem, (ExifLong)len);
+	buf = exif_mem_alloc(mem, static_cast<ExifLong>(len));
 	if (!buf) {
          exif_mem_unref(mem);
          exif_entry_unref(entry);

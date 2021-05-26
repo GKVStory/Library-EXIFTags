@@ -18,14 +18,14 @@ int main(int argc, char* argv[]) {
 
     std::string filename;
     options.add_options()("filename", "Input filename", cxxopts::value<std::string>(filename))(
-        "v,verbose", "Verbose output", cxxopts::value<bool>()->default_value("false"))(
+        //"v,verbose", "Verbose output", cxxopts::value<bool>()->default_value("false"))(
         "o,old_file", "Use old format", cxxopts::value<bool>()->default_value("false"));
 
     options.parse_positional({"filename"});
     options.allow_unrecognised_options();
 
     auto result = options.parse(argc, argv);
-    bool verbose = result["verbose"].as<bool>();
+    //bool verbose = result["verbose"].as<bool>();
     bool old_style = result["old_file"].as<bool>();
 
     if (filename == "") {
