@@ -185,7 +185,7 @@ bool ImageHandler::tagTiff(Tags& exif_tags,
     std::vector<uint32_t> strip_bytes = orig_tags.stripByteCount();
 
     //  Find the offset of the 0th IFD
-    uint32_t offset_of_IFD = encoded_image[4] + (encoded_image[5] << 8) + (encoded_image[6] << 16) +
+    uint32_t offset_of_IFD = (encoded_image[4] << 0) | (encoded_image[5] << 8) | (encoded_image[6] << 16) |
                              (encoded_image[7] << 24);
 
     if (strip_bytes.size() == 0 || offsets.size() == 0 ||
