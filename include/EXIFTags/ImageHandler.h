@@ -62,6 +62,7 @@ private:
     static const unsigned char OFFSET_LENGTH[8];
     static const unsigned char BITS_PER_SAMPLE[4];
     static const size_t HEADER_SIZE; 
+    static const size_t HEADER_INITIAL_LOAD_SIZE;
 };
 
 } //tags
