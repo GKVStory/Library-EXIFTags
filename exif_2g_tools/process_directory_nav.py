@@ -8,15 +8,15 @@ import tempfile
 
 #depth_file = Path("G:\\Shared drives\\Engineering\\Projects\\2020.07 - Boat Testing\\2020-11-09 - PRO Laser PCO Dome Camera Boat Trip\\ProcessedNav\\Daytime-Images\\depth.csv")
 #nav_file = Path("G:\\Shared drives\\Engineering\\Projects\\2020.07 - Boat Testing\\2020-11-09 - PRO Laser PCO Dome Camera Boat Trip\\ProcessedNav\\Daytime-Images\\psonnav20201122134507.asc")
-input_directory = Path("G:\\Shared drives\\Engineering\\ImageDatasets\\2019-04-UlsterUniversity_Marine Habitats\\2019-04-30-Empire-Heritage-1\\Matt_Mono_LightLevel")
-output_directory = Path("G:\\Shared drives\\Engineering\\ImageDatasets\\2019-04-UlsterUniversity_Marine Habitats\\2019-04-30-Empire-Heritage-1\\Matt_Mono_LightLevel-WithCalTags")
+input_directory = Path("G:\\Shared drives\\Engineering\\ImageDatasets\\2016-06_NOAA_Uboat\\uboat_processed")
+output_directory = Path("G:\\Shared drives\\Engineering\\ImageDatasets\\2016-06_NOAA_Uboat\\uboat_processed-WithCalTags")
 
 if (not output_directory.exists()):
     output_directory.mkdir(exist_ok=True, parents=True)
 
-in_files = [a_file for a_file in input_directory.rglob("*_raw_*.tif")]
+in_files = [a_file for a_file in input_directory.rglob("*.tif")]
 
-out_files = [output_directory / a_file.parts[-1] for a_file in in_files]
+out_files = [output_directory / Path(a_file.stem + "_raw_" + a_file.suffix )for a_file in in_files]
 
 #depth = np.genfromtxt(str(depth_file), delimiter=",", invalid_raise=False)
 #nav = psp.load_psonnav(str(nav_file))
@@ -27,7 +27,7 @@ for i, (in_file, out_file) in enumerate (zip(in_files, out_files)):
     print (f"{i/len(in_files)} % --- {str(in_file)} --- {str(out_file)}")
     tags = et.Tags()
     if (not tags.load_header (str(in_file), error_message)):
-        raise RuntimeError(error_message)
+        next
     
     image_time = tags.pps_time/1.0E6 
 
