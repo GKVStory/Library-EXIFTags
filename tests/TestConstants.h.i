@@ -53,6 +53,10 @@ public:
         return testDataDir() + "opencv_colour.tif";
     }
 
+    static std::string OpenCVTiffColourOutputFile() {
+        return testDataDir() + "opencv_colour_output.tif";
+    }
+
     static void setTags (Tags & tags) {
 
     tags.imageHeight(1024);
