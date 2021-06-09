@@ -594,6 +594,15 @@ void Tags::ppsTime(uint64_t pps){
     dynamic_cast<Tag_UINT32*>(m_tags[Constants::TIFFTAG_2G_PPS_TIME_UPPER].get())->setData(upper);
 }
 
+bool Tags::isTagSet(Constants::SupportedTags tag_id) const {
+
+	if (tag_id >= m_tags.size()) {
+		return false;
+	}
+
+	return m_tags[tag_id].get()->isSet();
+}
+
 void Tags::parseExifData ( ExifData * ed ) {
     //TODO: Try to load the custom 2G tags from the makernote first
 
