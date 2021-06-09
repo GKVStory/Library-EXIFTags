@@ -233,6 +233,35 @@ TEST (TEST_ImageHandler, TestTiff_OpenCV_Colour) {
   ASSERT_NE(mat.data, nullptr);
 }
 
+TEST (TEST_ImageHandler, TestJpeg_OpenCV_Colour) {
+
+  cv::Mat mat;
+  std::vector<uint8_t> encoded_image;
+  mat = cv::imread(TagsTestCommon::OpenCVTiffColourFile());
+  cv::imencode(".jpg", mat, encoded_image);
+  
+  Tags tags;
+  TagsTestCommon::setTags(tags);
+
+  std::string error_message;
+  std::vector<uint8_t> out_image;
+  ASSERT_TRUE(ImageHandler::tagJpeg(tags, encoded_image, out_image, error_message));
+
+  FILE* pFile;
+  pFile = fopen(TagsTestCommon::OpenCVJpegColourOutputFile().c_str(), "wb");      
+  fwrite(out_image.data(), 1, out_image.size()*sizeof(unsigned char), pFile);
+  fclose(pFile);
+
+  Tags new_tags;
+  ASSERT_TRUE(new_tags.loadHeader(TagsTestCommon::OpenCVJpegColourOutputFile(), error_message));
+  TagsTestCommon::testTags(new_tags);
+
+  mat = cv::imread(TagsTestCommon::OpenCVJpegColourOutputFile());
+  ASSERT_EQ(mat.rows, 2048);
+  ASSERT_EQ(mat.cols, 2048);
+  ASSERT_NE(mat.data, nullptr);
+}
+
 TEST (TEST_ImageHandler, TestOpenCV_Load) {
 
   cv::Mat mat;

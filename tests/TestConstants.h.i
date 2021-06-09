@@ -57,6 +57,10 @@ public:
         return testDataDir() + "opencv_colour_output.tif";
     }
 
+    static std::string OpenCVJpegColourOutputFile() {
+        return testDataDir() + "opencv_colour_output.jpg";
+    }
+
     static void setTags (Tags & tags) {
 
     tags.imageHeight(1024);
