@@ -197,6 +197,22 @@ TEST (TEST_ImageHandler, TestTIFF_OpenCV) {
     ASSERT_TRUE (new_tags.loadHeader(TagsTestCommon::OpenCVTiffOutputFile(), error_message));
 }
 
+TEST (TEST_ImageHandler, TestTiff_OpenCV_Colour_Encoded) {
+
+  cv::Mat mat;
+  std::vector<uint8_t> encoded_image;
+  mat = cv::imread(TagsTestCommon::OpenCVTiffColourFile());
+  cv::imencode(".tiff", mat, encoded_image);
+  
+  Tags tags;
+  std::string error_message;
+  std::vector<uint8_t> out_image;
+  ASSERT_TRUE(ImageHandler::tagTiff(tags, encoded_image, out_image, error_message));
+  ASSERT_TRUE(encoded_image.size() == 11463998);
+  ASSERT_TRUE(tags.stripOffsets().size() == tags.stripByteCount().size());
+  ASSERT_TRUE(tags.stripOffsets().size() == 1);
+}
+
 TEST (TEST_ImageHandler, TestOpenCV_Load) {
 
   cv::Mat mat;
