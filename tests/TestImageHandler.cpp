@@ -9,6 +9,7 @@
 #include <cstdint>
 #include <string>
 #include <opencv2/imgcodecs.hpp>
+#include <tiffio.h>
 
 namespace tg {
 namespace tags {
@@ -195,6 +196,70 @@ TEST (TEST_ImageHandler, TestTIFF_OpenCV) {
     //Test we can load images saved with this library.
     Tags new_tags;
     ASSERT_TRUE (new_tags.loadHeader(TagsTestCommon::OpenCVTiffOutputFile(), error_message));
+}
+
+TEST (TEST_ImageHandler, TestTiff_OpenCV_Colour) {
+
+  cv::Mat mat;
+  std::vector<uint8_t> encoded_image;
+  mat = cv::imread(TagsTestCommon::OpenCVTiffColourFile());
+
+  std::vector<int> encoding_flags;
+  encoding_flags.push_back(cv::IMWRITE_TIFF_COMPRESSION);
+  encoding_flags.push_back(COMPRESSION_NONE);
+  cv::imencode(".tiff", mat, encoded_image, encoding_flags);
+  
+  Tags tags;
+  TagsTestCommon::setTags(tags);
+
+  std::string error_message;
+  std::vector<uint8_t> out_image;
+  ASSERT_TRUE(ImageHandler::tagTiff(tags, encoded_image, out_image, error_message));
+  ASSERT_TRUE(tags.stripOffsets().size() == tags.stripByteCount().size());
+  ASSERT_TRUE(tags.stripOffsets().size() == 1);
+
+  FILE* pFile;
+  pFile = fopen(TagsTestCommon::OpenCVTiffColourOutputFile().c_str(), "wb");      
+  fwrite(out_image.data(), 1, out_image.size()*sizeof(unsigned char), pFile);
+  fclose(pFile);
+
+  Tags new_tags;
+  ASSERT_TRUE (new_tags.loadHeader(TagsTestCommon::OpenCVTiffColourOutputFile(), error_message));
+  TagsTestCommon::testTags(new_tags);
+
+  mat = cv::imread(TagsTestCommon::OpenCVTiffColourOutputFile());
+  ASSERT_EQ(mat.rows, 2048);
+  ASSERT_EQ(mat.cols, 2048);
+  ASSERT_NE(mat.data, nullptr);
+}
+
+TEST (TEST_ImageHandler, TestJpeg_OpenCV_Colour) {
+
+  cv::Mat mat;
+  std::vector<uint8_t> encoded_image;
+  mat = cv::imread(TagsTestCommon::OpenCVTiffColourFile());
+  cv::imencode(".jpg", mat, encoded_image);
+  
+  Tags tags;
+  TagsTestCommon::setTags(tags);
+
+  std::string error_message;
+  std::vector<uint8_t> out_image;
+  ASSERT_TRUE(ImageHandler::tagJpeg(tags, encoded_image, out_image, error_message));
+
+  FILE* pFile;
+  pFile = fopen(TagsTestCommon::OpenCVJpegColourOutputFile().c_str(), "wb");      
+  fwrite(out_image.data(), 1, out_image.size()*sizeof(unsigned char), pFile);
+  fclose(pFile);
+
+  Tags new_tags;
+  ASSERT_TRUE(new_tags.loadHeader(TagsTestCommon::OpenCVJpegColourOutputFile(), error_message));
+  TagsTestCommon::testTags(new_tags);
+
+  mat = cv::imread(TagsTestCommon::OpenCVJpegColourOutputFile());
+  ASSERT_EQ(mat.rows, 2048);
+  ASSERT_EQ(mat.cols, 2048);
+  ASSERT_NE(mat.data, nullptr);
 }
 
 TEST (TEST_ImageHandler, TestOpenCV_Load) {

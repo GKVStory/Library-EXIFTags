@@ -364,6 +364,10 @@ public:
     //time in us from epoch
     uint64_t ppsTime() const;
     void ppsTime( uint64_t pps );
+
+    // Returns whether or not the tag has been set
+    bool isTagSet(Constants::SupportedTags tag_id) const;
+
 private:
 
     //storage for the different tags supported by 2G.
