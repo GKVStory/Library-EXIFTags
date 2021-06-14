@@ -328,7 +328,7 @@ public:
     double vehicleAltitude() const;
     void vehicleAltitude(double altitude);
 
-    //DVL beam ranges
+    //DVL beam ranges in m
     std::vector<double> dvl() const;
     void dvl (const std::vector<double> & beams);
 
