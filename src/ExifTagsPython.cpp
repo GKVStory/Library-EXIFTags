@@ -324,6 +324,9 @@ PYBIND11_MODULE(EXIFTagsPython, m) {
       .def_property("vehicle_altitude", 
             py::overload_cast<void>(&tg::tags::Tags::vehicleAltitude, py::const_),
             py::overload_cast<double>(&tg::tags::Tags::vehicleAltitude))
+      .def_property("dvl",
+            py::overload_cast<void>(&tg::tags::Tags::dvl, py::const_),
+            py::overload_cast<const std::vector<double> &>(&tg::tags::Tags::dvl))
       .def_property("latitude_ref", 
             py::overload_cast<void>(&tg::tags::Tags::latitudeRef, py::const_),
             py::overload_cast<tg::tags::Tags::LatitudeRefType>(&tg::tags::Tags::latitudeRef))
