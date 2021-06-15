@@ -58,6 +58,7 @@ const std::vector<Constants::TagInfo> Constants::TAG_INFO {
     TagInfo(0x000e, EXIF_IFD_INTEROPERABILITY, sizeof(double) * 5, DOUBLE_ARRAY, false), //DISTORTION,
     TagInfo(0x000f, EXIF_IFD_INTEROPERABILITY, sizeof(double) * 3, DOUBLE_ARRAY, false), //POSE,
     TagInfo(0x0010, EXIF_IFD_INTEROPERABILITY, sizeof(double), UDOUBLE, false), //VEHICLE_ALTITUDE,
+    TagInfo(0x0011, EXIF_IFD_INTEROPERABILITY, sizeof(double) * 4, DOUBLE_ARRAY, false), //DVL,
     ////GPSTags
     TagInfo(EXIF_TAG_GPS_LATITUDE_REF, EXIF_IFD_GPS, 2, STRING, false), //GPS_LATITUDE_REF, N/S
     TagInfo(EXIF_TAG_GPS_LATITUDE, EXIF_IFD_GPS, sizeof(double) * 3, UDOUBLE_ARRAY, false), //GPS_LATITUDE,

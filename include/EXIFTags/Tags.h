@@ -328,6 +328,10 @@ public:
     double vehicleAltitude() const;
     void vehicleAltitude(double altitude);
 
+    //DVL beam ranges in m
+    std::vector<double> dvl() const;
+    void dvl (const std::vector<double> & beams);
+
     enum LatitudeRefType {
         LATITUDEREF_NORTH,
         LATITUDEREF_SOUTH

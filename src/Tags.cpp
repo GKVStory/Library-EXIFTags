@@ -500,6 +500,14 @@ void Tags::vehicleAltitude(double altitude) {
     dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::VEHICLE_ALTITUDE].get())->setData(altitude);
 }
 
+std::vector<double> Tags::dvl() const {
+    return dynamic_cast<Tag_DOUBLE_ARRAY*>(m_tags[Constants::DVL].get())->getData();
+}
+
+void Tags::dvl (const std::vector<double> & beams) {
+    dynamic_cast<Tag_DOUBLE_ARRAY*>(m_tags[Constants::DVL].get())->setData(beams);
+}
+
 Tags::LatitudeRefType Tags::latitudeRef() const {
     std::string ref = dynamic_cast<Tag_STRING*>(m_tags[Constants::GPS_LATITUDE_REF].get())->getData();
     if (ref[0] == 'N') {

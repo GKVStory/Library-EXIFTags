@@ -87,6 +87,7 @@ enum SupportedTags {
         DISTORTION,
         POSE,
         VEHICLE_ALTITUDE,
+        DVL,
 
         //GPSTags
         GPS_LATITUDE_REF,
