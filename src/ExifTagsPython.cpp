@@ -1,5 +1,5 @@
 //ExifTagsPython.cpp
-//Copyright 2G Robotics Inc., 2021
+//Copyright Voyis Inc., 2021
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include "EXIFTags/Tags.h"

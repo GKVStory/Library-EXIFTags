@@ -2,7 +2,7 @@
 /**
  * Tag.h
  * 
- * Copyright 2G Robotics Inc., 2021
+ * Copyright Voyis Inc., 2021
  * 
  * A set of classes derived from the abstract base class tag that represent different sort of EXIF tags.
  * 

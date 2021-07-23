@@ -1,5 +1,5 @@
 //TagConstants.cpp
-//Copyright 2G Robotics Inc., 2021
+//Copyright Voyis Inc., 2021
 #include "EXIFTags/TagConstants.h"
 
 using namespace tg;
@@ -83,7 +83,7 @@ void Constants::degToDMS (double & degrees, double & minutes, double & seconds, 
 }
 
 //Constant values.
-const std::string Constants::DEFAULT_MAKE = "2G Robotics";
+const std::string Constants::DEFAULT_MAKE = "Voyis";
 const double Constants::DEFAULT_INDEX = 1.34;
 const double Constants::DEFAULT_VIEWPORT_INDEX = 1.7;
 const std::vector <double> Constants::DEFAULT_TRANSFORM = {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0};;

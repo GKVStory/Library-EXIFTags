@@ -2,7 +2,7 @@
 /**
  * TiffLoader.h
  * 
- * Copyright 2G Robotics Inc., 2021
+ * Copyright Voyis Inc., 2021
  * 
  * This file adds tiff support to stock libexif
  */

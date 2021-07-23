@@ -1,7 +1,7 @@
 /**
  * main.cpp
  *
- * Copyright 2G Robotics Inc., 2021
+ * Copyright Voyis Inc., 2021
  *
  * This file contains the logic for a simple command line 2G exif parser.
  *

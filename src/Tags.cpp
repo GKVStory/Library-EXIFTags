@@ -1,5 +1,5 @@
 //Tags.cpp
-//Copyright 2G Robotics Inc., 2021
+//Copyright Voyis Inc., 2021
 
 #include "EXIFTags/Tags.h"
 #include "EXIFTags/ImageHandler.h"

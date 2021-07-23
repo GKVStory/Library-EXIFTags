@@ -1,5 +1,5 @@
 //Tag.cpp
-//Copyright 2G Robotics Inc., 2021
+//Copyright Voyis Inc., 2021
 #include "EXIFTags/Tag.h"
 
 namespace tg {

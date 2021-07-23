@@ -1,5 +1,5 @@
 //TestTags.cpp
-//Copyright 2G Robotics Inc., 2021
+//Copyright Voyis Inc., 2021
 
 #include <gtest/gtest.h>
 #include "EXIFTags/Tags.h"

@@ -2,7 +2,7 @@
 /**
  * Tags.h
  * 
- * Copyright 2G Robotics Inc., 2021
+ * Copyright Voyis Inc., 2021
  * 
  * This class represents all the tags supported by the 2G exif library.
  * 

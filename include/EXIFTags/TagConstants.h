@@ -2,7 +2,7 @@
 /**
  * TagConstants.h
  * 
- * Copyright 2G Robotics Inc., 2021
+ * Copyright Voyis Inc., 2021
  * 
  * This file contains a bunch of constants associated with the 2G Exif tag library.
  */
