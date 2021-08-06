@@ -15,6 +15,7 @@ set(TEST_NAME                                   "${PROJECT_NAME}Test")
 OPTION(BUILD_TESTS                             "Build tests"                     OFF)
 OPTION(BUILD_MAIN                              "Build command line parser"       OFF)
 OPTION(BUILD_PYTHON                            "Build Python bindings"          OFF)
+OPTION(CENTOS                                  "Adjust the build for old compilers in Centos" OFF)
 
 if(WIN32)
   if(MSVC)
@@ -28,6 +29,10 @@ else(WIN32)
   set(CMAKE_CXX_FLAGS
     "${CMAKE_CXX_FLAGS} -Wall -Woverloaded-virtual -Wold-style-cast -Wnon-virtual-dtor -fPIC")
 endif(WIN32)
+
+if (CENTOS)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCENTOS")
+endif ()
 
 if(CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS_DEBUG   "-O0 -g3")

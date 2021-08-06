@@ -287,10 +287,16 @@ uint64_t Tags::dateTime () const {
     std::istringstream ss_dt(datetime);
     std::istringstream ss_ss(datetime_subsec);
 
+#ifdef CENTOS
+    if (strptime(datetime.c_str(), Constants::DEFAULT_TIMESTAMP_FORMAT.c_str(), &t) == NULL){
+        return 0;
+    }
+#else
     ss_dt >> std::get_time(&t, Constants::DEFAULT_TIMESTAMP_FORMAT.c_str());
     if (ss_dt.fail()) {
         return 0; //couldn't parse the time correctly
     }
+#endif
 
 #ifdef _WIN32
     std::time_t dt = _mkgmtime(&t);
@@ -318,7 +324,14 @@ void Tags::dateTime (uint64_t date_time_us_epoch) {
     std::time_t t = static_cast<time_t>(s_from_epoch);
     std::tm tm = *std::gmtime(&t);
 
+#ifdef CENTOS
+    char char_dt[100];
+    strftime(char_dt, sizeof(char_dt), Constants::DEFAULT_TIMESTAMP_FORMAT.c_str(), &tm);
+    std::string string_dt (char_dt);
+    ss_dt << string_dt;
+#else
     ss_dt << std::put_time (&tm, Constants::DEFAULT_TIMESTAMP_FORMAT.c_str());
+#endif
     ss_ss << subsec;
 
     dynamic_cast<Tag_STRING*>(m_tags[Constants::DATE_TIME_ORIGINAL].get())->setData(ss_dt.str());
