@@ -296,7 +296,7 @@ bool ImageHandler::tagTiff(Tags& exif_tags,
     // need to sync up rows per strip, strip offset and strip byte count. If we only support saving
     // 2g images, then we only need the last two.
     exif_tags.stripByteCount(std::vector<uint32_t>{final_row_size});
-    exif_tags.rowsPerStrip(orig_tags.imageWidth());
+    exif_tags.rowsPerStrip(orig_tags.imageHeight());
     exif_tags.stripOffsets(std::vector<uint32_t>{0x0B0E0E0F});
 
     unsigned int header_length;
