@@ -280,23 +280,32 @@ void Tags::fNumber(double f) {
     dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::F_NUMBER].get())->setData(f);
 }
 
-uint64_t Tags::dateTime () const {
+uint64_t Tags::dateTime() const {
     std::string datetime = dynamic_cast<Tag_STRING*>(m_tags[Constants::DATE_TIME_ORIGINAL].get())->getData();
     std::string datetime_subsec = dynamic_cast<Tag_STRING*>(m_tags[Constants::SUB_SEC_ORIGINAL].get())->getData();
-
     std::tm t{};
-    double subsec (0.0);
+    double subsec(0.0);
     std::istringstream ss_dt(datetime);
     std::istringstream ss_ss(datetime_subsec);
 
 #ifdef CENTOS
-    if (strptime(datetime.c_str(), Constants::DEFAULT_TIMESTAMP_FORMAT.c_str(), &t) == NULL){
-        return 0;
+    if (strptime(datetime.c_str(), Constants::PRIMARY_TIMESTAMP_FORMAT.c_str(), &t) == NULL) {
+        // Try legacy format
+        if (strptime(datetime.c_str(), Constants::DEFAULT_TIMESTAMP_FORMAT.c_str(), &t) == NULL) {
+            return 0;
+        }
     }
 #else
-    ss_dt >> std::get_time(&t, Constants::DEFAULT_TIMESTAMP_FORMAT.c_str());
+    ss_dt >> std::get_time(&t, Constants::PRIMARY_TIMESTAMP_FORMAT.c_str());
     if (ss_dt.fail()) {
-        return 0; //couldn't parse the time correctly
+        // Clear state flags and try legacy format
+        ss_dt.clear();
+        ss_dt.str(datetime);
+        
+        ss_dt >> std::get_time(&t, Constants::DEFAULT_TIMESTAMP_FORMAT.c_str());
+        if (ss_dt.fail()) {
+            return 0; //couldn't parse the time correctly
+        }
     }
 #endif
 
@@ -328,11 +337,11 @@ void Tags::dateTime (uint64_t date_time_us_epoch) {
 
 #ifdef CENTOS
     char char_dt[100];
-    strftime(char_dt, sizeof(char_dt), Constants::DEFAULT_TIMESTAMP_FORMAT.c_str(), &tm);
+    strftime(char_dt, sizeof(char_dt), Constants::PRIMARY_TIMESTAMP_FORMAT.c_str(), &tm);
     std::string string_dt (char_dt);
     ss_dt << string_dt;
 #else
-    ss_dt << std::put_time (&tm, Constants::DEFAULT_TIMESTAMP_FORMAT.c_str());
+    ss_dt << std::put_time (&tm, Constants::PRIMARY_TIMESTAMP_FORMAT.c_str());
 #endif
     ss_ss << subsec;
 
