@@ -265,10 +265,12 @@ void Tags::sampleFormat (const std::vector<Tags::SampleFormatType> & type) {
 */
 
 double Tags::exposureTime() const {
-    return dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::EXPOSURE_TIME].get())->getData();
+    // EXIF exposure tag is in sec, convert sec -> ms
+    return dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::EXPOSURE_TIME].get())->getData() * 1000.;
 }
 void Tags::exposureTime(double exp) {
-    dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::EXPOSURE_TIME].get())->setData(exp);
+    // EXIF exposure tag is in sec, convert ms -> sec
+    dynamic_cast<Tag_UDOUBLE*>(m_tags[Constants::EXPOSURE_TIME].get())->setData(exp/1000.);
 }
 
 double Tags::fNumber() const {

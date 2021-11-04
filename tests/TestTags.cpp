@@ -240,7 +240,7 @@ TEST ( TagsTest, ParseJpegFile) {
     ASSERT_EQ (tags.imageHeight(), 480);
     ASSERT_DOUBLE_EQ (tags.fNumber(), 4.7);
     //ASSERT_EQ (tags.make(), "NIKON");
-    ASSERT_DOUBLE_EQ (tags.exposureTime(), 1/95.70000727320055);
+    ASSERT_DOUBLE_EQ (tags.exposureTime(), 1/95.70000727320055 * 1000);
     ASSERT_EQ (tags.latitudeRef(), Tags::LATITUDEREF_NORTH);
     ASSERT_DOUBLE_EQ (tags.latitude(), 43.467081666663894);
 }
