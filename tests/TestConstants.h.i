@@ -33,6 +33,10 @@ public:
         return testDataDir() + "old2gdata.tif";
     };
 
+    static std::string testTifOldVoyis() {
+        return testDataDir() + "legacy_voyis.tif";
+    }
+
     static std::string jpegOutputFile() {
         return testDataDir() + "testout.jpg";
     };

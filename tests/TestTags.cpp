@@ -240,7 +240,7 @@ TEST ( TagsTest, ParseJpegFile) {
     ASSERT_EQ (tags.imageHeight(), 480);
     ASSERT_DOUBLE_EQ (tags.fNumber(), 4.7);
     //ASSERT_EQ (tags.make(), "NIKON");
-    ASSERT_DOUBLE_EQ (tags.exposureTime(), 1/95.70000727320055);
+    ASSERT_DOUBLE_EQ (tags.exposureTime(), 1/95.70000727320055 * 1000);
     ASSERT_EQ (tags.latitudeRef(), Tags::LATITUDEREF_NORTH);
     ASSERT_DOUBLE_EQ (tags.latitude(), 43.467081666663894);
 }
@@ -269,6 +269,20 @@ TEST ( TagsTest, ParseOld2GTifFile) {
     ASSERT_EQ (tags.ppsTime(), 711698604);
     ASSERT_EQ (tags.bitsPerSample().size(), 1);
     ASSERT_EQ (tags.bitsPerSample()[0], 8);
+}
+
+TEST ( TagsTest, ParseOldVoyisTifFile) {
+    Tags tags; 
+    std::string error_message;
+
+    ASSERT_TRUE (tags.loadHeader(TagsTestCommon::testTifOldVoyis(), error_message));
+
+    ASSERT_EQ (tags.orientation(), Tags::ORIENTATION_EXIF_TOPLEFT);
+    ASSERT_EQ (tags.imageWidth(), 4112);
+    ASSERT_EQ (tags.imageHeight(), 3008);
+    ASSERT_EQ (tags.dateTime(), 1631921861667666);
+    ASSERT_EQ (tags.bitsPerSample().size(), 1);
+    ASSERT_EQ (tags.bitsPerSample()[0], 16);
 }
 
 TEST ( TagsTest, Tags_generate_tag_and_reparse) {
