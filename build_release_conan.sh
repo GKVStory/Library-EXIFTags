@@ -16,7 +16,7 @@ conan remote add local-server http://192.168.42.246:9300 false --insert --force
 
 rm -rf build
 # The libcxx resolves a difference in ABI compatability between gcc and conan
-conan install . -s build_type=Release -s compiler.libcxx=libstdc++11 -if build -r local-server --update
+conan install . -s build_type=Release -s compiler.libcxx=libstdc++11 -if build -r local-server --update --build=missing
 cd build
 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DBUILD_MAIN=ON ..
 make

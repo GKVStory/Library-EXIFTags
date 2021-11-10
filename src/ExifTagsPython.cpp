@@ -6,6 +6,7 @@
 #include "EXIFTags/ImageHandler.h"
 
 #include <stdexcept>
+#include <exception>
 #include <fstream>
 
 namespace py = pybind11;
@@ -29,14 +30,14 @@ void saveTags(tg::tags::Tags & tags, const std::string & in_filename, const std:
     image_data.resize(static_cast<unsigned int>(size));
     if (!file.read(reinterpret_cast<char *>(image_data.data()), size )) {
         error_message = tg::tags::ErrorMessages::failed_file_load + in_filename;
-        throw std::exception(error_message.c_str());
+        throw std::runtime_error(error_message.c_str());
         return;
     }
     file.close();
 
     if (image_data.size() < 2) {
         //raise an exception and return
-        throw std::exception("Insufficient data loaded.");
+        throw std::runtime_error("Insufficient data loaded.");
         return;
     }
 
@@ -44,14 +45,14 @@ void saveTags(tg::tags::Tags & tags, const std::string & in_filename, const std:
     if (image_data[0] == tg::tags::ImageHandler::JPEGHeaderStart[0] && image_data[1] == tg::tags::ImageHandler::JPEGHeaderStart[1]) {
         //jpeg file
         if (!tg::tags::ImageHandler::tagJpeg(tags, image_data, output_image_data, error_message)) {
-            throw std::exception(error_message.c_str());
+            throw std::runtime_error(error_message.c_str());
             return;
         }
 
     } else {
         //assume tiff
         if (!tg::tags::ImageHandler::tagTiff(tags, image_data, output_image_data, error_message)) {
-            throw std::exception(error_message.c_str());
+            throw std::runtime_error(error_message.c_str());
             return;
         }
     }
@@ -59,7 +60,7 @@ void saveTags(tg::tags::Tags & tags, const std::string & in_filename, const std:
     std::ofstream fileout(out_filename, std::ios::binary);
     if (!fileout.write(reinterpret_cast<char *>(output_image_data.data()), output_image_data.size() )) {
         error_message = "Could not save file: " + out_filename;
-        throw std::exception(error_message.c_str());
+        throw std::runtime_error(error_message.c_str());
         return;
     }
     fileout.close();
@@ -200,153 +201,153 @@ PYBIND11_MODULE(EXIFTagsPython, m) {
       .def("load_header", py::overload_cast<const std::string &, std::string &>(&tg::tags::Tags::loadHeader), "Load the header from a given file.", py::arg("filename"), py::arg("error_message"))
       .def("subfile_type", &tg::tags::Tags::subfileType)
       .def_property("image_width",
-            py::overload_cast<void>(&tg::tags::Tags::imageWidth, py::const_),
+            static_cast<void (tg::tags::Tags::*)(uint32_t)>(&tg::tags::Tags::imageWidth),
             py::overload_cast<uint32_t>(&tg::tags::Tags::imageWidth))
       .def_property("image_height", 
-            py::overload_cast<void>(&tg::tags::Tags::imageHeight, py::const_),
+            static_cast<void (tg::tags::Tags::*)(uint32_t)>(&tg::tags::Tags::imageHeight),
             py::overload_cast<uint32_t>(&tg::tags::Tags::imageHeight))
       .def_property("bits_per_sample", 
-            py::overload_cast<void>(&tg::tags::Tags::bitsPerSample, py::const_),
+            static_cast<void (tg::tags::Tags::*)(const std::vector<uint16_t> &)>(&tg::tags::Tags::bitsPerSample),
             py::overload_cast<const std::vector<uint16_t> & >(&tg::tags::Tags::bitsPerSample))
       .def_property("compression", 
-            py::overload_cast<void>(&tg::tags::Tags::compression, py::const_),
+            static_cast<void (tg::tags::Tags::*)(tg::tags::Tags::CompressionType)>(&tg::tags::Tags::compression),
             py::overload_cast<tg::tags::Tags::CompressionType>(&tg::tags::Tags::compression))
       .def_property("photometric_interpolation", 
-            py::overload_cast<void>(&tg::tags::Tags::photometricInterpolation, py::const_),
+            static_cast<void (tg::tags::Tags::*)(tg::tags::Tags::PhotometricInterpolationType)>(&tg::tags::Tags::photometricInterpolation),
             py::overload_cast<tg::tags::Tags::PhotometricInterpolationType>(&tg::tags::Tags::photometricInterpolation))
       .def_property("image_description", 
-            py::overload_cast<void>(&tg::tags::Tags::imageDescription, py::const_),
+            static_cast<void (tg::tags::Tags::*)(const std::string &)>(&tg::tags::Tags::imageDescription),
             py::overload_cast<const std::string &>(&tg::tags::Tags::imageDescription))
       .def_property("make", 
-            py::overload_cast<void>(&tg::tags::Tags::make, py::const_),
+            static_cast<void (tg::tags::Tags::*)(const std::string &)>(&tg::tags::Tags::make),
             py::overload_cast<const std::string &>(&tg::tags::Tags::make))
       .def_property("model", 
-            py::overload_cast<void>(&tg::tags::Tags::model, py::const_),
+            static_cast<void (tg::tags::Tags::*)(const std::string &)>(&tg::tags::Tags::model),
             py::overload_cast<const std::string &>(&tg::tags::Tags::model))
       .def_property("strip_offsets", 
-            py::overload_cast<void>(&tg::tags::Tags::stripOffsets, py::const_),
+            static_cast<void (tg::tags::Tags::*)(const std::vector<uint32_t> &)>(&tg::tags::Tags::stripOffsets),
             py::overload_cast<const std::vector<uint32_t> &>(&tg::tags::Tags::stripOffsets))
       .def_property_readonly("orientation", &tg::tags::Tags::orientation)
       .def_property("samples_per_pixel", 
-            py::overload_cast<void>(&tg::tags::Tags::samplesPerPixel, py::const_),
+            static_cast<void (tg::tags::Tags::*)(uint16_t)>(&tg::tags::Tags::samplesPerPixel),
             py::overload_cast<uint16_t>(&tg::tags::Tags::samplesPerPixel))
       .def_property("rows_per_strip", 
-            py::overload_cast<void>(&tg::tags::Tags::rowsPerStrip, py::const_),
+            static_cast<void (tg::tags::Tags::*)(uint32_t)>(&tg::tags::Tags::rowsPerStrip),
             py::overload_cast<uint32_t>(&tg::tags::Tags::rowsPerStrip))
       .def_property("strip_byte_count", 
-            py::overload_cast<void>(&tg::tags::Tags::stripByteCount, py::const_),
+            static_cast<void (tg::tags::Tags::*)(const std::vector<uint32_t> &)>(&tg::tags::Tags::stripByteCount),
             py::overload_cast<const std::vector<uint32_t> &>(&tg::tags::Tags::stripByteCount))
       .def_property_readonly("planar_config", &tg::tags::Tags::planarConfiguration)
       .def_property("software", 
-            py::overload_cast<void>(&tg::tags::Tags::software, py::const_),
+            static_cast<void (tg::tags::Tags::*)(const std::string &)>(&tg::tags::Tags::software),
             py::overload_cast<const std::string &>(&tg::tags::Tags::software))
       .def_property("exposure_time", 
-            py::overload_cast<void>(&tg::tags::Tags::exposureTime, py::const_),
+            static_cast<void (tg::tags::Tags::*)(double)>(&tg::tags::Tags::exposureTime),
             py::overload_cast<double>(&tg::tags::Tags::exposureTime))
       .def_property("f_number", 
-            py::overload_cast<void>(&tg::tags::Tags::fNumber, py::const_),
+            static_cast<void (tg::tags::Tags::*)(double)>(&tg::tags::Tags::fNumber),
             py::overload_cast<double>(&tg::tags::Tags::fNumber))
       .def_property("date_time", 
-            py::overload_cast<void>(&tg::tags::Tags::dateTime, py::const_),
+            static_cast<void (tg::tags::Tags::*)(uint64_t)>(&tg::tags::Tags::dateTime),
             py::overload_cast<uint64_t>(&tg::tags::Tags::dateTime))
       .def_property("subject_distance", 
-            py::overload_cast<void>(&tg::tags::Tags::subjectDistance, py::const_),
+            static_cast<void (tg::tags::Tags::*)(double)>(&tg::tags::Tags::subjectDistance),
             py::overload_cast<double>(&tg::tags::Tags::subjectDistance))
       .def_property("light_source", 
-            py::overload_cast<void>(&tg::tags::Tags::lightSource, py::const_),
+            static_cast<void (tg::tags::Tags::*)(tg::tags::Tags::LightSourceType)>(&tg::tags::Tags::lightSource),
             py::overload_cast<tg::tags::Tags::LightSourceType>(&tg::tags::Tags::lightSource))
       .def_property("flash", 
-            py::overload_cast<void>(&tg::tags::Tags::flash, py::const_),
+            static_cast<void (tg::tags::Tags::*)(tg::tags::Tags::FlashType)>(&tg::tags::Tags::flash),
             py::overload_cast<tg::tags::Tags::FlashType>(&tg::tags::Tags::flash))
       .def_property("focal_length", 
-            py::overload_cast<void>(&tg::tags::Tags::focalLength, py::const_),
+            static_cast<void (tg::tags::Tags::*)(double)>(&tg::tags::Tags::focalLength),
             py::overload_cast<double>(&tg::tags::Tags::focalLength))
       .def_property("colour_space", 
-            py::overload_cast<void>(&tg::tags::Tags::colourSpace, py::const_),
+            static_cast<void (tg::tags::Tags::*)(tg::tags::Tags::ColourSpaceType)>(&tg::tags::Tags::colourSpace),
             py::overload_cast<tg::tags::Tags::ColourSpaceType>(&tg::tags::Tags::colourSpace))
       .def_property("flash_energy", 
-            py::overload_cast<void>(&tg::tags::Tags::flashEnergy, py::const_),
+            static_cast<void (tg::tags::Tags::*)(double)>(&tg::tags::Tags::flashEnergy),
             py::overload_cast<double>(&tg::tags::Tags::flashEnergy))
       .def_property("serial_number", 
-            py::overload_cast<void>(&tg::tags::Tags::serialNumber, py::const_),
+            static_cast<void (tg::tags::Tags::*)(const std::string &)>(&tg::tags::Tags::serialNumber),
             py::overload_cast<const std::string &>(&tg::tags::Tags::serialNumber))
       .def_property("lens_model", 
-            py::overload_cast<void>(&tg::tags::Tags::lensModel, py::const_),
+            static_cast<void (tg::tags::Tags::*)(const std::string &)>(&tg::tags::Tags::lensModel),
             py::overload_cast<const std::string &>(&tg::tags::Tags::lensModel))
       .def_property("index_of_refraction", 
-            py::overload_cast<void>(&tg::tags::Tags::indexOfRefraction, py::const_),
+            static_cast<void (tg::tags::Tags::*)(double)>(&tg::tags::Tags::indexOfRefraction),
             py::overload_cast<double>(&tg::tags::Tags::indexOfRefraction))
       .def_property("viewport_index", 
-            py::overload_cast<void>(&tg::tags::Tags::viewportIndex, py::const_),
+            static_cast<void (tg::tags::Tags::*)(double)>(&tg::tags::Tags::viewportIndex),
             py::overload_cast<double>(&tg::tags::Tags::viewportIndex))
       .def_property("viewport_thickness", 
-            py::overload_cast<void>(&tg::tags::Tags::viewportThickness, py::const_),
+            static_cast<void (tg::tags::Tags::*)(double)>(&tg::tags::Tags::viewportThickness),
             py::overload_cast<double>(&tg::tags::Tags::viewportThickness))
       .def_property("viewport_distance", 
-            py::overload_cast<void>(&tg::tags::Tags::viewportDistance, py::const_),
+            static_cast<void (tg::tags::Tags::*)(double)>(&tg::tags::Tags::viewportDistance),
             py::overload_cast<double>(&tg::tags::Tags::viewportDistance))
       .def_property("vignetting", 
-            py::overload_cast<void>(&tg::tags::Tags::vignetting, py::const_),
+            static_cast<void (tg::tags::Tags::*)(bool)>(&tg::tags::Tags::vignetting),
             py::overload_cast<bool>(&tg::tags::Tags::vignetting))
       .def_property("viewport_type", 
-            py::overload_cast<void>(&tg::tags::Tags::viewportType, py::const_),
+            static_cast<void (tg::tags::Tags::*)(tg::tags::Tags::ViewportType)>(&tg::tags::Tags::viewportType),
             py::overload_cast<tg::tags::Tags::ViewportType>(&tg::tags::Tags::viewportType))
       .def_property("enhancement", 
-            py::overload_cast<void>(&tg::tags::Tags::enhancement, py::const_),
+            static_cast<void (tg::tags::Tags::*)(tg::tags::Tags::EnhancementType)>(&tg::tags::Tags::enhancement),
             py::overload_cast<tg::tags::Tags::EnhancementType>(&tg::tags::Tags::enhancement))
       .def_property("pixel_size", 
-            py::overload_cast<void>(&tg::tags::Tags::pixelSize, py::const_),
+            static_cast<void (tg::tags::Tags::*)(const std::vector<uint16_t> &)>(&tg::tags::Tags::pixelSize),
             py::overload_cast<const std::vector<uint16_t> &>(&tg::tags::Tags::pixelSize))
       .def_property("matrix_nav_to_camera", 
-            py::overload_cast<void>(&tg::tags::Tags::matrixNavToCamera, py::const_),
+            static_cast<void (tg::tags::Tags::*)(const std::vector<double> &)>(&tg::tags::Tags::matrixNavToCamera),
             py::overload_cast<const std::vector<double> &>(&tg::tags::Tags::matrixNavToCamera))
       .def_property("image_number", 
-            py::overload_cast<void>(&tg::tags::Tags::imageNumber, py::const_),
+            static_cast<void (tg::tags::Tags::*)(uint32_t)>(&tg::tags::Tags::imageNumber),
             py::overload_cast<uint32_t>(&tg::tags::Tags::imageNumber))
       .def_property("water_depth", 
-            py::overload_cast<void>(&tg::tags::Tags::waterDepth, py::const_),
+            static_cast<void (tg::tags::Tags::*)(double)>(&tg::tags::Tags::waterDepth),
             py::overload_cast<double>(&tg::tags::Tags::waterDepth))
       .def_property("bayer_pattern", 
-            py::overload_cast<void>(&tg::tags::Tags::bayerPattern, py::const_),
+            static_cast<void (tg::tags::Tags::*)(tg::tags::Tags::BayerPatternType)>(&tg::tags::Tags::bayerPattern),
             py::overload_cast<tg::tags::Tags::BayerPatternType>(&tg::tags::Tags::bayerPattern))
       .def_property("frame_rate", 
-            py::overload_cast<void>(&tg::tags::Tags::frameRate, py::const_),
+            static_cast<void (tg::tags::Tags::*)(double)>(&tg::tags::Tags::frameRate),
             py::overload_cast<double>(&tg::tags::Tags::frameRate))
       .def_property("camera_matrix", 
-            py::overload_cast<void>(&tg::tags::Tags::cameraMatrix, py::const_),
+            static_cast<void (tg::tags::Tags::*)(const std::vector<double> & )>(&tg::tags::Tags::cameraMatrix),
             py::overload_cast<const std::vector<double> &>(&tg::tags::Tags::cameraMatrix))
       .def_property("distortion", 
-            py::overload_cast<void>(&tg::tags::Tags::distortion, py::const_),
+            static_cast<void (tg::tags::Tags::*)(const std::vector<double> & )>(&tg::tags::Tags::distortion),
             py::overload_cast<const std::vector<double> &>(&tg::tags::Tags::distortion))
       .def_property("pose", 
-            py::overload_cast<void>(&tg::tags::Tags::pose, py::const_),
+            static_cast<void (tg::tags::Tags::*)(const std::vector<double> & )>(&tg::tags::Tags::pose),
             py::overload_cast<const std::vector<double> &>(&tg::tags::Tags::pose))
       .def_property("vehicle_altitude", 
-            py::overload_cast<void>(&tg::tags::Tags::vehicleAltitude, py::const_),
+            static_cast<void (tg::tags::Tags::*)(double)>(&tg::tags::Tags::vehicleAltitude),
             py::overload_cast<double>(&tg::tags::Tags::vehicleAltitude))
       .def_property("dvl",
-            py::overload_cast<void>(&tg::tags::Tags::dvl, py::const_),
+            static_cast<void (tg::tags::Tags::*)(const std::vector<double> &)>(&tg::tags::Tags::dvl),
             py::overload_cast<const std::vector<double> &>(&tg::tags::Tags::dvl))
       .def_property("latitude_ref", 
-            py::overload_cast<void>(&tg::tags::Tags::latitudeRef, py::const_),
+            static_cast<void (tg::tags::Tags::*)(tg::tags::Tags::LatitudeRefType)>(&tg::tags::Tags::latitudeRef),
             py::overload_cast<tg::tags::Tags::LatitudeRefType>(&tg::tags::Tags::latitudeRef))
       .def_property("latitude", 
-            py::overload_cast<void>(&tg::tags::Tags::latitude, py::const_),
+            static_cast<void (tg::tags::Tags::*)(double)>(&tg::tags::Tags::latitude),
             py::overload_cast<double>(&tg::tags::Tags::latitude))
       .def_property("longitude_ref", 
-            py::overload_cast<void>(&tg::tags::Tags::longitudeRef, py::const_),
+            static_cast<void (tg::tags::Tags::*)(tg::tags::Tags::LongitudeRefType)>(&tg::tags::Tags::longitudeRef),
             py::overload_cast<tg::tags::Tags::LongitudeRefType>(&tg::tags::Tags::longitudeRef))
       .def_property("longitude", 
-            py::overload_cast<void>(&tg::tags::Tags::longitude, py::const_),
+            static_cast<void (tg::tags::Tags::*)(double)>(&tg::tags::Tags::longitude),
             py::overload_cast<double>(&tg::tags::Tags::longitude))
       .def_property("altitude_ref", 
-            py::overload_cast<void>(&tg::tags::Tags::altitudeRef, py::const_),
+            static_cast<void (tg::tags::Tags::*)(tg::tags::Tags::AltitudeRefType)>(&tg::tags::Tags::altitudeRef),
             py::overload_cast<tg::tags::Tags::AltitudeRefType>(&tg::tags::Tags::altitudeRef))
       .def_property("altitude", 
-            py::overload_cast<void>(&tg::tags::Tags::altitude, py::const_),
+            static_cast<void (tg::tags::Tags::*)(double)>(&tg::tags::Tags::altitude),
             py::overload_cast<double>(&tg::tags::Tags::altitude))
       .def_property("pps_time", 
-            py::overload_cast<void>(&tg::tags::Tags::ppsTime, py::const_),
+            static_cast<void (tg::tags::Tags::*)(uint64_t)>(&tg::tags::Tags::ppsTime),
             py::overload_cast<uint64_t>(&tg::tags::Tags::ppsTime))
       ;
 
