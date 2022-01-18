@@ -134,8 +134,8 @@ bool ImageHandler::tagJpeg(const Tags& exif_tags,
         return false;
     }
     start_header_offset += 2;
-    uint16_t app0_offset = ((*start_header_offset) << 8) + *(++start_header_offset);
-    start_header_offset += app0_offset - 1; // move to end of APP0
+    uint16_t app0_offset = ((*start_header_offset) << 8) + *(start_header_offset + 1);
+    start_header_offset += app0_offset; // move to end of APP0
 
     auto APP1_header_offset =
         std::search(encoded_image.begin(), encoded_image.end(), std::begin(APP1), std::end(APP1));
