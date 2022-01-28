@@ -304,5 +304,160 @@ TEST(TagsTest, Tags_generate_tag_and_reparse) {
     TagsTestCommon::testTags(new_tags);
 }
 
+TEST(TagsTest, Clone) {
+
+    Tags tags, cloned_tags;
+
+    tags.imageHeight(1024);
+    tags.imageWidth(2048);
+    tags.bitsPerSample(std::vector<uint16_t>{8, 8, 8});
+    tags.compression(Tags::COMPRESSION_EXIF_JPEG);
+    tags.photometricInterpolation(Tags::PHOTOMETRIC_EXIF_RGB);
+    tags.imageDescription("Test description!");
+    tags.model("Test model!");
+    tags.stripOffsets(std::vector<uint32_t>{440});
+    tags.samplesPerPixel(3);
+    tags.rowsPerStrip(56);
+    tags.stripByteCount(std::vector<uint32_t>{1025});
+    tags.software("Test software!");
+    tags.exposureTime(3.0);
+    tags.fNumber(5.0);
+    tags.dateTime(1614632629005001);
+    tags.subjectDistance(6.0);
+    tags.lightSource(Tags::LIGHTSOURCE_BLUELED);
+    tags.flash(Tags::FLASH_FIRED);
+    tags.focalLength(1.2);
+    tags.colourSpace(Tags::COLOURSPACE_ADOBE_RGB);
+    tags.flashEnergy(67.0);
+    tags.serialNumber("Test serial number");
+    tags.lensModel("Test lens model");
+    tags.indexOfRefraction(1.345);
+    tags.viewportIndex(1.4);
+    tags.viewportThickness(0.25);
+    tags.viewportDistance(0.26);
+    tags.vignetting(true);
+    tags.viewportType(Tags::VIEWPORT_DOMED);
+    tags.enhancement(Tags::ENHANCEMENT_BASIC_COLOUR);
+
+    const std::vector<uint16_t> pixel_vec = {3600, 3700};
+    tags.pixelSize(pixel_vec);
+
+    const std::vector<double> nav_vec = {
+        1.0, 2.0, 3.0, 4.0, 5.0, 1.0, 6.0, 7.0, 8.0, 9.0, 1.0, 11.0, 12.0, 13.0, 14.0, 1.0};
+    tags.matrixNavToCamera(nav_vec);
+
+    tags.imageNumber(3);
+    tags.waterDepth(10.5);
+    tags.bayerPattern(Tags::BAYER_BG2BGR);
+    tags.frameRate(45.0);
+
+    const std::vector<double> cam_vec = {2000.0, 2001.0, 1036, 738.2};
+    tags.cameraMatrix(cam_vec);
+
+    const std::vector<double> dist_vec = {-0.1, 0.2, -0.3, 0.5, -0.5};
+    tags.distortion(dist_vec);
+
+    const std::vector<double> pose_vec = {1.0, 2.3, 3.4};
+    tags.pose(pose_vec);
+
+    tags.vehicleAltitude(10.87);
+    tags.latitudeRef(Tags::LATITUDEREF_SOUTH);
+    tags.latitude(83.1245678);
+    tags.longitudeRef(Tags::LONGITUDEREF_WEST);
+    tags.longitude(43.67890);
+    tags.altitudeRef(Tags::ALTITUDEREF_BELOW_SEA_LEVEL);
+    tags.altitude(10.765);
+    tags.ppsTime(1614632629005011);
+    tags.ppsTime(1714632629005021);
+    tags.dateTime(1714632629005021);
+
+    cloned_tags = tags.clone();
+
+    ASSERT_EQ(cloned_tags.imageHeight(), tags.imageHeight());
+    ASSERT_EQ(cloned_tags.imageWidth(), tags.imageWidth());
+
+    ASSERT_EQ(cloned_tags.bitsPerSample().size(), tags.bitsPerSample().size());
+    ASSERT_EQ(cloned_tags.bitsPerSample()[0], tags.bitsPerSample()[0]);
+    ASSERT_EQ(cloned_tags.bitsPerSample()[1], tags.bitsPerSample()[1]);
+    ASSERT_EQ(cloned_tags.bitsPerSample()[2], tags.bitsPerSample()[2]);
+
+    ASSERT_EQ(cloned_tags.compression(), tags.compression());
+    ASSERT_EQ(cloned_tags.photometricInterpolation(), tags.photometricInterpolation());
+    ASSERT_EQ(cloned_tags.imageDescription(), tags.imageDescription());
+    ASSERT_EQ(cloned_tags.model(), tags.model());
+    ASSERT_EQ(cloned_tags.stripOffsets().size(), tags.stripOffsets().size());
+    ASSERT_EQ(cloned_tags.stripOffsets()[0], tags.stripOffsets()[0]);
+    ASSERT_EQ(cloned_tags.samplesPerPixel(), tags.samplesPerPixel());
+    ASSERT_EQ(cloned_tags.rowsPerStrip(), tags.rowsPerStrip());
+
+    ASSERT_EQ(cloned_tags.stripByteCount().size(), tags.stripByteCount().size());
+    ASSERT_EQ(cloned_tags.stripByteCount()[0], tags.stripByteCount()[0]);
+
+    ASSERT_EQ(cloned_tags.software(), tags.software());
+    ASSERT_EQ(cloned_tags.exposureTime(), tags.exposureTime());
+    ASSERT_EQ(cloned_tags.fNumber(), tags.fNumber());
+    ASSERT_EQ(cloned_tags.dateTime(), tags.dateTime());
+    ASSERT_EQ(cloned_tags.subjectDistance(), tags.subjectDistance());
+    ASSERT_EQ(cloned_tags.lightSource(), tags.lightSource());
+    ASSERT_EQ(cloned_tags.flash(), tags.flash());
+    ASSERT_EQ(cloned_tags.focalLength(), tags.focalLength());
+    ASSERT_EQ(cloned_tags.colourSpace(), tags.colourSpace());
+    ASSERT_EQ(cloned_tags.flashEnergy(), tags.flashEnergy());
+    ASSERT_EQ(cloned_tags.serialNumber(), tags.serialNumber());
+    ASSERT_EQ(cloned_tags.lensModel(), tags.lensModel());
+    ASSERT_EQ(cloned_tags.indexOfRefraction(), tags.indexOfRefraction());
+    ASSERT_EQ(cloned_tags.viewportIndex(), tags.viewportIndex());
+    ASSERT_EQ(cloned_tags.viewportThickness(), tags.viewportThickness());
+    ASSERT_EQ(cloned_tags.viewportDistance(), tags.viewportDistance());
+    ASSERT_EQ(cloned_tags.vignetting(), tags.vignetting());
+    ASSERT_EQ(cloned_tags.viewportType(), tags.viewportType());
+    ASSERT_EQ(cloned_tags.enhancement(), tags.enhancement());
+
+    ASSERT_EQ(cloned_tags.pixelSize().size(), tags.pixelSize().size());
+    ASSERT_EQ(cloned_tags.pixelSize()[0], tags.pixelSize()[0]);
+    ASSERT_EQ(cloned_tags.pixelSize()[1], tags.pixelSize()[1]);
+
+    ASSERT_EQ(cloned_tags.matrixNavToCamera().size(), tags.matrixNavToCamera().size());
+    ASSERT_EQ(cloned_tags.distortion().size(), tags.distortion().size());
+    ASSERT_EQ(cloned_tags.pose().size(), tags.pose().size());
+
+    ASSERT_EQ(cloned_tags.vehicleAltitude(), tags.vehicleAltitude());
+    ASSERT_EQ(cloned_tags.latitudeRef(), tags.latitudeRef());
+    ASSERT_EQ(cloned_tags.latitude(), tags.latitude());
+    ASSERT_EQ(cloned_tags.longitudeRef(), tags.longitudeRef());
+    ASSERT_EQ(cloned_tags.longitude(), tags.longitude());
+    ASSERT_EQ(cloned_tags.altitudeRef(), tags.altitudeRef());
+    ASSERT_EQ(cloned_tags.altitude(), tags.altitude());
+    ASSERT_EQ(cloned_tags.ppsTime(), tags.ppsTime());
+    ASSERT_EQ(cloned_tags.dateTime(), tags.dateTime());
+
+    // Change some tags and make sure original remains intact
+    cloned_tags.imageHeight(4112);
+    cloned_tags.imageWidth(3008);
+    cloned_tags.compression(Tags::COMPRESSION_EXIF_NONE);
+    cloned_tags.imageDescription("New Test description!");
+    cloned_tags.model("New Test model!");
+    cloned_tags.latitudeRef(Tags::LATITUDEREF_NORTH);
+    cloned_tags.latitude(20.12345);
+    cloned_tags.longitudeRef(Tags::LONGITUDEREF_EAST);
+    cloned_tags.longitude(10.12345);
+    cloned_tags.altitudeRef(Tags::ALTITUDEREF_ABOVE_SEA_LEVEL);
+    cloned_tags.altitude(5.765);
+    cloned_tags.subjectDistance(3.0);
+
+    ASSERT_NE(cloned_tags.imageHeight(), tags.imageHeight());
+    ASSERT_NE(cloned_tags.imageWidth(), tags.imageWidth());
+    ASSERT_NE(cloned_tags.compression(), tags.compression());
+    ASSERT_NE(cloned_tags.imageDescription(), tags.imageDescription());
+    ASSERT_NE(cloned_tags.model(), tags.model());
+    ASSERT_NE(cloned_tags.latitudeRef(), tags.latitudeRef());
+    ASSERT_NE(cloned_tags.latitude(), tags.latitude());
+    ASSERT_NE(cloned_tags.longitudeRef(), tags.longitudeRef());
+    ASSERT_NE(cloned_tags.longitude(), tags.longitude());
+    ASSERT_NE(cloned_tags.altitudeRef(), tags.altitudeRef());
+    ASSERT_NE(cloned_tags.altitude(), tags.altitude());
+    ASSERT_NE(cloned_tags.subjectDistance(), tags.subjectDistance());
+}
+
 } // namespace tags
 } // namespace tg

@@ -663,6 +663,96 @@ bool Tags::isTagSet(Constants::SupportedTags tag_id) const {
     return m_tags[tag_id].get()->isSet();
 }
 
+Tags Tags::clone(void) const {
+    Tags cloned;
+
+    for (unsigned int i = 0; i < m_tags.size(); ++i) {
+        switch (Constants::TAG_INFO[i].data_type) {
+        case Constants::UINT32: {
+            Tag_UINT32* getr = dynamic_cast<Tag_UINT32*>(m_tags[i].get());
+            if (getr != nullptr) {
+                dynamic_cast<Tag_UINT32*>(cloned.m_tags[i].get())->setData(getr->getData());
+            }
+            break;
+        }
+        case Constants::UINT16: {
+            Tag_UINT16* getr = dynamic_cast<Tag_UINT16*>(m_tags[i].get());
+            if (getr != nullptr) {
+                dynamic_cast<Tag_UINT16*>(cloned.m_tags[i].get())->setData(getr->getData());
+            }
+            break;
+        }
+        case Constants::UINT8: {
+            Tag_UINT8* getr = dynamic_cast<Tag_UINT8*>(m_tags[i].get());
+            if (getr != nullptr) {
+                dynamic_cast<Tag_UINT8*>(cloned.m_tags[i].get())->setData(getr->getData());
+            }
+            break;
+        }
+        case Constants::UDOUBLE: {
+            Tag_UDOUBLE* getr = dynamic_cast<Tag_UDOUBLE*>(m_tags[i].get());
+            if (getr != nullptr) {
+                dynamic_cast<Tag_UDOUBLE*>(cloned.m_tags[i].get())->setData(getr->getData());
+            }
+            break;
+        }
+        case Constants::DOUBLE: {
+            Tag_DOUBLE* getr = dynamic_cast<Tag_DOUBLE*>(m_tags[i].get());
+            if (getr != nullptr) {
+                dynamic_cast<Tag_DOUBLE*>(cloned.m_tags[i].get())->setData(getr->getData());
+            }
+            break;
+        }
+        case Constants::STRING: {
+            Tag_STRING* getr = dynamic_cast<Tag_STRING*>(m_tags[i].get());
+            if (getr != nullptr) {
+                dynamic_cast<Tag_STRING*>(cloned.m_tags[i].get())->setData(getr->getData());
+            }
+            break;
+        }
+        case Constants::UINT32_ARRAY: {
+            Tag_UINT32_ARRAY* getr = dynamic_cast<Tag_UINT32_ARRAY*>(m_tags[i].get());
+            if (getr != nullptr) {
+                dynamic_cast<Tag_UINT32_ARRAY*>(cloned.m_tags[i].get())->setData(getr->getData());
+            }
+            break;
+        }
+        case Constants::UINT16_ARRAY: {
+            Tag_UINT16_ARRAY* getr = dynamic_cast<Tag_UINT16_ARRAY*>(m_tags[i].get());
+            if (getr != nullptr) {
+                dynamic_cast<Tag_UINT16_ARRAY*>(cloned.m_tags[i].get())->setData(getr->getData());
+            }
+            break;
+        }
+        case Constants::UINT8_ARRAY: {
+            Tag_UINT8_ARRAY* getr = dynamic_cast<Tag_UINT8_ARRAY*>(m_tags[i].get());
+            if (getr != nullptr) {
+                dynamic_cast<Tag_UINT8_ARRAY*>(cloned.m_tags[i].get())->setData(getr->getData());
+            }
+            break;
+        }
+        case Constants::DOUBLE_ARRAY: {
+            Tag_DOUBLE_ARRAY* getr = dynamic_cast<Tag_DOUBLE_ARRAY*>(m_tags[i].get());
+            if (getr != nullptr) {
+                dynamic_cast<Tag_DOUBLE_ARRAY*>(cloned.m_tags[i].get())->setData(getr->getData());
+            }
+            break;
+        }
+        case Constants::UDOUBLE_ARRAY: {
+            Tag_UDOUBLE_ARRAY* getr = dynamic_cast<Tag_UDOUBLE_ARRAY*>(m_tags[i].get());
+            if (getr != nullptr) {
+                dynamic_cast<Tag_UDOUBLE_ARRAY*>(cloned.m_tags[i].get())->setData(getr->getData());
+            }
+            break;
+        }
+        default: {
+        }
+        }
+    }
+
+    return cloned;
+}
+
 void Tags::parseExifData(ExifData* ed) {
     // TODO: Try to load the custom 2G tags from the makernote first
 
