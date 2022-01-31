@@ -6,12 +6,12 @@
  * This file contains the logic for a simple command line 2G exif parser.
  *
  */
-#include "cxxopts/cxxopts.hpp"
 #include "EXIFTags/Tags.h"
-#include <vector>
-#include <string>
-#include <iostream>
+#include "cxxopts/cxxopts.hpp"
 #include <iomanip>
+#include <iostream>
+#include <string>
+#include <vector>
 
 int main(int argc, char* argv[]) {
     cxxopts::Options options("exif2Gtool", "Parser exif tags from 2G files.");
@@ -19,13 +19,15 @@ int main(int argc, char* argv[]) {
     std::string filename;
     options.add_options()("filename", "Input filename", cxxopts::value<std::string>(filename))(
         //"v,verbose", "Verbose output", cxxopts::value<bool>()->default_value("false"))(
-        "o,old_file", "Use old format", cxxopts::value<bool>()->default_value("false"));
+        "o,old_file",
+        "Use old format",
+        cxxopts::value<bool>()->default_value("false"));
 
     options.parse_positional({"filename"});
     options.allow_unrecognised_options();
 
     auto result = options.parse(argc, argv);
-    //bool verbose = result["verbose"].as<bool>();
+    // bool verbose = result["verbose"].as<bool>();
     bool old_style = result["old_file"].as<bool>();
 
     if (filename == "") {

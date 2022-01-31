@@ -4,10 +4,10 @@
 #include "EXIFTags/TagConstants.h"
 #include "EXIFTags/Tags.h"
 
-#include <fstream>
 #include <algorithm>
-#include <memory>
 #include <cassert>
+#include <fstream>
+#include <memory>
 
 using namespace tg;
 using namespace tags;
@@ -20,12 +20,12 @@ const unsigned char ImageHandler::TIFFHeaderIntel[4] = {'I', 'I', 42, 0};
 const unsigned char ImageHandler::JPEGHeaderStart[2] = {0xff, 0xd8};
 const unsigned char ImageHandler::APP0[2] = {0xff, 0xe0};
 const unsigned char ImageHandler::APP1[2] = {0xff, 0xe1};
-const unsigned char ImageHandler::STRIP_OFFSET[8] = {
-    0x11, 0x01, 0x07, 0x00, 0x04, 0x00, 0x00, 0x00};
+const unsigned char ImageHandler::STRIP_OFFSET[8] =
+    {0x11, 0x01, 0x07, 0x00, 0x04, 0x00, 0x00, 0x00};
 const unsigned char ImageHandler::STRIP_OFFSET_ARRAY[4] = {0x11, 0x01, 0x04, 0x00};
 const unsigned char ImageHandler::STRIP_SIZE_ARRAY[4] = {0x17, 0x01, 0x03, 0x00};
-const unsigned char ImageHandler::OFFSET_LENGTH[8] = {
-    0x17, 0x01, 0x07, 0x00, 0x04, 0x00, 0x00, 0x00};
+const unsigned char ImageHandler::OFFSET_LENGTH[8] =
+    {0x17, 0x01, 0x07, 0x00, 0x04, 0x00, 0x00, 0x00};
 const unsigned char ImageHandler::BITS_PER_SAMPLE[4] = {0x02, 0x01, 0x07, 0x00};
 const size_t ImageHandler::HEADER_SIZE = 8;
 const size_t ImageHandler::HEADER_INITIAL_LOAD_SIZE = 64;
@@ -35,7 +35,7 @@ bool ImageHandler::loadHeader(const std::string& filename,
                               std::string& error_message) {
 
     image_header_data.clear();
-    std::vector <uint8_t> temp_header;
+    std::vector<uint8_t> temp_header;
     temp_header.resize(HEADER_INITIAL_LOAD_SIZE);
     image_header_data.resize(MAX_READ_SIZE);
 
@@ -61,19 +61,19 @@ bool ImageHandler::loadHeader(const std::string& filename,
     if (exif_start == temp_header.end()) {
         is_LE = true;
         exif_start = std::search(temp_header.begin(),
-                                  temp_header.end(),
-                                  std::begin(TIFFHeaderIntel),
-                                  std::end(TIFFHeaderIntel));
-        if (exif_start == temp_header.end()) { 
+                                 temp_header.end(),
+                                 std::begin(TIFFHeaderIntel),
+                                 std::end(TIFFHeaderIntel));
+        if (exif_start == temp_header.end()) {
             error_message = ErrorMessages::invalid_header_data;
             return false;
         }
     }
-    auto exif_index = std::distance( temp_header.begin(), exif_start );
+    auto exif_index = std::distance(temp_header.begin(), exif_start);
 
     file.seekg(exif_index, std::ios::beg);
 
-    //Read in the first 8 bytes of the header, and find the offset to the start of the header.
+    // Read in the first 8 bytes of the header, and find the offset to the start of the header.
     if (!file.read(reinterpret_cast<char*>(image_header_data.data()), HEADER_SIZE)) {
         error_message = ErrorMessages::failed_file_load + filename;
         return false;
@@ -81,21 +81,17 @@ bool ImageHandler::loadHeader(const std::string& filename,
 
     size_t offset;
     if (is_LE) {
-        offset = image_header_data[4] |
-                    (image_header_data[5] << 8) |
-                    (image_header_data[6] << 16) |
-                    (image_header_data[7] << 24);
-    
+        offset = image_header_data[4] | (image_header_data[5] << 8) | (image_header_data[6] << 16) |
+                 (image_header_data[7] << 24);
+
         image_header_data[4] = 8;
         image_header_data[5] = 0;
         image_header_data[6] = 0;
         image_header_data[7] = 0;
     } else {
-        offset = image_header_data[7] |
-                    (image_header_data[6] << 8) |
-                    (image_header_data[5] << 16) |
-                    (image_header_data[4] << 24);
-    
+        offset = image_header_data[7] | (image_header_data[6] << 8) | (image_header_data[5] << 16) |
+                 (image_header_data[4] << 24);
+
         image_header_data[7] = HEADER_SIZE;
         image_header_data[6] = 0;
         image_header_data[5] = 0;
@@ -103,8 +99,10 @@ bool ImageHandler::loadHeader(const std::string& filename,
     }
 
     file.seekg(exif_index + offset, std::ios::beg);
-    size_t read_size = (int(size) - int(exif_index + offset + MAX_READ_SIZE-HEADER_SIZE-1) > 0) ? MAX_READ_SIZE-HEADER_SIZE-1 : size - (exif_index + offset);
-    if (!file.read(reinterpret_cast<char*>(image_header_data.data()+HEADER_SIZE), read_size)) {
+    size_t read_size = (int(size) - int(exif_index + offset + MAX_READ_SIZE - HEADER_SIZE - 1) > 0)
+                           ? MAX_READ_SIZE - HEADER_SIZE - 1
+                           : size - (exif_index + offset);
+    if (!file.read(reinterpret_cast<char*>(image_header_data.data() + HEADER_SIZE), read_size)) {
         error_message = ErrorMessages::failed_file_load + filename;
         return false;
     }
@@ -209,8 +207,8 @@ bool ImageHandler::tagTiff(Tags& exif_tags,
     std::vector<uint32_t> strip_bytes = orig_tags.stripByteCount();
 
     //  Find the offset of the 0th IFD
-    uint32_t offset_of_IFD = (encoded_image[4] << 0) | (encoded_image[5] << 8) | (encoded_image[6] << 16) |
-                             (encoded_image[7] << 24);
+    uint32_t offset_of_IFD = (encoded_image[4] << 0) | (encoded_image[5] << 8) |
+                             (encoded_image[6] << 16) | (encoded_image[7] << 24);
 
     if (strip_bytes.size() == 0 || offsets.size() == 0 ||
         offsets.size() != strip_bytes.size()) { // Images produced in OpenCV cause problems. The

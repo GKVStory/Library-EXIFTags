@@ -1,16 +1,16 @@
-//TestTags.cpp
-//Copyright Voyis Inc., 2021
+// TestTags.cpp
+// Copyright Voyis Inc., 2021
 
-#include <gtest/gtest.h>
 #include "EXIFTags/Tags.h"
 #include "TestConstants.h"
 #include <cstdint>
+#include <gtest/gtest.h>
 #include <string>
 
 namespace tg {
 namespace tags {
 
-TEST ( TagsTest, GenerateEmptyTagsClass_CheckDefaultBehaviour) {
+TEST(TagsTest, GenerateEmptyTagsClass_CheckDefaultBehaviour) {
     Tags tags;
 
     ASSERT_EQ(tags.subfileType(), Tags::FULL_RESOLUTION_IMAGE);
@@ -63,7 +63,6 @@ TEST ( TagsTest, GenerateEmptyTagsClass_CheckDefaultBehaviour) {
     ASSERT_EQ(tags.stripByteCount().size(), 0);
     tags.stripByteCount(std::vector<uint32_t>{1025});
     ASSERT_EQ(tags.stripByteCount()[0], 1025);
-
 
     ASSERT_EQ(tags.planarConfiguration(), Tags::PLANARCONFIG_EXIF_CONTIG);
 
@@ -150,7 +149,8 @@ TEST ( TagsTest, GenerateEmptyTagsClass_CheckDefaultBehaviour) {
 
     ASSERT_TRUE(tags.matrixNavToCamera().size() == 16);
     ASSERT_EQ(tags.matrixNavToCamera(), Constants::DEFAULT_TRANSFORM);
-    const std::vector<double> nav_vec = {1.0, 2.0, 3.0, 4.0, 5.0, 1.0, 6.0, 7.0, 8.0, 9.0, 1.0, 11.0, 12.0, 13.0, 14.0, 1.0};
+    const std::vector<double> nav_vec = {
+        1.0, 2.0, 3.0, 4.0, 5.0, 1.0, 6.0, 7.0, 8.0, 9.0, 1.0, 11.0, 12.0, 13.0, 14.0, 1.0};
     tags.matrixNavToCamera(nav_vec);
     ASSERT_EQ(tags.matrixNavToCamera(), nav_vec);
 
@@ -224,84 +224,85 @@ TEST ( TagsTest, GenerateEmptyTagsClass_CheckDefaultBehaviour) {
     tags.dateTime(1714632629005021);
     ASSERT_EQ(tags.ppsTime(), 1714632629005021);
     ASSERT_EQ(tags.ppsTime(), tags.dateTime());
-} 
-
-TEST ( TagsTest, ParseJpegFile) {
-    Tags tags; 
-    std::string error_message;
-
-    ASSERT_FALSE (tags.loadHeader("DoesntExist.jpg", error_message));
-    //ASSERT_EQ (error_message, ErrorMessages::failed_file_load + "DoesntExist.jpg");
-
-    ASSERT_TRUE (tags.loadHeader(TagsTestCommon::testJpgNon2g(), error_message));
-
-    ASSERT_EQ (tags.orientation(), Tags::ORIENTATION_EXIF_TOPLEFT);
-    ASSERT_EQ (tags.imageWidth(), 640);
-    ASSERT_EQ (tags.imageHeight(), 480);
-    ASSERT_DOUBLE_EQ (tags.fNumber(), 4.7);
-    //ASSERT_EQ (tags.make(), "NIKON");
-    ASSERT_DOUBLE_EQ (tags.exposureTime(), 1/95.70000727320055 * 1000);
-    ASSERT_EQ (tags.latitudeRef(), Tags::LATITUDEREF_NORTH);
-    ASSERT_DOUBLE_EQ (tags.latitude(), 43.467081666663894);
 }
 
-TEST ( TagsTest, ParseNon2GTifFile) {
-    Tags tags; 
+TEST(TagsTest, ParseJpegFile) {
+    Tags tags;
     std::string error_message;
 
-    ASSERT_TRUE (tags.loadHeader(TagsTestCommon::testTifNon2g(), error_message));
+    ASSERT_FALSE(tags.loadHeader("DoesntExist.jpg", error_message));
+    // ASSERT_EQ (error_message, ErrorMessages::failed_file_load + "DoesntExist.jpg");
 
-    ASSERT_EQ (tags.orientation(), Tags::ORIENTATION_EXIF_TOPLEFT);
-    ASSERT_EQ (tags.imageWidth(), 15);
-    ASSERT_EQ (tags.imageHeight(), 7);
-    //ASSERT_EQ (tags.imageDescription(), "Test image");
+    ASSERT_TRUE(tags.loadHeader(TagsTestCommon::testJpgNon2g(), error_message));
+
+    ASSERT_EQ(tags.orientation(), Tags::ORIENTATION_EXIF_TOPLEFT);
+    ASSERT_EQ(tags.imageWidth(), 640);
+    ASSERT_EQ(tags.imageHeight(), 480);
+    ASSERT_DOUBLE_EQ(tags.fNumber(), 4.7);
+    // ASSERT_EQ (tags.make(), "NIKON");
+    ASSERT_DOUBLE_EQ(tags.exposureTime(), 1 / 95.70000727320055 * 1000);
+    ASSERT_EQ(tags.latitudeRef(), Tags::LATITUDEREF_NORTH);
+    ASSERT_DOUBLE_EQ(tags.latitude(), 43.467081666663894);
 }
 
-TEST ( TagsTest, ParseOld2GTifFile) {
-    Tags tags; 
+TEST(TagsTest, ParseNon2GTifFile) {
+    Tags tags;
     std::string error_message;
 
-    ASSERT_TRUE (tags.loadHeader(TagsTestCommon::testTifOld2g(), error_message));
+    ASSERT_TRUE(tags.loadHeader(TagsTestCommon::testTifNon2g(), error_message));
 
-    ASSERT_EQ (tags.orientation(), Tags::ORIENTATION_EXIF_TOPLEFT);
-    ASSERT_EQ (tags.imageWidth(), 2464);
-    ASSERT_EQ (tags.imageHeight(), 2056);
-    ASSERT_EQ (tags.ppsTime(), 711698604);
-    ASSERT_EQ (tags.bitsPerSample().size(), 1);
-    ASSERT_EQ (tags.bitsPerSample()[0], 8);
+    ASSERT_EQ(tags.orientation(), Tags::ORIENTATION_EXIF_TOPLEFT);
+    ASSERT_EQ(tags.imageWidth(), 15);
+    ASSERT_EQ(tags.imageHeight(), 7);
+    // ASSERT_EQ (tags.imageDescription(), "Test image");
 }
 
-TEST ( TagsTest, ParseOldVoyisTifFile) {
-    Tags tags; 
+TEST(TagsTest, ParseOld2GTifFile) {
+    Tags tags;
     std::string error_message;
 
-    ASSERT_TRUE (tags.loadHeader(TagsTestCommon::testTifOldVoyis(), error_message));
+    ASSERT_TRUE(tags.loadHeader(TagsTestCommon::testTifOld2g(), error_message));
 
-    ASSERT_EQ (tags.orientation(), Tags::ORIENTATION_EXIF_TOPLEFT);
-    ASSERT_EQ (tags.imageWidth(), 4112);
-    ASSERT_EQ (tags.imageHeight(), 3008);
-    ASSERT_EQ (tags.dateTime(), 1631921861667666);
-    ASSERT_EQ (tags.bitsPerSample().size(), 1);
-    ASSERT_EQ (tags.bitsPerSample()[0], 16);
+    ASSERT_EQ(tags.orientation(), Tags::ORIENTATION_EXIF_TOPLEFT);
+    ASSERT_EQ(tags.imageWidth(), 2464);
+    ASSERT_EQ(tags.imageHeight(), 2056);
+    ASSERT_EQ(tags.ppsTime(), 711698604);
+    ASSERT_EQ(tags.bitsPerSample().size(), 1);
+    ASSERT_EQ(tags.bitsPerSample()[0], 8);
 }
 
-TEST ( TagsTest, Tags_generate_tag_and_reparse) {
+TEST(TagsTest, ParseOldVoyisTifFile) {
+    Tags tags;
+    std::string error_message;
+
+    ASSERT_TRUE(tags.loadHeader(TagsTestCommon::testTifOldVoyis(), error_message));
+
+    ASSERT_EQ(tags.orientation(), Tags::ORIENTATION_EXIF_TOPLEFT);
+    ASSERT_EQ(tags.imageWidth(), 4112);
+    ASSERT_EQ(tags.imageHeight(), 3008);
+    ASSERT_EQ(tags.dateTime(), 1631921861667666);
+    ASSERT_EQ(tags.bitsPerSample().size(), 1);
+    ASSERT_EQ(tags.bitsPerSample()[0], 16);
+}
+
+TEST(TagsTest, Tags_generate_tag_and_reparse) {
     Tags tags;
     TagsTestCommon::setTags(tags);
 
-    std::unique_ptr <unsigned char[], decltype(&std::free)> data {static_cast<unsigned char *>(nullptr), std::free};
+    std::unique_ptr<unsigned char[], decltype(&std::free)> data{
+        static_cast<unsigned char*>(nullptr), std::free};
     unsigned int data_length;
     std::string error_message;
 
     ASSERT_TRUE(tags.generateHeader(data, data_length, error_message));
 
     Tags new_tags;
-    std::vector <uint8_t> new_header (data.get(), data.get() + data_length / sizeof(unsigned char));
+    std::vector<uint8_t> new_header(data.get(), data.get() + data_length / sizeof(unsigned char));
 
-    ASSERT_TRUE (new_tags.loadHeader(new_header, error_message));
+    ASSERT_TRUE(new_tags.loadHeader(new_header, error_message));
 
     TagsTestCommon::testTags(new_tags);
 }
 
-} //tags
-} //tg
+} // namespace tags
+} // namespace tg

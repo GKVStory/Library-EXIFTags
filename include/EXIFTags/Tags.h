@@ -1,26 +1,27 @@
 #pragma once
 /**
  * Tags.h
- * 
+ *
  * Copyright Voyis Inc., 2021
- * 
+ *
  * This class represents all the tags supported by the 2G exif library.
- * 
+ *
  */
 #include "EXIFTags/Tag.h"
 #include "EXIFTags/TagConstants.h"
-#include <vector>
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace tg {
-namespace tags{
+namespace tags {
 
 /**
- * @brief This class wraps all of the 2G supported individual tags associated with a particular image file.
+ * @brief This class wraps all of the 2G supported individual tags associated with a particular
+ * image file.
  */
 class Tags {
-public:
+  public:
     /**
      * @brief constructor, generates an empty set of flags
      */
@@ -28,12 +29,13 @@ public:
     virtual ~Tags();
 
     /**
-     * @brief Given the contents of an image (or at least the header part of it), load the included tags.
+     * @brief Given the contents of an image (or at least the header part of it), load the included
+     * tags.
      * @param image_header_data, vector of bytes containing at a minimum the image header data.
      * @param error emssage returned by reference in case of a failure.
      * @return bool was the load successful?
      */
-    bool loadHeader(const std::vector <uint8_t> & image_header_data, std::string & error_message);
+    bool loadHeader(const std::vector<uint8_t>& image_header_data, std::string& error_message);
 
     /**
      * @brief Given a file, load the included tags.
@@ -41,37 +43,35 @@ public:
      * @param error emssage returned by reference in case of a failure.
      * @return bool was the load successful?
      */
-    bool loadHeader(const std::string & filename, std::string & error_message);
+    bool loadHeader(const std::string& filename, std::string& error_message);
 
     /**
-     * @brief Generate an EXIF header to be placed into an image based on the classes data. 
+     * @brief Generate an EXIF header to be placed into an image based on the classes data.
      * @param pointer [out] unique pointerto an array of characters, the image header data.
      * @param unsigned [out] length of buffer in bytes.
      * @param string [out] an error message returned by reference when there is a failure.
      * @return bool was the header generation successful
      */
-    bool generateHeader(std::unique_ptr <unsigned char[], void (*)(void *)> & image_header_data, unsigned int & length, std::string & error_message) const;
+    bool generateHeader(std::unique_ptr<unsigned char[], void (*)(void*)>& image_header_data,
+                        unsigned int& length,
+                        std::string& error_message) const;
 
     ///--------------------------------------------------------------------
     /// Accessors and associate enums
     /// (Fixed fields have to setters)
     ///--------------------------------------------------------------------
-    
-    enum SubfileTypes {
-        FULL_RESOLUTION_IMAGE = 0,
-        REDUCED_RESOLUTION_IMAGE,
-        PAGE_OF_MULTIPAGE
-    };
-    SubfileTypes subfileType () const;
+
+    enum SubfileTypes { FULL_RESOLUTION_IMAGE = 0, REDUCED_RESOLUTION_IMAGE, PAGE_OF_MULTIPAGE };
+    SubfileTypes subfileType() const;
 
     uint32_t imageWidth() const;
     void imageWidth(uint32_t width);
 
     uint32_t imageHeight() const;
-    void imageHeight(uint32_t height); 
+    void imageHeight(uint32_t height);
 
     std::vector<uint16_t> bitsPerSample() const;
-    void bitsPerSample( const std::vector<uint16_t> & bits );
+    void bitsPerSample(const std::vector<uint16_t>& bits);
 
     enum CompressionType {
         COMPRESSION_EXIF_NONE = 1,
@@ -100,7 +100,7 @@ public:
         COMPRESSION_EXIF_JP2000 = 34712,
     };
     CompressionType compression() const;
-    void compression (CompressionType compression);
+    void compression(CompressionType compression);
 
     enum PhotometricInterpolationType {
         PHOTOMETRIC_EXIF_MINISWHITE = 0,
@@ -117,19 +117,19 @@ public:
         PHOTOMETRIC_EXIF_LOGLUV = 32845,
     };
     PhotometricInterpolationType photometricInterpolation() const;
-    void photometricInterpolation (PhotometricInterpolationType pi);
+    void photometricInterpolation(PhotometricInterpolationType pi);
 
     std::string imageDescription() const;
-    void imageDescription(const std::string & desc);
+    void imageDescription(const std::string& desc);
 
     std::string make() const;
-    void make(const std::string & make);
+    void make(const std::string& make);
 
     std::string model() const;
-    void model(const std::string & model);
+    void model(const std::string& model);
 
     std::vector<uint32_t> stripOffsets() const;
-    void stripOffsets(const std::vector<uint32_t> & offsets);
+    void stripOffsets(const std::vector<uint32_t>& offsets);
 
     enum OrientationType {
         ORIENTATION_EXIF_TOPLEFT = 1,
@@ -143,23 +143,20 @@ public:
     };
     OrientationType orientation() const;
 
-    uint16_t samplesPerPixel () const;
-    void samplesPerPixel (uint16_t samples);
+    uint16_t samplesPerPixel() const;
+    void samplesPerPixel(uint16_t samples);
 
     uint32_t rowsPerStrip() const;
     void rowsPerStrip(uint32_t rows_per_pixel);
 
     std::vector<uint32_t> stripByteCount() const;
-    void stripByteCount(const std::vector<uint32_t> & byte_count);
+    void stripByteCount(const std::vector<uint32_t>& byte_count);
 
-    enum PlanarConfigurationType {
-        PLANARCONFIG_EXIF_CONTIG = 1,
-        PLANARCONFIG_EXIF_SEPARATE = 2
-    };
+    enum PlanarConfigurationType { PLANARCONFIG_EXIF_CONTIG = 1, PLANARCONFIG_EXIF_SEPARATE = 2 };
     PlanarConfigurationType planarConfiguration() const;
 
     std::string software() const;
-    void software(const std::string & sw);
+    void software(const std::string& sw);
 
     /*These tags aren't supported by the libexif.
     enum PredictorType {
@@ -188,29 +185,29 @@ public:
     void sampleFormat (const std::vector<SampleFormatType> & type);
     */
 
-    //units of ms
+    // units of ms
     double exposureTime() const;
     void exposureTime(double exp);
 
     double fNumber() const;
     void fNumber(double f);
 
-    //Date/time is expressed in microseconds from unix epoch
-    uint64_t dateTime () const;
-    void dateTime (uint64_t date_time_us_epoch);
+    // Date/time is expressed in microseconds from unix epoch
+    uint64_t dateTime() const;
+    void dateTime(uint64_t date_time_us_epoch);
 
-    //distance from camera to target in m
+    // distance from camera to target in m
     double subjectDistance() const;
     void subjectDistance(double range);
 
     enum LightSourceType {
         LIGHTSOURCE_UNKNOWN = 0,
-        LIGHTSOURCE_DAYLIGHT = 1, //also flash off
+        LIGHTSOURCE_DAYLIGHT = 1, // also flash off
         LIGHTSOURCE_WHITELED = 200,
         LIGHTSOURCE_BLUELED = 201
     };
     LightSourceType lightSource() const;
-    void lightSource (LightSourceType light_source);
+    void lightSource(LightSourceType light_source);
 
     enum FlashType {
         FLASH_NO_FLASH = 0,
@@ -220,9 +217,9 @@ public:
     FlashType flash() const;
     void flash(FlashType flash_type);
 
-    //units of mm
+    // units of mm
     double focalLength() const;
-    void focalLength( double length );
+    void focalLength(double length);
 
     enum ColourSpaceType {
         COLOURSPACE_sRGB = 0x1,
@@ -234,65 +231,62 @@ public:
     ColourSpaceType colourSpace() const;
     void colourSpace(ColourSpaceType colour_space);
 
-    //flash energy as a percentage.
-    double flashEnergy () const;
-    void flashEnergy (double intensity);
+    // flash energy as a percentage.
+    double flashEnergy() const;
+    void flashEnergy(double intensity);
 
     std::string serialNumber() const;
-    void serialNumber( const std::string & serial_number );
+    void serialNumber(const std::string& serial_number);
 
     std::string lensModel() const;
-    void lensModel( const std::string & lens_model );
+    void lensModel(const std::string& lens_model);
 
     double indexOfRefraction() const;
-    void indexOfRefraction( double ior );
+    void indexOfRefraction(double ior);
 
     double viewportIndex() const;
-    void viewportIndex( double vi );
+    void viewportIndex(double vi);
 
-    //units of m
-    double viewportThickness () const;
-    void viewportThickness (double thickness );
+    // units of m
+    double viewportThickness() const;
+    void viewportThickness(double thickness);
 
-    //units of mm
-    double viewportDistance () const;
-    void viewportDistance (double distance);
+    // units of mm
+    double viewportDistance() const;
+    void viewportDistance(double distance);
 
-    bool vignetting () const;
-    void vignetting (bool is_vignetted);
+    bool vignetting() const;
+    void vignetting(bool is_vignetted);
 
-    enum ViewportType {
-        VIEWPORT_FLAT,
-        VIEWPORT_DOMED
-    };
-    ViewportType viewportType () const;
-    void viewportType (ViewportType viewport_type);
+    enum ViewportType { VIEWPORT_FLAT, VIEWPORT_DOMED };
+    ViewportType viewportType() const;
+    void viewportType(ViewportType viewport_type);
 
     enum EnhancementType {
-         ENHANCEMENT_NONE,
-         ENHANCEMENT_ALGORITHMIC_MONO,
-         ENHANCEMENT_REALISTIC_MONO,
-         ENHANCEMENT_BASIC_COLOUR,
-         ENHANCEMENT_REALISTIC_COLOUR,
-         ENHANCEMENT_ENHANCED_COLOUR,
+        ENHANCEMENT_NONE,
+        ENHANCEMENT_ALGORITHMIC_MONO,
+        ENHANCEMENT_REALISTIC_MONO,
+        ENHANCEMENT_BASIC_COLOUR,
+        ENHANCEMENT_REALISTIC_COLOUR,
+        ENHANCEMENT_ENHANCED_COLOUR,
     };
     EnhancementType enhancement() const;
-    void enhancement ( EnhancementType enhance);
+    void enhancement(EnhancementType enhance);
 
-    //units of nm
+    // units of nm
     std::vector<uint16_t> pixelSize() const;
-    void pixelSize(const std::vector<uint16_t> & pixel_size);
+    void pixelSize(const std::vector<uint16_t>& pixel_size);
 
-    //1x16 vector of doubles that can be turned into a 4x4 rotation matrix
-    //that can be used to transform points in the navigation frame into 
-    //the camera frame (units of m)
-    std::vector<double> matrixNavToCamera () const;
-    void matrixNavToCamera( const std::vector<double> & matrix);
+    // 1x16 vector of doubles that can be turned into a 4x4 rotation matrix
+    // that can be used to transform points in the navigation frame into
+    // the camera frame (units of m)
+    std::vector<double> matrixNavToCamera() const;
+    void matrixNavToCamera(const std::vector<double>& matrix);
 
     uint32_t imageNumber() const;
-    void imageNumber( uint32_t count );
+    void imageNumber(uint32_t count);
 
-    //depth to CRP in m
+    // depth to CRP in m
     double waterDepth() const;
     void waterDepth(double depth);
 
@@ -304,85 +298,76 @@ public:
         BAYER_GR2BGR
     };
     BayerPatternType bayerPattern() const;
-    void bayerPattern (BayerPatternType pattern);
+    void bayerPattern(BayerPatternType pattern);
 
-    //units of Hz
+    // units of Hz
     double frameRate() const;
     void frameRate(double frame_rate);
 
-    //1x4 vector of doubles that contains the camera matrix (fx, fy, cx, cy) parameters
-    std::vector<double> cameraMatrix () const;
-    void cameraMatrix( const std::vector<double> & matrix);
+    // 1x4 vector of doubles that contains the camera matrix (fx, fy, cx, cy) parameters
+    std::vector<double> cameraMatrix() const;
+    void cameraMatrix(const std::vector<double>& matrix);
 
-    //1x5 vector of doubles that contains the 5 point rad tan disotrtion 
-    // parameters (k1, k2, p1, p2, k3) parameters
-    std::vector<double> distortion () const;
-    void distortion( const std::vector<double> & matrix);
+    // 1x5 vector of doubles that contains the 5 point rad tan disotrtion
+    //  parameters (k1, k2, p1, p2, k3) parameters
+    std::vector<double> distortion() const;
+    void distortion(const std::vector<double>& matrix);
 
-    //1x3 vector of doubles that contains the pose of the vehicle 
-    // (roll, pitch, heading) in degrees following the PSONNAV convention (see EXIF format footnote)
-    std::vector<double> pose () const;
-    void pose( const std::vector<double> & matrix);
+    // 1x3 vector of doubles that contains the pose of the vehicle
+    //  (roll, pitch, heading) in degrees following the PSONNAV convention (see EXIF format
+    //  footnote)
+    std::vector<double> pose() const;
+    void pose(const std::vector<double>& matrix);
 
-    //Altitude of vehicle above seabed in m.
+    // Altitude of vehicle above seabed in m.
     double vehicleAltitude() const;
     void vehicleAltitude(double altitude);
 
-    //DVL beam ranges in m
+    // DVL beam ranges in m
     std::vector<double> dvl() const;
-    void dvl (const std::vector<double> & beams);
+    void dvl(const std::vector<double>& beams);
 
-    enum LatitudeRefType {
-        LATITUDEREF_NORTH,
-        LATITUDEREF_SOUTH
-    };
+    enum LatitudeRefType { LATITUDEREF_NORTH, LATITUDEREF_SOUTH };
     LatitudeRefType latitudeRef() const;
-    void latitudeRef(LatitudeRefType lat_ref );
+    void latitudeRef(LatitudeRefType lat_ref);
 
-    //longitude in decimal degrees
+    // longitude in decimal degrees
     double latitude() const;
-    void latitude( double longitude );
+    void latitude(double longitude);
 
-    enum LongitudeRefType {
-        LONGITUDEREF_EAST,
-        LONGITUDEREF_WEST
-    };
+    enum LongitudeRefType { LONGITUDEREF_EAST, LONGITUDEREF_WEST };
     LongitudeRefType longitudeRef() const;
-    void longitudeRef(LongitudeRefType lat_ref );
+    void longitudeRef(LongitudeRefType lat_ref);
 
-    //longitude in decimal degrees
+    // longitude in decimal degrees
     double longitude() const;
     void longitude(double longitude);
 
-    enum AltitudeRefType {
-        ALTITUDEREF_ABOVE_SEA_LEVEL,
-        ALTITUDEREF_BELOW_SEA_LEVEL
-    };
+    enum AltitudeRefType { ALTITUDEREF_ABOVE_SEA_LEVEL, ALTITUDEREF_BELOW_SEA_LEVEL };
     AltitudeRefType altitudeRef() const;
     void altitudeRef(AltitudeRefType altitude_ref);
 
-    //altitude in m
+    // altitude in m
     double altitude() const;
     void altitude(double alt);
-    
-    //time in us from epoch
+
+    // time in us from epoch
     uint64_t ppsTime() const;
-    void ppsTime( uint64_t pps );
+    void ppsTime(uint64_t pps);
 
     // Returns whether or not the tag has been set
     bool isTagSet(Constants::SupportedTags tag_id) const;
 
-private:
+  private:
+    // storage for the different tags supported by 2G.
+    std::vector<std::shared_ptr<Tag>> m_tags;
 
-    //storage for the different tags supported by 2G.
-    std::vector <std::shared_ptr<Tag>> m_tags;
-    
     /**
      * @brief handle reading the exif data into the internal data structure.
      * @param pointer to the exif data.
      */
-    void parseExifData ( ExifData * exif );
+    void parseExifData(ExifData* exif);
 };
 
-} //tags
-} //tg
+} // namespace tags
+} // namespace tg
