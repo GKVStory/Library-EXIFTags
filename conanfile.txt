@@ -1,5 +1,7 @@
 [requires]
 opencv-2g/4.5.1
+libtiff/4.3.0
+zstd/1.5.0
 
 [options]
 opencv-2g:with_CUDA=False

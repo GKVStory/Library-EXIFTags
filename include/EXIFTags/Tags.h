@@ -358,6 +358,9 @@ class Tags {
     // Returns whether or not the tag has been set
     bool isTagSet(Constants::SupportedTags tag_id) const;
 
+    // Returns a deep copy of the tags
+    Tags clone(void) const;
+
   private:
     // storage for the different tags supported by 2G.
     std::vector<std::shared_ptr<Tag>> m_tags;
