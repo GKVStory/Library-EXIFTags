@@ -15,7 +15,7 @@ class ExifTags(ConanFile):
     options = {"shared": [True, False]}
     default_options = {"shared": False}
     generators = "CMakeToolchain", "CMakeDeps"
-    exports_sources = "include/*", "src/*", "test/*", "Dependencies.cmake", "ProjectFiles.cmake", "CMakeLists.txt", "*.md"
+    exports_sources = "include/*", "src/*", "tests/*", "lib/*", "test_data/*", "*.cmake", "CMakeLists.txt", "*.md"
         
     def requirements(self):
         #self.requires.add('zstd/[1.5.2]')
