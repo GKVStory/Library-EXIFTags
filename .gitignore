@@ -43,3 +43,9 @@ tests/TestConstants.h
 *~
 test_data/testout.jpg
 test_data/testout.tif
+
+cmake-build-*
+CMakeUserPresets.json
+test_data/opencv_colour_output.jpg
+test_data/opencv_colour_output.tif
+test_data/opencv_test_output.tif

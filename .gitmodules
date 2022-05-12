@@ -1,3 +1,6 @@
-[submodule "lib/libexif"]
-	path = lib/libexif
-	url = git@github.com:libexif/libexif.git
+# [submodule "lib/libexif"]
+# 	path = lib/libexif
+# 	url = git@github.com:libexif/libexif.git
+[submodule "ConanProfiles"]
+	path = ConanProfiles
+	url = git@github.com:Voyis/ConanProfiles.git

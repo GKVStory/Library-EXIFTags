@@ -10,7 +10,7 @@
 
 #include "EXIFTags/Tags.h"
 #include <string>
-
+#include <gtest/gtest.h>
 namespace tg {
 namespace tags {
 
