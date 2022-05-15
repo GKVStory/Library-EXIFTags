@@ -4,8 +4,8 @@ from conan.tools.layout import basic_layout, cmake_layout
 from conan.tools.build import cross_building
 from conan.tools.files import copy
 
-class ExifTags(ConanFile):
-    name = "ExifTags"
+class EXIFTags(ConanFile):
+    name = "EXIFTags"
     version = "6.0.0"
     license = "Voyis"
     url = "https://github.com/Voyis/Library-EXIFTags"
@@ -17,9 +17,7 @@ class ExifTags(ConanFile):
     generators = "CMakeToolchain", "CMakeDeps"
     exports_sources = "include/*", "src/*", "tests/*", "lib/*", "test_data/*", "*.cmake", "CMakeLists.txt", "*.md"
         
-    def requirements(self):
-        #self.requires.add('zstd/[1.5.2]')
-        
+    def requirements(self):        
         # todo: ENABLE THIS ONLY WHEN TESTING
         self.requires.add('gtest/[>=1.8.0]')
         self.requires.add('libtiff/4.3.0')
@@ -64,4 +62,4 @@ class ExifTags(ConanFile):
          self.copy("*.a", dst="lib", keep_path=False)
 
     def package_info(self):
-        self.cpp_info.libs = ["ExifTags"]
+        self.cpp_info.libs = ["EXIFTags", "libexif"]
