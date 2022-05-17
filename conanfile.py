@@ -55,6 +55,7 @@ class EXIFTags(ConanFile):
 
     def package(self):
          self.copy("*.h*", dst="include", src="include")
+         self.copy("*.h*", dst="include", src="lib/libexif")
          self.copy("*.lib", dst="lib", keep_path=False)
          self.copy("*.dll", dst="bin", keep_path=False)
          self.copy("*.dylib*", dst="lib", keep_path=False)
