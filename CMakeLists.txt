@@ -16,6 +16,8 @@ OPTION(BUILD_TESTS                             "Build tests"                    
 OPTION(BUILD_MAIN                              "Build command line parser"       OFF)
 OPTION(BUILD_PYTHON                            "Build Python bindings"          OFF)
 OPTION(CENTOS                                  "Adjust the build for old compilers in Centos" OFF)
+OPTION(USE_CONAN_OPENCV                        "Pull OpenCV libs from Conan server" ON)
+OPTION(WITH_CUDA                               "Use OpenCV with system install of CUDA" ON)
 
 if(WIN32)
   if(MSVC)
@@ -57,6 +59,19 @@ if(BUILD_TESTS)
   find_package(GTest CONFIG REQUIRED)
   find_package(OpenCV CONFIG REQUIRED)
   find_package(libtiff CONFIG REQUIRED)
+
+  if(USE_CONAN_OPENCV)
+
+    set(OpenCV_LIBS opencv::opencv)
+    if(WITH_CUDA)
+      # The conan server does not currently have CUDA packages but 
+      # the OpenCV package may depend on CUDA. This will look for 
+      # the system CUDA toolkit. 
+      enable_language(CUDA)
+      find_package(CUDAToolkit REQUIRED)
+      set(OpenCV_LIBS ${OpenCV_LIBS} CUDA::cudart)
+    endif()
+  endif()
 
   configure_file (
     "${PROJECT_SOURCE_DIR}/tests/TestConstants.h.i" 
