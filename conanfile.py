@@ -12,22 +12,48 @@ class EXIFTags(ConanFile):
     description = "This library handles the reading and writing of the Voyis EXIF tags for both jpg and tiff images."
 
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False]}
-    default_options = {"shared": False}
+
+    options = {"shared": [True, False],
+               "with_tests": [True, False],
+               "with_cuda": [True, False]} # only applies to tests
+
+    default_options = {"shared": False,
+                       "with_tests": True,
+                       "with_cuda": True}
+
     generators = "CMakeToolchain", "CMakeDeps"
     exports_sources = "include/*", "src/*", "tests/*", "lib/*", "test_data/*", "*.cmake", "CMakeLists.txt", "*.md"
-        
-    def requirements(self):        
-        # todo: ENABLE THIS ONLY WHEN TESTING
-        self.requires.add('gtest/[>=1.8.0]')
-        self.requires.add('libtiff/4.3.0')
-        # opencv as well... this lib is standalone
-     
-        # if linux, this will just use the system opencv. cuda NOT needed
-        if self.settings.os == "Windows":
-            self.requires.add('opencv-2g/4.5.1')
+    
+    use_conan_opencv = True
 
-   
+    def requirements(self): 
+        if self.options.with_tests:
+            self.requires.add('gtest/[>=1.8.0]')
+            self.requires.add('libtiff/4.3.0')
+
+            if self.use_conan_opencv:
+
+                # need to specify versions explicitly to resolve conflicts with libtiff
+                self.requires.add('zlib/[>=1.2.12]')
+                self.requires.add('libwebp/[>=1.2.2]')
+                self.requires.add('libjpeg-turbo/[>=2.1.2]')
+                self.requires.add('opencv/4.5.5')
+
+                self.options["opencv"].contrib = True
+                self.options["opencv"].with_jpeg = "libjpeg-turbo"
+                self.options["libtiff"].jpeg = "libjpeg-turbo"
+
+                if self.options.with_cuda:
+                    self.options["opencv"].with_cuda = True
+                    self.options["opencv"].cuda_arch_bin = self.env["CUDA_ARCH_BIN"]
+                else:
+                    self.options["opencv"].with_cuda = False
+            
+
+    def configure(self):
+        if "BOARD" in self.env and self.env["BOARD"] == "Jetson-Xaiver-nx":
+            self.use_conan_opencv = False
+
     def layout(self):
         cmake_layout(self)
     
@@ -42,7 +68,10 @@ class EXIFTags(ConanFile):
 
     def generate(self):
         tc = CMakeToolchain(self)
-        tc.variables["BUILD_TESTS"] = True
+        tc.variables["BUILD_TESTS"] = self.options.with_tests
+        tc.variables["USE_CONAN_OPENCV"] = self.use_conan_opencv
+        tc.variables["WITH_CUDA"] =self.options.with_cuda
+            
         tc.generate()
 
         deps = CMakeDeps(self)
