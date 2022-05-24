@@ -34,9 +34,9 @@ class EXIFTags(ConanFile):
             if self.use_conan_opencv:
 
                 # need to specify versions explicitly to resolve conflicts with libtiff
-                self.requires.add('zlib/1.2.12')
-                self.requires.add('libwebp/1.2.2')
-                self.requires.add('libjpeg-turbo/2.1.2')
+                self.requires.add('zlib/[>=1.2.12]')
+                self.requires.add('libwebp/[>=1.2.2]')
+                self.requires.add('libjpeg-turbo/[>=2.1.2]')
                 self.requires.add('opencv/4.5.5')
 
                 self.options["opencv"].contrib = True
